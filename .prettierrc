@@ -1,0 +1,31 @@
+{
+  "arrowParens": "avoid",
+  "bracketSpacing": true,
+  "endOfLine": "auto",
+  "htmlWhitespaceSensitivity": "css",
+  "insertPragma": false,
+  "requirePragma": false,
+  "jsxBracketSameLine": false,
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "printWidth": 80,
+  "proseWrap": "always",
+  "quoteProps": "as-needed",
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "importOrder": [
+    "^[./]",
+    "./styles",
+    "@/routes",
+    "@/typings",
+    "@/pages",
+    "@/redux",
+    "@/assets|@/component",
+    "@/hooks",
+    "@/services",
+    "@/common"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "organizeImportsSkipDestructiveCodeActions": true
+}
