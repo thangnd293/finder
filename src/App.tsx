@@ -1,43 +1,62 @@
-import { useTranslation } from 'react-i18next';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import { lngs, t } from './languages/i18n';
+import PrivateRoute from './components/PrivateRoute';
+import DefaultLayout from './layouts/DefaultLayout/index';
+import Home from './pages/Home';
+import { allTopPrivateRoutes, allTopPublicRoutes } from './routes';
+import IRoute from './typings/route';
 
 function App() {
-  const { i18n } = useTranslation();
   return (
     <Router>
-      <div className='App'>
-        <header className='App-header'>
-          <div>
-            {Object.keys(lngs).map(lng => (
-              <button
-                key={lng}
-                style={{
-                  fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
-                }}
-                type='submit'
-                onClick={() => {
-                  i18n.changeLanguage(lng);
-                }}
-              >
-                {lngs[lng as keyof typeof lngs].nativeName}
-              </button>
-            ))}
-          </div>
-
-          <a
-            className='App-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          ></a>
-        </header>
-        <div>{t(`common.title`)}</div>
-      </div>
+      <Routes>
+        <Route path='/' element={<DefaultLayout />}>
+          <Route index element={<Home />} />
+        </Route>
+        {renderRoutes(allTopPublicRoutes)}
+        {renderRoutes(allTopPrivateRoutes)}
+        <Route path='/*' element={<div>404</div>} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
-``;
+
+function renderRoutes(routes: IRoute[]) {
+  return routes.map((route, index) => {
+    const { Component, Layout, children, path, isIndex, isPrivate } = route;
+    const Element = Layout ? Layout : Component;
+    const Wrapper = isPrivate ? PrivateRoute : Fragment;
+
+    if (children) {
+      return (
+        <Route
+          key={index}
+          path={path}
+          element={
+            <Wrapper>
+              <Element />
+            </Wrapper>
+          }
+        >
+          {renderRoutes(children)}
+        </Route>
+      );
+    }
+
+    return (
+      <Route
+        index={isIndex}
+        key={index}
+        path={path}
+        element={
+          <Wrapper>
+            <Element />
+          </Wrapper>
+        }
+      />
+    );
+  });
+}
