@@ -1,39 +1,19 @@
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { lngs, t } from './languages/i18n';
+import Overlay from './components/Overlay';
 
 function App() {
-  const { i18n } = useTranslation();
+  const [showOverlay, setShowOverlay] = useState(false);
   return (
     <Router>
       <div className='App'>
-        <header className='App-header'>
-          <div>
-            {Object.keys(lngs).map(lng => (
-              <button
-                key={lng}
-                style={{
-                  fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
-                }}
-                type='submit'
-                onClick={() => {
-                  i18n.changeLanguage(lng);
-                }}
-              >
-                {lngs[lng as keyof typeof lngs].nativeName}
-              </button>
-            ))}
-          </div>
-
-          <a
-            className='App-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          ></a>
-        </header>
-        <div>{t(`common.title`)}</div>
+        <button onClick={() => setShowOverlay(!showOverlay)}>
+          Toggle overlay
+        </button>
+        <Overlay visible={showOverlay}>
+          <div className='w-10 h-10 bg-white rounded-sm'>Hello world</div>
+        </Overlay>
       </div>
     </Router>
   );
