@@ -1,5 +1,7 @@
 import HomeMobile from './HomeMobile';
 
+import Card from '@/components/Card/index';
+
 import useMediaQuery from '@/hooks/useMediaQuery';
 
 import { RESPONSIVE } from '@/common/constants/responsive';
@@ -13,7 +15,11 @@ const Home = ({}: Props) => {
 
   if (isMobile) return <HomeMobile />;
 
-  return <div>home</div>;
+  return (
+    <div className='w-full h-full flex items-center justify-center overflow-hidden'>
+      <Card />
+    </div>
+  );
 };
 
 export default Home;
