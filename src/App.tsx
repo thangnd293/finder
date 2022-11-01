@@ -1,23 +1,62 @@
-import { useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import Overlay from './components/Overlay';
+import PrivateRoute from './components/PrivateRoute';
+import DefaultLayout from './layouts/DefaultLayout/index';
+import Home from './pages/Home';
+import { allTopPrivateRoutes, allTopPublicRoutes } from './routes';
+import IRoute from './typings/route';
 
 function App() {
-  const [showOverlay, setShowOverlay] = useState(false);
   return (
     <Router>
-      <div className='App'>
-        <button onClick={() => setShowOverlay(!showOverlay)}>
-          Toggle overlay
-        </button>
-        <Overlay visible={showOverlay}>
-          <div className='w-10 h-10 bg-white rounded-sm'>Hello world</div>
-        </Overlay>
-      </div>
+      <Routes>
+        <Route path='/' element={<DefaultLayout />}>
+          <Route index element={<Home />} />
+        </Route>
+        {renderRoutes(allTopPublicRoutes)}
+        {renderRoutes(allTopPrivateRoutes)}
+        <Route path='/*' element={<div>404</div>} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
-``;
+
+function renderRoutes(routes: IRoute[]) {
+  return routes.map((route, index) => {
+    const { Component, Layout, children, path, isIndex, isPrivate } = route;
+    const Element = Layout ? Layout : Component;
+    const Wrapper = isPrivate ? PrivateRoute : Fragment;
+
+    if (children) {
+      return (
+        <Route
+          key={index}
+          path={path}
+          element={
+            <Wrapper>
+              <Element />
+            </Wrapper>
+          }
+        >
+          {renderRoutes(children)}
+        </Route>
+      );
+    }
+
+    return (
+      <Route
+        index={isIndex}
+        key={index}
+        path={path}
+        element={
+          <Wrapper>
+            <Element />
+          </Wrapper>
+        }
+      />
+    );
+  });
+}

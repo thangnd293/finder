@@ -1,32 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-type HotKey = [keys: string[], callback: () => void];
+const TIME_TO_CLEAR_KEYS = 1000;
+type HotKey = [keys: string, callback: () => void];
 
-const useHotKeys = <T extends HTMLElement = HTMLDivElement>(
-  hotkeys: HotKey[],
-): ((node: T) => void) => {
-  const [ref, setRef] = useState<T | null>(null);
+const useHotKeys = (hotkeys: HotKey[]) => {
+  const keysEntered = useRef<string[]>([]);
+
   useEffect(() => {
-    const el = ref;
-
-    if (!el) return;
-
     const keydownHandler = (e: KeyboardEvent) => {
-      console.log(e);
+      keysEntered.current.push(e.key);
 
-      //   hotkeys.forEach(([keys, callback]) => {
-      //     if (keys.includes(e.key)) {
-      //       callback();
-      //     }
-      //   });
+      hotkeys.forEach(([keys, callback]) => {
+        console.log(keysEntered.current);
+
+        if (keysEntered.current.join('+').includes(keys)) {
+          callback();
+          keysEntered.current = [];
+        }
+      });
     };
 
-    el.addEventListener('keydown', keydownHandler);
+    window.addEventListener('keydown', keydownHandler);
+    return () => window.removeEventListener('keydown', keydownHandler);
+  }, [hotkeys]);
 
-    return () => el.removeEventListener('keydown', keydownHandler);
-  }, [ref, hotkeys]);
+  useEffect(() => {
+    function clearKeys() {
+      keysEntered.current = [];
+    }
 
-  return setRef;
+    const timerId = setInterval(clearKeys, TIME_TO_CLEAR_KEYS);
+
+    return () => clearInterval(timerId);
+  }, []);
 };
 
 export default useHotKeys;

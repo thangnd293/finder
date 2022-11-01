@@ -1,13 +1,14 @@
+@import url('http://fonts.cdnfonts.com/css/proxima-nova-2');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.overlay {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 100;
+body {
+  font-family: 'Proxima Nova', sans-serif;
+  line-height: 1.3125;
+}
+
+button {
+  border: none;
 }
