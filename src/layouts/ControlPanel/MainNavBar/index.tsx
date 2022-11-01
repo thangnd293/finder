@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ControlPanelTabs, useControlPanelContext } from '..';
 
 import ExploreIcon from '@/assets/svgs/ExploreIcon';
 import ShieldIcon from '@/assets/svgs/ShieldIcon';
+import Modal from '@/components/Modal';
+import Overlay from '@/components/Overlay';
 
 interface Props {}
 
 const MainNavBar = ({}: Props) => {
   const { currentTab, setCurrentTab } = useControlPanelContext();
+  const [showModal, setShowModal] = useState(false);
 
   const path = ControlPanelTabs[currentTab.prev].path;
 
@@ -43,10 +47,16 @@ const MainNavBar = ({}: Props) => {
         <button className='flex items-center justify-center w-4 h-4 mx-0.8 rounded-full bg-overlay-default text-white hover:bg-background-icon-button-overlay hover:text-primary'>
           <ExploreIcon />
         </button>
-        <button className='flex items-center justify-center w-4 h-4 ml-0.8 mr-0.4 rounded-full bg-overlay-default text-white hover:bg-background-icon-button-overlay hover:text-primary'>
+        <button
+          onClick={() => setShowModal(!showModal)}
+          className='flex items-center justify-center w-4 h-4 ml-0.8 mr-0.4 rounded-full bg-overlay-default text-white hover:bg-background-icon-button-overlay hover:text-primary'
+        >
           <ShieldIcon />
         </button>
       </div>
+      <Modal visible={showModal} onClose={() => setShowModal(false)}>
+        <div className='w-10 h-10 bg-base text-white'>Hello world</div>
+      </Modal>
     </>
   );
 };

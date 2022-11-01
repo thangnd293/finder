@@ -116,11 +116,8 @@ const borderRadius = {
 };
 
 const screens = {
-  xs: '640px',
-  sm: '710px',
-  md: '800px',
-  lg: '980px',
-  xl: '1024px',
+  md: '896px',
+  lg: '1024px',
 };
 
 module.exports = {

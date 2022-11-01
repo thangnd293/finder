@@ -7,7 +7,10 @@ import MainNavBar from './MainNavBar';
 
 import { PATH } from '@/common/constants/route';
 
-const ControlPanel = () => {
+interface Props {
+  className?: string;
+}
+const ControlPanel = ({ className }: Props) => {
   const { pathname } = useLocation();
 
   const [currentTab, setCurrentTab] = useState(() => {
@@ -40,7 +43,7 @@ const ControlPanel = () => {
 
   return (
     <ControlPanelContext.Provider value={value}>
-      <aside className='basis-1/4 min-w-control-panel-min max-w-control-panel-max flex flex-col'>
+      <aside className={className}>
         <nav className='h-control-panel-height flex items-center justify-between bg-gradient-to-r from-gradient-start to-gradient-end'>
           <MainNavBar />
         </nav>
