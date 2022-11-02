@@ -16,7 +16,10 @@ const Home = ({}: Props) => {
   if (isMobile) return <HomeMobile />;
 
   return (
-    <div className='w-full h-full flex items-center justify-center overflow-hidden'>
+    <div
+      id='card-box'
+      className='w-full h-full flex items-center justify-center overflow-hidden'
+    >
       <Card />
     </div>
   );
