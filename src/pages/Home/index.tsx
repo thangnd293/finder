@@ -1,6 +1,6 @@
 import HomeMobile from './HomeMobile';
 
-import Card from '@/components/Card/index';
+import CardBox from '@/components/CardBox';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 
@@ -20,7 +20,7 @@ const Home = ({}: Props) => {
       id='card-box'
       className='w-full h-full flex items-center justify-center overflow-hidden'
     >
-      <Card />
+      <CardBox />
     </div>
   );
 };
