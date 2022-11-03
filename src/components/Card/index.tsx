@@ -22,7 +22,7 @@ const detectDirectMove = (x: number, y: Number) => {
   if (y > 0) return Direction.Bottom;
 };
 
-const DURATION = 300;
+const DURATION = 500;
 const INERTIA = -2;
 
 interface Props {}
@@ -35,12 +35,13 @@ const Card = ({}: Props) => {
     const el = ref.current;
     if (!el) return;
 
-    const { x, y } = el.getBoundingClientRect();
     let translateX = 0;
     let translateY = 0;
     let rotate = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
+      const { x, y } = el.getBoundingClientRect();
+
       translateX = e.clientX - x - position.current.x;
       translateY = e.clientY - y - position.current.y;
       const xMulti = translateX * 0.01;
@@ -70,29 +71,40 @@ const Card = ({}: Props) => {
       const elRect = el.getBoundingClientRect();
       const cardBoxRect = cardBox.getBoundingClientRect();
       if (isLike) {
-        console.log(cardBox.clientWidth);
-        console.log(cardBoxRect.right);
-        console.log(elRect);
-
-        console.log(
-          'test',
-          cardBoxRect.right - elRect.left + position.current.x,
-        );
-
         const spaceToRight =
-          (cardBoxRect.right - elRect.left + position.current.x) * Math.sqrt(2);
-        console.log('spaceToRight', spaceToRight);
+          (cardBoxRect.right - elRect.left + position.current.x) * 2;
 
         el.style.transition = `transform ${DURATION}ms ease-in-out`;
         // el.style.transform = `translateX(${spaceToRight}px`;
-        el.style.transform = `translate(${spaceToRight}px, ${spaceToRight}px) rotate(${rotate}deg)`;
+        el.style.transform = `translate(${spaceToRight}px, ${
+          translateY * 0.6
+        }px) rotate(10deg)`;
+
+        setTimeout(() => {
+          el.style.transition = `none`;
+          // el.style.transform = `translateX(${spaceToRight}px`;
+          el.style.transform = `translate(0px, 0px) rotate(0deg)`;
+        }, DURATION);
       } else if (isNope) {
-        console.log(el.getBoundingClientRect());
+        const spaceToLeft =
+          (elRect.right - cardBoxRect.left + position.current.x) * 2;
+
+        el.style.transition = `transform ${DURATION}ms ease-in-out`;
+        // el.style.transform = `translateX(${spaceToLeft}px`;
+        el.style.transform = `translate(${-spaceToLeft}px, ${
+          translateY * 0.6
+        }px) rotate(10deg)`;
+
+        setTimeout(() => {
+          el.style.transition = `none`;
+          // el.style.transform = `translateX(${spaceToLeft}px`;
+          el.style.transform = `translate(0px, 0px) rotate(0deg)`;
+        }, DURATION);
       } else {
         // Reduce the speed of the card
         const translateXStepDown = translateX / (DURATION / 10);
         const translateYStepDown = translateY / (DURATION / 10);
-        const rotateStepDown = rotate / (DURATION / 10);
+        const rotateStepDown = rotate / DURATION;
 
         el.style.transition = `transform ${DURATION}ms ease-in-out`;
         el.style.transform = `translate(${translateXStepDown * INERTIA}px, ${
@@ -104,7 +116,7 @@ const Card = ({}: Props) => {
           el.style.transform = `translate(0px, 0px) rotate(0deg)`;
         }, DURATION);
       }
-
+      position.current = { x: 0, y: 0 };
       translateX = 0;
       translateY = 0;
     };
