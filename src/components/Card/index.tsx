@@ -84,9 +84,9 @@ const Card = ({ imgUrl, className, style, onLike, onNope }: Props) => {
       const isNope = el.clientWidth / -2 > translateX;
 
       if (isLike) {
-        handleClickLike(position.current);
+        handleClickLike();
       } else if (isNope) {
-        handleClickNope(position.current);
+        handleClickNope();
       } else {
         // Reduce the speed of the card
         const translateXStepDown = translateX / (DURATION / 10);
@@ -112,16 +112,11 @@ const Card = ({ imgUrl, className, style, onLike, onNope }: Props) => {
     };
   }, []);
 
-  const handleClickLike = (
-    currentPosition: Point = {
-      x: 0,
-      y: 0,
-    },
-  ) => {
+  const handleClickLike = () => {
     const el = ref.current;
     if (!el) return;
     const cardBox = document.getElementById('card-box') as HTMLElement;
-    swipeToRight(el, cardBox, currentPosition);
+    swipeToRight(el, cardBox);
     if (onLike) {
       setTimeout(() => {
         onLike();
@@ -129,16 +124,11 @@ const Card = ({ imgUrl, className, style, onLike, onNope }: Props) => {
     }
   };
 
-  const handleClickNope = (
-    currentPosition: Point = {
-      x: 0,
-      y: 0,
-    },
-  ) => {
+  const handleClickNope = (translateX: number = 0) => {
     const el = ref.current;
     if (!el) return;
     const cardBox = document.getElementById('card-box') as HTMLElement;
-    swipeToLeft(el, cardBox, currentPosition);
+    swipeToLeft(el, cardBox);
     if (onNope) {
       setTimeout(() => {
         onNope();
@@ -156,7 +146,7 @@ const Card = ({ imgUrl, className, style, onLike, onNope }: Props) => {
           backgroundImage: `url(${imgUrl})`,
         }}
       >
-        Card
+        <div className='bg-black w-1/2 h-1/2'></div>
       </div>
       <div className='flex items-center justify-around absolute bottom-0 w-full h-6 bg-base'>
         <button
@@ -183,15 +173,13 @@ const Card = ({ imgUrl, className, style, onLike, onNope }: Props) => {
 
 export default Card;
 
-const swipeToRight = (
-  el: HTMLElement,
-  parentEl: HTMLElement,
-  currentPosition: Point,
-  translateY: number = 0,
-) => {
+const swipeToRight = (el: HTMLElement, parentEl: HTMLElement) => {
   const elRect = el.getBoundingClientRect();
   const parentRect = parentEl.getBoundingClientRect();
-  const spaceToRight = (elRect.right - parentRect.left + currentPosition.x) * 2;
+  const { m41: translateX, m42: translateY } = new WebKitCSSMatrix(
+    el.style.transform,
+  );
+  const spaceToRight = (elRect.right - parentRect.left + translateY) * 2;
 
   el.style.transition = `transform ${DURATION}ms ease-in-out`;
   el.style.transform = `translate(${spaceToRight}px, ${
@@ -204,18 +192,19 @@ const swipeToRight = (
   }, DURATION);
 };
 
-const swipeToLeft = (
-  el: HTMLElement,
-  parentEl: HTMLElement,
-  currentPosition: Point,
-  translateY: number = 0,
-) => {
+const swipeToLeft = (el: HTMLElement, parentEl: HTMLElement) => {
   const elRect = el.getBoundingClientRect();
+  const { m41: translateX, m42: translateY } = new WebKitCSSMatrix(
+    el.style.transform,
+  );
+
   const parentRect = parentEl.getBoundingClientRect();
-  const spaceToLeft = (elRect.right - parentRect.left + currentPosition.x) * 2;
+  const spaceToLeft =
+    (translateX - (elRect.right - parentRect.left)) * Math.sqrt(2);
+  console.log(elRect.right, parentRect.left, translateX, spaceToLeft);
 
   el.style.transition = `transform ${DURATION}ms ease-in-out`;
-  el.style.transform = `translate(${-spaceToLeft}px, ${
+  el.style.transform = `translate(${spaceToLeft}px, ${
     translateY * 0.6
   }px) rotate(-10deg)`;
 

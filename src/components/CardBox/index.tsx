@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import Card from '../Card';
 
 interface Props {}
-const ARRAY = Array.from(
-  { length: 10 },
-  (_, i) => `https://loremflickr.com/375/667/dog?random=${i}`,
-);
+const ARRAY = Array.from({ length: 10 }, (_, i) => ({
+  key: i,
+  url: `https://loremflickr.com/375/667/dog?random=${i}`,
+}));
 const CardBox = ({}: Props) => {
   const count = useRef(0);
   const [listImgs, setListImgs] = useState(() => {
@@ -34,8 +34,8 @@ const CardBox = ({}: Props) => {
           style={{
             zIndex: 4 - index,
           }}
-          key={index}
-          imgUrl={img}
+          key={img.key}
+          imgUrl={img.url}
           onLike={() => {
             onLike();
           }}
