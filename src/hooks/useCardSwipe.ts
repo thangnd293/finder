@@ -29,8 +29,12 @@ const detectDirectMove = (x: number, y: Number) => {
 
 const DURATION = 500;
 const INERTIA = -2;
+type Callback = () => void;
 
-const useCardSwipe = <T extends HTMLElement = HTMLDivElement>() => {
+const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
+  onLike: Callback,
+  onNope: Callback,
+) => {
   const [el, setRef] = useState<T | null>(null);
   const position = useRef<Point>({ x: 0, y: 0 });
   const velocity = useRef<Point>({ x: 0, y: 0 });
@@ -80,8 +84,10 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>() => {
 
       if (isLike) {
         swipeToRight();
+        onLike();
       } else if (isNope) {
         swipeToLeft();
+        onNope();
       } else {
         // Reduce the speed of the card
         const translateXStepDown = translateX / (DURATION / 10);
@@ -105,7 +111,7 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>() => {
       el.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMoveUp);
     };
-  }, [el]);
+  }, [el, onLike, onNope]);
 
   const swipeToRight = useCallback(() => {
     if (!el) return;
@@ -134,7 +140,6 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>() => {
     const parentRect = parentEl.getBoundingClientRect();
     const spaceToLeft =
       (translateX - (elRect.right - parentRect.left)) * Math.sqrt(2);
-    console.log(elRect.right, parentRect.left, translateX, spaceToLeft);
 
     el.style.transition = `transform ${DURATION}ms ease-in-out`;
     el.style.transform = `translate(${spaceToLeft}px, ${

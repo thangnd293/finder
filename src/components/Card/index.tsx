@@ -1,23 +1,42 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import React from 'react';
 import { CSSProperties } from 'styled-components';
 
 import useCardSwipe from '@/hooks/useCardSwipe';
 
 interface Props {
+  id: number;
   imgUrl: string;
-  onLike?: () => void;
-  onNope?: () => void;
+  onLike: () => void;
+  onNope: () => void;
   className?: string;
   style?: CSSProperties;
-  active?: boolean;
 }
 
-const Card = ({ imgUrl, style, onLike, onNope, active }: Props) => {
-  const { ref, swipeToRight } = useCardSwipe();
-  useEffect(() => {
-    onLike?.();
+const Card = ({ id, imgUrl, style, onNope, onLike }: Props) => {
+  const { ref, swipeToRight, swipeToLeft } = useCardSwipe(onLike, onNope);
+
+  const handleLike = useCallback(() => {
     swipeToRight();
-  }, [active, onLike]);
+    onLike();
+  }, [onLike, swipeToRight]);
+
+  const handleNope = useCallback(() => {
+    swipeToLeft();
+    onNope();
+  }, [onNope, swipeToLeft]);
+
+  useEffect(() => {
+    console.count(`run-${id}`);
+
+    window.addEventListener(`onLike${id}`, handleLike);
+    window.addEventListener(`onNope${id}`, handleNope);
+
+    return () => {
+      window.removeEventListener(`onLike${id}`, handleLike);
+      window.removeEventListener(`onNope${id}`, handleNope);
+    };
+  }, [handleLike, handleNope]);
 
   return (
     <div className={`w-full h-full absolute`} style={style} ref={ref}>
@@ -33,4 +52,4 @@ const Card = ({ imgUrl, style, onLike, onNope, active }: Props) => {
   );
 };
 
-export default Card;
+export default React.memo(Card);
