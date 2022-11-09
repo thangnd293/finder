@@ -9,12 +9,16 @@ interface Props {
   imgUrl: string;
   onLike: () => void;
   onNope: () => void;
+  onBack: () => void;
   className?: string;
   style?: CSSProperties;
 }
 
-const Card = ({ id, imgUrl, style, onNope, onLike }: Props) => {
-  const { ref, swipeToRight, swipeToLeft } = useCardSwipe(onLike, onNope);
+const Card = ({ id, imgUrl, style, onNope, onLike, onBack }: Props) => {
+  const { ref, swipeToRight, swipeToLeft, swipeBack } = useCardSwipe(
+    onLike,
+    onNope,
+  );
 
   const handleLike = useCallback(() => {
     swipeToRight();
@@ -26,17 +30,22 @@ const Card = ({ id, imgUrl, style, onNope, onLike }: Props) => {
     onNope();
   }, [onNope, swipeToLeft]);
 
-  useEffect(() => {
-    console.count(`run-${id}`);
+  const handleBack = useCallback(() => {
+    swipeBack();
+    onBack();
+  }, [onBack, swipeBack]);
 
+  useEffect(() => {
     window.addEventListener(`onLike${id}`, handleLike);
     window.addEventListener(`onNope${id}`, handleNope);
+    window.addEventListener(`onBack${id}`, handleBack);
 
     return () => {
       window.removeEventListener(`onLike${id}`, handleLike);
       window.removeEventListener(`onNope${id}`, handleNope);
+      window.removeEventListener(`onBack${id}`, handleBack);
     };
-  }, [handleLike, handleNope]);
+  }, [handleLike, handleNope, handleBack]);
 
   return (
     <div className={`w-full h-full absolute`} style={style} ref={ref}>

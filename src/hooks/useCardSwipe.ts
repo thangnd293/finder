@@ -147,7 +147,13 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
     }px) rotate(-10deg)`;
   }, [el]);
 
-  return { ref: setRef, swipeToRight, swipeToLeft };
+  const swipeBack = useCallback(() => {
+    if (!el) return;
+    el.style.transition = `transform ${DURATION}ms ease-in-out`;
+    el.style.transform = 'translate(0, 0) rotate(0)';
+  }, [el]);
+
+  return { ref: setRef, swipeToRight, swipeToLeft, swipeBack };
 };
 
 export default useCardSwipe;
