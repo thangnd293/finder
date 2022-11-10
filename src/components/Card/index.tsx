@@ -2,11 +2,13 @@ import { useCallback, useEffect } from 'react';
 import React from 'react';
 import { CSSProperties } from 'styled-components';
 
+import { ICard } from '../CardBox';
+import Carousel from '../Carousel';
+
 import useCardSwipe from '@/hooks/useCardSwipe';
 
 interface Props {
-  id: number;
-  imgUrl: string;
+  card: ICard;
   onLike: () => void;
   onNope: () => void;
   onBack: () => void;
@@ -14,7 +16,7 @@ interface Props {
   style?: CSSProperties;
 }
 
-const Card = ({ id, imgUrl, style, onNope, onLike, onBack }: Props) => {
+const Card = ({ card: { id, url }, style, onNope, onLike, onBack }: Props) => {
   const { ref, swipeToRight, swipeToLeft, swipeBack } = useCardSwipe(
     onLike,
     onNope,
@@ -48,15 +50,12 @@ const Card = ({ id, imgUrl, style, onNope, onLike, onBack }: Props) => {
   }, [handleLike, handleNope, handleBack]);
 
   return (
-    <div className={`w-full h-full absolute`} style={style} ref={ref}>
-      <div className='w-full h-full object-cover object-center rounded-8 flex items-center justify-center'>
-        <img
-          className='w-full h-full object-cover object-center overflow-hidden'
-          src={imgUrl}
-          alt=''
-          draggable={false}
-        />
-      </div>
+    <div
+      className={`w-full h-full absolute overflow-hidden`}
+      style={style}
+      ref={ref}
+    >
+      <Carousel />
     </div>
   );
 };

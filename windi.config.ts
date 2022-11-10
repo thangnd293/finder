@@ -1,8 +1,10 @@
-/** @type {import('tailwindcss').Config} */
+import { defineConfig } from 'windicss/helpers';
+import formsPlugin from 'windicss/plugin/forms';
+
 const plugin = require('tailwindcss/plugin');
 
 const renderSpacings = () => {
-  const spacing = {
+  const spacing: any = {
     full: '100%',
     fit: 'fit-content',
     3.6: '36px',
@@ -121,8 +123,9 @@ const screens = {
   lg: '1024px',
 };
 
-module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+export default defineConfig({
+  darkMode: 'class',
+  safelist: 'p-3 p-4 p-5',
   theme: {
     spacing,
     colors,
@@ -139,8 +142,9 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function ({ addVariant }) {
-      addVariant('not-last', '&:not(:last-child)');
-    }),
+    formsPlugin,
+    // plugin(function ({ addVariant }: unknown) {
+    //   addVariant('not-last', '&:not(:last-child)');
+    // }),
   ],
-};
+});

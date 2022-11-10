@@ -28,6 +28,6 @@
       "@/typings/*": ["src/typings/*"]
     }
   },
-  "include": ["src", "**/*.ts", "**/*.tsx"],
+  "include": ["src", "**/*.ts", "**/*.tsx", "windi.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

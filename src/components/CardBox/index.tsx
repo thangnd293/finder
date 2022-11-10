@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Card from '../Card';
 
-interface Card {
+export interface ICard {
   id: number;
   url: string;
 }
-const ARRAY: Card[] = [
+const ARRAY: ICard[] = [
   {
     id: 1,
     url: 'https://p6-pc-sign.douyinpic.com/tos-cn-p-0015/fe83c1a2671741b6b0bb9af576e76d4a_1667045971~tplv-dy-cropcenter:323:430.jpeg?biz_tag=pcweb_cover&from=3213915784&s=PackSourceEnum_PUBLISH&sc=cover&se=true&sh=323_430&x-expires=1983016800&x-signature=cIUGQEWcqwusUL8VjvjWdyVn6yU%3D',
@@ -52,7 +52,7 @@ const CardBox = ({}: Props) => {
   const [currentCard, setCurrentCard] = useState(
     listImgs[listImgs.length - 1].id,
   );
-  const [prevCard, setPrevCard] = useState<Card | null>(null);
+  const [prevCard, setPrevCard] = useState<ICard | null>(null);
 
   useEffect(() => {
     console.log('data', data);
@@ -65,20 +65,12 @@ const CardBox = ({}: Props) => {
       );
     }
   }, [data]);
-  useEffect(() => {
-    console.log('currentCard', currentCard);
-  }, [currentCard]);
 
-  useEffect(() => {
-    console.log('listImgs', listImgs);
-  }, [listImgs]);
-
-  const onLike = useCallback(() => {
+  const updateListImgs = useCallback(() => {
     setListImgs(prev => {
       const newList = [...prev];
       if (prev.length < NUMBER_OF_CARDS) {
         newList.unshift(data[0]);
-        console.log('prev.length', prev.length);
       } else {
         if (prevCard) {
           newList.pop();
@@ -92,22 +84,13 @@ const CardBox = ({}: Props) => {
     });
   }, [data, prevCard]);
 
-  const onNope = useCallback(() => {
-    setListImgs(prev => {
-      const newList = [...prev];
-      if (prev.length <= NUMBER_OF_CARDS) {
-        newList.unshift(data[0]);
-      } else {
-        newList.pop();
-        newList.unshift(data[0]);
-      }
+  const onLike = useCallback(() => {
+    updateListImgs();
+  }, [updateListImgs]);
 
-      setData(prev => prev.slice(1));
-      setCurrentCard(newList[newList.length - 2].id);
-      setPrevCard(newList[newList.length - 1]);
-      return newList;
-    });
-  }, [data]);
+  const onNope = useCallback(() => {
+    updateListImgs();
+  }, [updateListImgs]);
 
   const onBack = useCallback(() => {
     if (prevCard) {
@@ -117,17 +100,12 @@ const CardBox = ({}: Props) => {
     }
   }, [data, prevCard, listImgs]);
 
-  useEffect(() => {
-    console.log('prevCard', prevCard);
-  }, [prevCard]);
-
   return (
     <div className='flex flex-col select-none items-center justify-center w-full h-full bg-primary max-h-[667px] max-w-[375px] rounded-8 relative'>
-      {listImgs.map(img => (
+      {listImgs.map(item => (
         <Card
-          key={img.id}
-          id={img.id}
-          imgUrl={img.url}
+          key={item.id}
+          card={item}
           onLike={onLike}
           onNope={onNope}
           onBack={onBack}
