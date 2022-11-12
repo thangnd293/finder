@@ -6,10 +6,6 @@ const Logo = (props: IconProps) => (
     height={128}
     xmlns='http://www.w3.org/2000/svg'
     viewBox='174.009 11 151.981 128'
-    style={{
-      background: '0 0',
-    }}
-    preserveAspectRatio='xMidYMid'
     {...props}
   >
     <defs>

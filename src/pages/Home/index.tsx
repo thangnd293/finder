@@ -1,6 +1,6 @@
 import HomeMobile from './HomeMobile';
 
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/CardController';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 

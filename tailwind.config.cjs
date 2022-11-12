@@ -37,6 +37,7 @@ const colors = {
   'primary-a11y': '#d6002f',
 
   base: '#21262e',
+  'text-secondary': '#505965',
 
   white: '#ffffff',
 
@@ -87,6 +88,9 @@ const colors = {
   'gray-40': '#939ba7',
   'gray-50': '#7c8591',
   'gray-60': '#656e7b',
+  'indicator-green': '#2df187',
+  like: '#129e68',
+  rewind: '#cd7105',
 
   'overlay-default': 'rgba(0, 0, 0, 0.56)',
   'background-icon-button-overlay': 'rgba(17, 20, 24, 0.8)',
@@ -100,6 +104,8 @@ const fontSize = {
   DEFAULT: '16px',
   14: '14px',
   18: '18px',
+  26: '26px',
+  32: '32px',
 };
 
 const spacing = renderSpacings();
@@ -107,6 +113,8 @@ const spacing = renderSpacings();
 const boxShadow = {
   xs: '0 5px 10px rgb(0 0 0 / 20%)',
   sm: '0 0 45px rgb(0 0 0 / 20%)',
+  md: 'rgba(101, 110, 123, 0.12) 0px 2px 6px 0px',
+  lg: 'rgba(0, 0, 0, 0.08) 0px 0px 8px 0px',
 };
 
 const borderRadius = {

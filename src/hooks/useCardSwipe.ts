@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import {
+  handleSwipeToLeftOut,
+  handleSwipeToRightOut,
+} from '../common/functions/translateElement';
+
 enum Direction {
   Left = 'LEFT',
   Right = 'RIGHT',
@@ -29,19 +34,23 @@ const detectDirectMove = (x: number, y: Number) => {
 
 const DURATION = 500;
 const INERTIA = -2;
+
+type Status = 'idle' | 'like' | 'nope';
 type Callback = () => void;
 
 const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
   onLike: Callback,
   onNope: Callback,
 ) => {
+  const [isDisable, setDisable] = useState(false);
+  const [isDrag, setIsDrag] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
   const [el, setRef] = useState<T | null>(null);
   const position = useRef<Point>({ x: 0, y: 0 });
   const velocity = useRef<Point>({ x: 0, y: 0 });
 
   useEffect(() => {
-    if (!el) return;
-
+    if (!el || isDisable) return;
     let translateX = 0;
     let translateY = 0;
     let rotate = 0;
@@ -58,6 +67,18 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
       el.style.transition = 'none';
       el.style.transformOrigin = 'center center';
       el.style.transform = `translate(${translateX}px, ${translateY}px) rotate(${rotate}deg)`;
+
+      if (translateX > el.clientWidth / 2) {
+        setStatus('like');
+      } else if (el.clientWidth / -2 > translateX) {
+        setStatus('nope');
+      } else {
+        setStatus('idle');
+      }
+
+      if (Math.abs(translateX) < 10 && Math.abs(translateY) < 10) {
+        setIsDrag(true);
+      }
     };
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -72,13 +93,13 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
 
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMoveUp);
+      setIsDrag(false);
     };
 
-    const handleMoveUp = (e: MouseEvent) => {
+    const handleMoveUp = () => {
       // Just run once to prevent multiple event listeners
       window.removeEventListener('mouseup', handleMoveUp);
       window.removeEventListener('mousemove', handleMouseMove);
-
       const isLike = translateX > el.clientWidth / 2;
       const isNope = el.clientWidth / -2 > translateX;
 
@@ -111,49 +132,40 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
       el.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMoveUp);
     };
-  }, [el, onLike, onNope]);
+  }, [el, onLike, onNope, isDisable]);
 
   const swipeToRight = useCallback(() => {
     if (!el) return;
+    setStatus('like');
+
     const parentEl = document.getElementById('card-box') as HTMLElement;
-
-    const elRect = el.getBoundingClientRect();
-    const parentRect = parentEl.getBoundingClientRect();
-    const { m42: translateY } = new WebKitCSSMatrix(el.style.transform);
-    const spaceToRight = (elRect.right - parentRect.left + translateY) * 2;
-
-    el.style.transition = `transform ${DURATION}ms ease-in-out`;
-    el.style.transform = `translate(${spaceToRight}px, ${
-      translateY * 0.6
-    }px) rotate(10deg)`;
+    handleSwipeToRightOut(el, parentEl, DURATION);
   }, [el]);
 
   const swipeToLeft = useCallback(() => {
-    if (!el) return;
+    if (!el || isDisable) return;
+    setStatus('nope');
+
     const parentEl = document.getElementById('card-box') as HTMLElement;
-
-    const elRect = el.getBoundingClientRect();
-    const { m41: translateX, m42: translateY } = new WebKitCSSMatrix(
-      el.style.transform,
-    );
-
-    const parentRect = parentEl.getBoundingClientRect();
-    const spaceToLeft =
-      (translateX - (elRect.right - parentRect.left)) * Math.sqrt(2);
-
-    el.style.transition = `transform ${DURATION}ms ease-in-out`;
-    el.style.transform = `translate(${spaceToLeft}px, ${
-      translateY * 0.6
-    }px) rotate(-10deg)`;
-  }, [el]);
+    handleSwipeToLeftOut(el, parentEl, DURATION);
+  }, [el, isDisable]);
 
   const swipeBack = useCallback(() => {
     if (!el) return;
+    setDisable(false);
     el.style.transition = `transform ${DURATION}ms ease-in-out`;
     el.style.transform = 'translate(0, 0) rotate(0)';
   }, [el]);
 
-  return { ref: setRef, swipeToRight, swipeToLeft, swipeBack };
+  return {
+    ref: setRef,
+    swipeToRight,
+    swipeToLeft,
+    swipeBack,
+    setDisable,
+    isDrag,
+    status,
+  };
 };
 
 export default useCardSwipe;

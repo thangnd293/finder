@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import { CSSProperties, useRef, useState } from 'react';
 
-import { ICard } from '../CardBox';
+import { ButtonNext, ButtonPrev } from '../Card/styles';
+import { ICard } from '../CardController';
+import Pagination from './Pagination';
+
+import ArrowLeftIcon from '@/assets/svgs/ArrowLeftIcon';
 
 const ARRAY: ICard[] = [
   {
@@ -39,36 +41,84 @@ const ARRAY: ICard[] = [
   },
 ];
 
-interface Props {}
+const TIME_ANIMATION = 100;
+interface Props {
+  isDrag: boolean;
+  flipLeft?: () => void;
+  flipRight?: () => void;
+  style?: CSSProperties;
+}
 
-const Carousel = ({}: Props) => {
+const translateLeft = (el: HTMLDivElement) => {
+  el.style.transform = `translateX(-10px)`;
+  el.style.transition = `transform ${TIME_ANIMATION}ms ease-in-out`;
+  setTimeout(() => {
+    el.style.transform = `translateX(${0}%)`;
+    el.style.transition = `none`;
+  }, TIME_ANIMATION);
+};
+
+const translateRight = (el: HTMLDivElement) => {
+  el.style.transform = `translateX(10px)`;
+  el.style.transition = `transform ${TIME_ANIMATION}ms ease-in-out`;
+  setTimeout(() => {
+    el.style.transform = `translateX(${0}%)`;
+    el.style.transition = `none`;
+  }, TIME_ANIMATION);
+};
+
+const Carousel = ({ isDrag, flipLeft, flipRight, style }: Props) => {
+  const ref = useRef<HTMLDivElement>(null);
+
   const [currentPage, setCurrentPage] = useState(0);
-
-  useEffect(() => {
-    console.log('currentSlide', currentPage);
-  }, [currentPage]);
+  const FIRST_PAGE = 0;
+  const LAST_PAGE = ARRAY.length - 1;
 
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleNext = () => {
+    if (isDrag) return;
+    if (currentPage === LAST_PAGE) {
+      if (flipRight) return flipRight();
+
+      const el = ref.current;
+      if (!el) return;
+      return translateLeft(el);
+    }
+
+    setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (isDrag) return;
+    if (currentPage === FIRST_PAGE) {
+      if (flipLeft) return flipLeft();
+
+      const el = ref.current;
+      if (!el) return;
+      return translateRight(el);
+    }
+
+    setCurrentPage(prev => prev - 1);
+  };
+
   return (
-    <div className='h-full w-full relative'>
+    <div ref={ref} className='h-full w-full relative group' style={style}>
       <Pagination
         numberOfPages={ARRAY.length}
         currentPage={currentPage}
         onChange={onPageChange}
       />
       <div
-        className='h-full w-full flex'
+        className='h-full w-full flex absolute'
         style={{
           transform: `translateX(-${currentPage * 100}%)`,
         }}
       >
         {ARRAY.map(item => (
-          <div
-            key={item.id}
-            className='min-w-full w-full h-full rounded-8 overflow-hidden'
-          >
+          <div key={item.id} className='min-w-full w-full h-full'>
             <img
               className='w-full h-full object-cover object-center'
               key={item.id}
@@ -79,50 +129,14 @@ const Carousel = ({}: Props) => {
           </div>
         ))}
       </div>
-      <button className='absolute top-1/2 -translate-y-1/2 left-0'>prev</button>
-      <button className='absolute top-1/2 -translate-y-1/2 right-0'>
-        next
-      </button>
+      <ButtonPrev onClick={handlePrev}>
+        {currentPage !== FIRST_PAGE && <ArrowLeftIcon />}
+      </ButtonPrev>
+      <ButtonNext onClick={handleNext}>
+        {currentPage !== LAST_PAGE && <ArrowLeftIcon />}
+      </ButtonNext>
     </div>
   );
 };
 
 export default Carousel;
-
-// const Button = styled.button`
-//   /* ${tw`h-0.5 w-full rounded-full py-0.5 bg-background-tapping`} */
-// `;
-interface PaginationProps {
-  numberOfPages: number;
-  currentPage: number;
-  onChange: (page: number) => void;
-}
-const Pagination = ({
-  numberOfPages,
-  currentPage,
-  onChange,
-}: PaginationProps) => {
-  const handleChange = (page: number) => {
-    onChange(page);
-  };
-
-  return (
-    <div className='absolute w-full p-0.8 flex gap-0.4 rounded-8 overflow-hidden z-10'>
-      {Array.from({ length: numberOfPages }).map((_, index) => {
-        console.log(index, currentPage, 'test');
-        return (
-          <button
-            key={index}
-            className={`h-0.6 w-full rounded-full py-0.4 ${
-              index === currentPage ? 'bg-white' : 'bg-background-tapping'
-            }`}
-            // active={currentPage === index}
-            onClick={() => {
-              handleChange(index);
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-};
