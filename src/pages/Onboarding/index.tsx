@@ -1,13 +1,18 @@
 import { Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 
+import HobbiesDialog from './Dialogs/HobbiesDialog';
 import Header from './Header';
 
 import EmailIcon from '@/assets/svgs/EmailIcon';
 import UserIcon from '@/assets/svgs/UserIcon';
+import Button from '@/components/Button';
 import CheckBox from '@/components/CheckBox';
 import DayInput from '@/components/DayInput';
 import Input from '@/components/Input';
+import PersonalityType from '@/components/PersonalityType';
 import RadioGroup from '@/components/RadioGroup';
 import Space from '@/components/Space';
 
@@ -55,6 +60,12 @@ const FIND_GENDER = [
 interface Props {}
 
 const Onboarding = ({}: Props) => {
+  const [hobbies, setHobbies] = useState<string[]>([]);
+
+  const onHobbiesChange = (values: string[]) => {
+    setHobbies(values);
+  };
+
   const initialValues: FormData = {
     name: '',
     birthDay: '',
@@ -68,14 +79,16 @@ const Onboarding = ({}: Props) => {
 
   const validationSchema = Yup.object().shape<{ [key in keyof FormData]: any }>(
     {
-      name: Yup.string().required('Name is required'),
+      name: Yup.string().required('Tên phải chứa từ 1 đến 22 ký tự.'),
       birthDay: Yup.string().required('Vui lòng nhập ngày hợp lệ.'),
-      gender: Yup.string().required('Gender is required'),
+      gender: Yup.string().required('Vui lòng chọn giới tính của bạn.'),
       showGender: Yup.boolean(),
-      findGender: Yup.string().required(''),
-      email: Yup.string().required('Vui lòng nhập email hợp lệ.'),
-      //   .email('Email is invalid')
-      //   .required('Email is required'),
+      findGender: Yup.string().required(
+        'Vui lòng chọn giới tính bạn muốn tìm kiếm.',
+      ),
+      email: Yup.string()
+        .email('Vui lòng nhập email hợp lệ.')
+        .required('Vui lòng nhập email hợp lệ.'),
       // hobbies: Yup.array().required('Hobbies are required'),
       // images: Yup.array().required('Images are required'),
     },
@@ -137,7 +150,36 @@ const Onboarding = ({}: Props) => {
                   />
                 </div>
               </div>
-              <button type='submit'>submit</button>
+              <Space h={25} />
+              <div className='flex items-center justify-center'>
+                <hr className='w-20 border-gray-20' />
+                <h2 className='text-20 font-bold px-7'>Tùy chọn</h2>
+                <hr className='w-20 border-gray-20' />
+              </div>
+              <HobbiesDialog values={hobbies} onChangeValue={onHobbiesChange} />
+              <Space h={20} />
+              <div className='flex wrap gap-0.4'>
+                {hobbies.map((hobbit, index) => (
+                  <PersonalityType key={index} text={hobbit} />
+                ))}
+              </div>
+              <Space h={40} />
+              <div className='w-fit mx-auto'>
+                <Button
+                  className='uppercase'
+                  type='submit'
+                  label={'Tiếp tục'}
+                />
+              </div>
+              <Space h={55} />
+              <div className='text-center'>
+                <Link to={''}>
+                  <a className='text-16 text-text-secondary active:underline decoration-2 hover:text-base  font-semibold uppercase'>
+                    Đã có tài khoản? Đăng nhập.
+                  </a>
+                </Link>
+              </div>
+              <Space h={90} />
             </form>
           )}
         </Formik>

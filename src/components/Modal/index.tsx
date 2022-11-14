@@ -9,7 +9,7 @@ interface Props {
 const Modal = ({ visible, children, onClose }: Props) => {
   return (
     <Overlay visible={visible} onClose={onClose}>
-      <div className='p-2 rounded-4 bg-white'>{children}</div>
+      <div className='p-2 rounded-8 bg-white'>{children}</div>
     </Overlay>
   );
 };
