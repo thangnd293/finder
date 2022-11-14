@@ -143,12 +143,12 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
   }, [el]);
 
   const swipeToLeft = useCallback(() => {
-    if (!el || isDisable) return;
+    if (!el) return;
     setStatus('nope');
 
     const parentEl = document.getElementById('card-box') as HTMLElement;
     handleSwipeToLeftOut(el, parentEl, DURATION);
-  }, [el, isDisable]);
+  }, [el]);
 
   const swipeBack = useCallback(() => {
     if (!el) return;

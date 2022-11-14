@@ -38,7 +38,7 @@ const colors = {
 
   base: '#21262e',
   'text-secondary': '#505965',
-
+  'text-error': '#c62c1e',
   white: '#ffffff',
 
   black: '#000000',
@@ -103,6 +103,7 @@ const colors = {
 const fontSize = {
   DEFAULT: '16px',
   14: '14px',
+  16: '16px',
   18: '18px',
   26: '26px',
   32: '32px',
@@ -119,6 +120,7 @@ const boxShadow = {
 
 const borderRadius = {
   DEFAULT: '4px',
+  2: '2px',
   4: '4px',
   8: '8px',
   full: '9999px',

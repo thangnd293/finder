@@ -1,9 +1,11 @@
 import { Fragment } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
+import { PATH } from './common/constants/route';
 import PrivateRoute from './components/PrivateRoute';
 import DefaultLayout from './layouts/DefaultLayout/index';
 import Home from './pages/Home';
+import Onboarding from './pages/Onboarding';
 import { allTopPrivateRoutes, allTopPublicRoutes } from './routes';
 import IRoute from './typings/route';
 
@@ -16,6 +18,7 @@ function App() {
         </Route>
         {renderRoutes(allTopPublicRoutes)}
         {renderRoutes(allTopPrivateRoutes)}
+        <Route path={PATH.APP.ONBOARDING.SELF} element={<Onboarding />} />
         <Route path='/*' element={<div>404</div>} />
       </Routes>
     </Router>

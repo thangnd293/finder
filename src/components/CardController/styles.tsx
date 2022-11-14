@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import tw, { TwStyle } from 'twin.macro';
 
 export const CardControllerWrapper = styled.div`
-  ${tw`flex flex-col select-none justify-start w-full h-full relative`}
+  ${tw`flex flex-col select-none justify-start w-full h-full relative rounded-8`}
 `;
 
 export const ActionWrapper = styled.div<{ solid?: boolean }>`

@@ -21,6 +21,9 @@ export const PATH = {
       SELF: '/app/messages',
       CHAT: '/app/messages/:chatId',
     },
+    ONBOARDING: {
+      SELF: '/app/onboarding',
+    },
   },
   AUTH: {
     LOGIN: '/auth/login',
