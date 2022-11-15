@@ -2,15 +2,7 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 
 export const CardContainer = styled.div`
-  ${tw`w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 bg-black rounded-8 overflow-hidden`}
-
-  & {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  ${tw`w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 bg-black rounded-8 overflow-hidden scroll-hidden`}
 `;
 
 const ButtonBase = styled.button`

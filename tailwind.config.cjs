@@ -105,6 +105,7 @@ const fontSize = {
   14: '14px',
   16: '16px',
   18: '18px',
+  20: '20px',
   26: '26px',
   32: '32px',
 };
@@ -151,6 +152,17 @@ module.exports = {
   plugins: [
     plugin(function ({ addVariant }) {
       addVariant('not-last', '&:not(:last-child)');
+    }),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.scroll-hidden': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
+      });
     }),
   ],
 };
