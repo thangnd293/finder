@@ -1,12 +1,12 @@
 import { CSSProperties, useRef, useState } from 'react';
 
-import { ButtonNext, ButtonPrev } from '../Card/styles';
-import { ICard } from '../CardController';
+import { ICardSwipe } from '../CardController';
 import Pagination from './Pagination';
+import { ButtonNext, ButtonPrev } from './styles';
 
 import ArrowLeftIcon from '@/assets/svgs/ArrowLeftIcon';
 
-const ARRAY: ICard[] = [
+const ARRAY: ICardSwipe[] = [
   {
     id: 1,
     url: 'https://p6-pc-sign.douyinpic.com/tos-cn-p-0015/fe83c1a2671741b6b0bb9af576e76d4a_1667045971~tplv-dy-cropcenter:323:430.jpeg?biz_tag=pcweb_cover&from=3213915784&s=PackSourceEnum_PUBLISH&sc=cover&se=true&sh=323_430&x-expires=1983016800&x-signature=cIUGQEWcqwusUL8VjvjWdyVn6yU%3D',

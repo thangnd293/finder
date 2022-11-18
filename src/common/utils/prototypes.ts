@@ -6,4 +6,15 @@ String.prototype.isNumeric = function () {
   return !!this && !isNaN(Number(this)) && !isNaN(parseFloat(this as string));
 };
 
+Date.prototype.toTime = function () {
+  let hours = this.getHours();
+  const minutes = this.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+  const strTime = hours + ':' + minutesStr + ' ' + ampm;
+  return strTime;
+};
+
 export {};

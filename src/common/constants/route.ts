@@ -18,7 +18,6 @@ export const PATH = {
       SELF: '/app/explore',
     },
     MESSAGES: {
-      SELF: '/app/messages',
       CHAT: '/app/messages/:chatId',
     },
     ONBOARDING: {

@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import IRoute from '@/typings/route';
 
 import Home from '@/pages/Home';
+import Messages from '@/pages/Messages';
 import Profile from '@/pages/Profile';
 import ProfileEdit from '@/pages/ProfileEdit';
 
@@ -40,6 +41,11 @@ const appChildRoute: IRoute[] = [
     name: 'Setting test 2',
     path: PATH.APP.SETTING.TEST_2,
     Component: Profile,
+  },
+  {
+    name: 'Messages',
+    path: PATH.APP.MESSAGES.CHAT,
+    Component: Messages,
   },
 ];
 
