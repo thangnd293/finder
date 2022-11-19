@@ -6,7 +6,6 @@ import tw from 'twin.macro';
 import { v4 as uuid } from 'uuid';
 
 import UploadImage from '../UploadImage';
-import { BOX_WIDTH } from '../UploadImage/CropImage.class';
 
 interface IData {
   id: string;
@@ -77,13 +76,12 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
             </div>
           </SortableItem>
         ) : (
-          <div tw='flex justify-center' key={item.id}>
-            <UploadImage
-              imageSrc={item.src}
-              onChange={handleSetImage}
-              id={item.id}
-            />
-          </div>
+          <UploadImage
+            key={item.id}
+            imageSrc={item.src}
+            onChange={handleSetImage}
+            id={item.id}
+          />
         ),
       )}
     </SortableListContainer>
@@ -91,7 +89,5 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
 };
 
 const SortableListContainer = styled(SortableList)`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  grid-gap: 36px;
+  ${tw`grid grid-cols-3 gap-x-1 gap-y-2`}
 `;

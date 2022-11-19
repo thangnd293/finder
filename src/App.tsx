@@ -3,7 +3,6 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import { PATH } from './common/constants/route';
 import PrivateRoute from './components/PrivateRoute';
-import { UploadImageGroup } from './components/UploadImageGroup';
 import DefaultLayout from './layouts/DefaultLayout/index';
 import Home from './pages/Home';
 import Onboarding from './pages/Onboarding';
@@ -13,13 +12,6 @@ import IRoute from './typings/route';
 function App() {
   return (
     <>
-      <UploadImageGroup
-        data={[]}
-        length={6}
-        onChange={data => {
-          console.log(data);
-        }}
-      />
       <Router>
         <Routes>
           <Route path='/' element={<DefaultLayout />}>

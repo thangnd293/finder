@@ -15,6 +15,7 @@ import Input from '@/components/Input';
 import PersonalityType from '@/components/PersonalityType';
 import RadioGroup from '@/components/RadioGroup';
 import Space from '@/components/Space';
+import { UploadImageGroup } from '@/components/UploadImageGroup';
 
 interface FormData {
   name: string;
@@ -147,6 +148,16 @@ const Onboarding = ({}: Props) => {
                     placeholder={'Địa chỉ Email'}
                     icon={<EmailIcon />}
                     width={'full'}
+                  />
+                </div>
+                <div>
+                  <p className='block mb-1 text-16 font-semibold'>Ảnh hồ sơ</p>
+                  <UploadImageGroup
+                    data={[]}
+                    length={6}
+                    onChange={data => {
+                      console.log(data);
+                    }}
                   />
                 </div>
               </div>

@@ -10,7 +10,7 @@ export const UploadCard: FC<{
   return (
     <CardBox
       htmlFor={`upload-image-${id}`}
-      tw='cursor-pointer block relative h-[300px] w-[220px] bg-[#F0F1F2] rounded-[8px] [box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;]'
+      tw='cursor-pointer block relative h-[176px] w-[130px] bg-[#F0F1F2] rounded-8 [box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;]'
       style={{
         border: image ? '' : '6px dashed #D2D5D9',
         overflow: !image ? '' : 'hidden',
@@ -19,7 +19,7 @@ export const UploadCard: FC<{
       {image ? (
         <Image src={image} tw='w-full h-full object-cover' />
       ) : (
-        <div tw='flex justify-center items-center bg-[#F24464] h-[50px] w-[50px] rounded-[50%] absolute bottom-[-20px] right-[-20px]'>
+        <div tw='flex justify-center items-center bg-[#F24464] h-[28px] w-[28px] rounded-[50%] absolute bottom-[-20px] right-[-20px]'>
           <PlusIcon />
         </div>
       )}
