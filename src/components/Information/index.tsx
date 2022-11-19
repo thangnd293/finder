@@ -18,9 +18,11 @@ const Divider = styled.hr`
   ${tw`border-gray-15`}
 `;
 
-interface Props {}
+interface Props {
+  onReport?: () => void;
+}
 
-const Information = ({}: Props) => {
+const Information = ({ onReport }: Props) => {
   return (
     <Fragment>
       <SectionWrapper>
@@ -69,11 +71,18 @@ const Information = ({}: Props) => {
           <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
         </div>
       </SectionWrapper>
-      <Divider />
-      <button className='w-full border-none py-2 text-14 text-center text-text-secondary font-semibold uppercase opacity-60 duration-300 hover:opacity-100'>
-        Bao cao {'Dac Thang'}
-      </button>
-      <Divider />
+      {onReport && (
+        <>
+          <Divider />
+          <button
+            onClick={onReport}
+            className='w-full border-none py-2 text-14 text-center text-text-secondary font-semibold uppercase opacity-60 duration-300 hover:opacity-100'
+          >
+            Bao cao {'Dac Thang'}
+          </button>
+          <Divider />
+        </>
+      )}
     </Fragment>
   );
 };

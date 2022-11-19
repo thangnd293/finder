@@ -106,9 +106,11 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
       if (isLike) {
         swipeToRight();
         onLike();
+        setDisable(true);
       } else if (isNope) {
         swipeToLeft();
         onNope();
+        setDisable(true);
       } else {
         // Reduce the speed of the card
         const translateXStepDown = translateX / (DURATION / 10);
