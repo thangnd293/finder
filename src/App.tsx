@@ -11,17 +11,19 @@ import IRoute from './typings/route';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path='/' element={<DefaultLayout />}>
-          <Route index element={<Home />} />
-        </Route>
-        {renderRoutes(allTopPublicRoutes)}
-        {renderRoutes(allTopPrivateRoutes)}
-        <Route path={PATH.APP.ONBOARDING.SELF} element={<Onboarding />} />
-        <Route path='/*' element={<div>404</div>} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Routes>
+          <Route path='/' element={<DefaultLayout />}>
+            <Route index element={<Home />} />
+          </Route>
+          {renderRoutes(allTopPublicRoutes)}
+          {renderRoutes(allTopPrivateRoutes)}
+          <Route path={PATH.APP.ONBOARDING.SELF} element={<Onboarding />} />
+          <Route path='/*' element={<div>404</div>} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 

@@ -4,12 +4,13 @@ interface Props {
   visible: boolean;
   onClose?: () => void;
   children: React.ReactNode;
+  isOutside?: boolean;
 }
 
-const Modal = ({ visible, children, onClose }: Props) => {
+const Modal = ({ visible, children, onClose, isOutside }: Props) => {
   return (
-    <Overlay visible={visible} onClose={onClose}>
-      <div className='p-2 rounded-8 bg-white'>{children}</div>
+    <Overlay visible={visible} onClose={onClose} isOutside={isOutside}>
+      <div className='p-2 rounded-4 bg-white'>{children}</div>
     </Overlay>
   );
 };

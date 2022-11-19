@@ -7,9 +7,10 @@ interface Props {
   visible: boolean;
   onClose?: () => void;
   children: React.ReactNode;
+  isOutside?: boolean;
 }
 
-const Overlay = ({ visible, children, onClose }: Props) => {
+const Overlay = ({ visible, children, onClose, isOutside = true }: Props) => {
   const [_visible, setVisible] = useState(visible);
 
   useEffect(() => {
@@ -17,7 +18,9 @@ const Overlay = ({ visible, children, onClose }: Props) => {
   }, [visible]);
 
   const handleClose = () => {
-    setVisible(false);
+    if (isOutside) {
+      setVisible(false);
+    }
     onClose && onClose();
   };
 
