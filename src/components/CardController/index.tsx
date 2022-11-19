@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import Card from '../Card';
+import CardSwipe from '../CardSwipe';
 import {
   ActionWrapper,
   ButtonLike,
@@ -13,11 +14,11 @@ import HeartIcon from '@/assets/svgs/HeartIcon';
 import NopeIcon from '@/assets/svgs/NopeIcon';
 import RewindIcon from '@/assets/svgs/RewindIcon';
 
-export interface ICard {
+export interface ICardSwipe {
   id: number;
   url: string;
 }
-const ARRAY: ICard[] = [
+const ARRAY: ICardSwipe[] = [
   {
     id: 1,
     url: 'https://p6-pc-sign.douyinpic.com/tos-cn-p-0015/fe83c1a2671741b6b0bb9af576e76d4a_1667045971~tplv-dy-cropcenter:323:430.jpeg?biz_tag=pcweb_cover&from=3213915784&s=PackSourceEnum_PUBLISH&sc=cover&se=true&sh=323_430&x-expires=1983016800&x-signature=cIUGQEWcqwusUL8VjvjWdyVn6yU%3D',
@@ -63,7 +64,7 @@ const CardController = ({}: Props) => {
   const [currentCard, setCurrentCard] = useState(
     listImgs[listImgs.length - 1].id,
   );
-  const [prevCard, setPrevCard] = useState<ICard | null>(null);
+  const [prevCard, setPrevCard] = useState<ICardSwipe | null>(null);
 
   useEffect(() => {
     if (data.length === 0) {
@@ -119,18 +120,11 @@ const CardController = ({}: Props) => {
     [setShowInfoCard],
   );
 
-  useEffect(() => {
-    console.log('showInfoCard', showInfoCard);
-  }, [showInfoCard]);
-
   return (
-    <div
-      id='card-inner'
-      className='w-full h-full max-h-[667px] max-w-[375px] shadow-lg rounded-8'
-    >
+    <Card id='card-inner'>
       <CardControllerWrapper id='card-wrapper'>
         {listImgs.map(item => (
-          <Card
+          <CardSwipe
             key={item.id}
             card={item}
             onLike={onLike}
@@ -171,7 +165,7 @@ const CardController = ({}: Props) => {
           </ButtonLike>
         </ActionWrapper>
       </CardControllerWrapper>
-    </div>
+    </Card>
   );
 };
 

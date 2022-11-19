@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@giphy/react-components": "^6.2.0",
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "array-move": "^3.0.1",
     "emoji-picker-react": "^4.4.5",

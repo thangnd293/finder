@@ -1,28 +1,27 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ControlPanelTabs, useControlPanelContext } from '..';
+import { controlPanels, useControlPanelContext } from '..';
 
 import ExploreIcon from '@/assets/svgs/ExploreIcon';
 import ShieldIcon from '@/assets/svgs/ShieldIcon';
 import Modal from '@/components/Modal';
-import Overlay from '@/components/Overlay';
 
 interface Props {}
 
 const MainNavBar = ({}: Props) => {
-  const { currentTab, setCurrentTab } = useControlPanelContext();
+  const { currentPanel, setCurrentPanel } = useControlPanelContext();
   const [showModal, setShowModal] = useState(false);
 
-  const path = ControlPanelTabs[currentTab.prev].path;
+  const path = controlPanels[currentPanel.prev].path;
 
   function handleToggle() {
-    setCurrentTab(prev => {
+    setCurrentPanel(prev => {
       return {
         ...prev,
         isFirstRender: false,
         tab: prev.prev,
-        prev: ControlPanelTabs[prev.prev].prev,
+        prev: controlPanels[prev.prev].prev,
       };
     });
   }

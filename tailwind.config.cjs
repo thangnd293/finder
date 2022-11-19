@@ -102,6 +102,7 @@ const colors = {
 
 const fontSize = {
   DEFAULT: '16px',
+  12: '12px',
   14: '14px',
   16: '16px',
   18: '18px',
@@ -117,6 +118,7 @@ const boxShadow = {
   sm: '0 0 45px rgb(0 0 0 / 20%)',
   md: 'rgba(101, 110, 123, 0.12) 0px 2px 6px 0px',
   lg: 'rgba(0, 0, 0, 0.08) 0px 0px 8px 0px',
+  avatar: '0 2px 5px 0 rgba(17, 20, 24, 0.16)',
 };
 
 const borderRadius = {
@@ -124,12 +126,14 @@ const borderRadius = {
   2: '2px',
   4: '4px',
   8: '8px',
+  test: '16px',
   full: '9999px',
 };
 
 const screens = {
   md: '896px',
   lg: '1024px',
+  'ex-lg': '1280px',
 };
 
 module.exports = {
