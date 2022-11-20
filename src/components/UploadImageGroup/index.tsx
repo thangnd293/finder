@@ -14,11 +14,15 @@ interface IData {
 interface UploadImageGroupProps {
   length?: number;
   data: IData[];
+  className?: string;
+  itemClassName?: string;
   onChange: (data: IData[]) => void;
 }
 export const UploadImageGroup: FC<UploadImageGroupProps> = ({
   length = 4,
   data,
+  className,
+  itemClassName,
   onChange,
 }) => {
   const [items, setItems] = useState<IData[]>([
@@ -61,7 +65,7 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
   return (
     <SortableListContainer
       onSortEnd={onSortEnd}
-      className='list'
+      className={`list ${className ? className : ''}`}
       draggedItemClassName='dragged'
     >
       {items.map(item =>
@@ -78,6 +82,7 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
         ) : (
           <UploadImage
             key={item.id}
+            className={itemClassName}
             imageSrc={item.src}
             onChange={handleSetImage}
             id={item.id}
@@ -89,5 +94,5 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
 };
 
 const SortableListContainer = styled(SortableList)`
-  ${tw`grid grid-cols-3 gap-x-1 gap-y-2`}
+  ${tw`grid grid-cols-3 gap-1`}
 `;

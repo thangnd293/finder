@@ -6,20 +6,22 @@ export const UploadCard: FC<{
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   image: string;
   id: string;
-}> = ({ image, id, onChange }) => {
+  className?: string;
+}> = ({ image, id, className, onChange }) => {
   return (
     <CardBox
       htmlFor={`upload-image-${id}`}
-      tw='cursor-pointer block relative h-[176px] w-[130px] bg-[#F0F1F2] rounded-8 [box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;]'
+      tw='cursor-pointer block relative bg-[#F0F1F2] rounded-8 [box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;]'
       style={{
-        border: image ? '' : '6px dashed #D2D5D9',
+        border: image ? '' : '4px dashed #D2D5D9',
         overflow: !image ? '' : 'hidden',
       }}
+      className={className}
     >
       {image ? (
         <Image src={image} tw='w-full h-full object-cover' />
       ) : (
-        <div tw='flex justify-center items-center bg-[#F24464] h-[28px] w-[28px] rounded-[50%] absolute bottom-[-20px] right-[-20px]'>
+        <div tw='flex justify-center items-center bg-primary h-[28px] w-[28px] rounded-full absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4'>
           <PlusIcon />
         </div>
       )}

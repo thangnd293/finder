@@ -105,7 +105,9 @@ const fontSize = {
   12: '12px',
   14: '14px',
   16: '16px',
+  17: '17px',
   18: '18px',
+  19: '19px',
   20: '20px',
   26: '26px',
   32: '32px',
@@ -126,7 +128,7 @@ const borderRadius = {
   2: '2px',
   4: '4px',
   8: '8px',
-  test: '16px',
+  16: '16px',
   full: '9999px',
 };
 

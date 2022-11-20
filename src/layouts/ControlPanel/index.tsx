@@ -4,6 +4,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 import MainNavBar from './MainNavBar';
+import GenderPanel from './panels/GenderPanel/index';
 import HomePanel from './panels/HomePanel';
 import ProfilePanel from './panels/ProfilePanel';
 
@@ -51,7 +52,7 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
             <MainNavBar />
           </nav>
 
-          <nav className='flex-1 overflow-hidden relative'>
+          <nav className='flex-1 overflow-hidden relative border-0 border-r border-solid border-gray-20 bg-gray-10'>
             <Panels
               activeTab={currentPanel.panel}
               isFirstRender={currentPanel.isFirstRender}
@@ -73,8 +74,9 @@ export enum ControlPanelType {
   Recs = 'recs',
   Settings = 'settings',
   SettingsTest1 = 'settings/test-1',
-  SettingsTest2 = 'settings/test-2',
+  Gender = 'settings/gender',
   Profile = 'profile',
+  ProfileEdit = 'profile/edit',
 }
 
 export const controlPanels: Record<
@@ -97,8 +99,12 @@ export const controlPanels: Record<
     path: PATH.APP.SETTING.TEST_1,
     prev: ControlPanelType.Profile,
   },
-  [ControlPanelType.SettingsTest2]: {
-    path: PATH.APP.SETTING.TEST_2,
+  [ControlPanelType.Gender]: {
+    path: PATH.APP.SETTING.GENDER,
+    prev: ControlPanelType.Profile,
+  },
+  [ControlPanelType.ProfileEdit]: {
+    path: PATH.APP.PROFILE.EDIT,
     prev: ControlPanelType.Profile,
   },
 };
@@ -146,6 +152,8 @@ interface TabsProps {
 }
 
 function Panels({ activeTab, isFirstRender }: TabsProps) {
+  console.log('activeTab', activeTab);
+
   return (
     <>
       <AnimatePresence>
@@ -164,7 +172,8 @@ function Panels({ activeTab, isFirstRender }: TabsProps) {
 
       <AnimatePresence>
         {(activeTab === ControlPanelType.Profile ||
-          activeTab === ControlPanelType.Settings) && (
+          activeTab === ControlPanelType.Settings ||
+          activeTab === ControlPanelType.ProfileEdit) && (
           <motion.div
             initial={{ opacity: 0, x: '-100%' }}
             animate={{ opacity: 1, x: 0 }}
@@ -173,7 +182,7 @@ function Panels({ activeTab, isFirstRender }: TabsProps) {
               ease: 'linear',
               duration: isFirstRender ? 0 : 0.3,
             }}
-            className='w-full h-full bg-white absolute z-20'
+            className='w-full h-full absolute z-20'
           >
             <ProfilePanel />
           </motion.div>
@@ -204,7 +213,7 @@ function SettingsTabs({ activeTab, isFirstRender }: TabsProps) {
       </AnimatePresence>
 
       <AnimatePresence>
-        {activeTab === ControlPanelType.SettingsTest2 && (
+        {activeTab === ControlPanelType.Gender && (
           <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
@@ -213,9 +222,9 @@ function SettingsTabs({ activeTab, isFirstRender }: TabsProps) {
               ease: 'linear',
               duration: isFirstRender ? 0 : 0.3,
             }}
-            className='w-full h-full bg-gradient-end absolute z-20'
+            className='w-full h-full absolute z-20'
           >
-            Setting 2
+            <GenderPanel />
           </motion.div>
         )}
       </AnimatePresence>

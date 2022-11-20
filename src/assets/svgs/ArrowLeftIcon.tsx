@@ -3,6 +3,7 @@ import IconProps from '@/typings/icon';
 const ArrowLeftIcon = (props: IconProps) => (
   <svg
     aria-hidden='false'
+    viewBox='0 0 24 24'
     width={24}
     height={24}
     fill='currentColor'

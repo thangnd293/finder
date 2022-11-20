@@ -38,8 +38,8 @@ const appChildRoute: IRoute[] = [
     Component: Profile,
   },
   {
-    name: 'Setting test 2',
-    path: PATH.APP.SETTING.TEST_2,
+    name: 'Hiển thị cho tôi',
+    path: PATH.APP.SETTING.GENDER,
     Component: Profile,
   },
   {

@@ -1,109 +1,31 @@
-import { useCallback, useEffect } from 'react';
-import React from 'react';
-
-import { ICardSwipe } from '../CardController';
-import Carousel from '../Carousel';
-import Information from '../Information';
-import { flipLeft, flipRight } from './utils';
+import React, { useEffect } from 'react';
 
 import HomeIcon from '@/assets/svgs/HomeIcon';
 import InfoIcon from '@/assets/svgs/InfoIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
+import Carousel from '@/components/Carousel';
+import Information from '@/components/Information';
 
-import useCardSwipe from '@/hooks/useCardSwipe';
+interface Props {}
 
-interface Props {
-  card: ICardSwipe;
-  onLike: () => void;
-  onNope: () => void;
-  onBack: () => void;
-  onShowInfo: any;
-}
-
-const Card = ({
-  card: { id, url },
-  onNope,
-  onLike,
-  onBack,
-  onShowInfo,
-}: Props) => {
-  const {
-    ref,
-    swipeToRight,
-    swipeToLeft,
-    swipeBack,
-    setDisable,
-    isDrag,
-    status,
-  } = useCardSwipe(onLike, onNope);
-
+const Preview = ({}: Props) => {
   const [showInfo, setShowInfo] = React.useState(false);
 
-  const handleLike = useCallback(() => {
-    swipeToRight();
-    onLike();
-    setShowInfo(false);
-    setDisable(true);
-  }, [onLike, swipeToRight]);
-
-  const handleNope = useCallback(() => {
-    swipeToLeft();
-    onNope();
-    setShowInfo(false);
-    setDisable(true);
-  }, [onNope, swipeToLeft]);
-
-  const handleBack = useCallback(() => {
-    swipeBack();
-    onBack();
-  }, [onBack, swipeBack]);
-
-  useEffect(() => {
-    window.addEventListener(`onLike${id}`, handleLike);
-    window.addEventListener(`onNope${id}`, handleNope);
-    window.addEventListener(`onBack${id}`, handleBack);
-
-    return () => {
-      window.removeEventListener(`onLike${id}`, handleLike);
-      window.removeEventListener(`onNope${id}`, handleNope);
-      window.removeEventListener(`onBack${id}`, handleBack);
-    };
-  }, [handleLike, handleNope, handleBack]);
-
-  useEffect(() => {
-    onShowInfo(showInfo);
-  }, [showInfo]);
-
   const handleShowInfo = () => {
-    if (status !== 'idle') return;
-    setDisable(true);
     setShowInfo(true);
   };
 
   const handleHiddenInfo = () => {
-    if (status !== 'idle') return;
-    setDisable(false);
     setShowInfo(false);
   };
-
-  const handleFlipLeft = useCallback(() => {
-    if (status !== 'idle') return;
-    flipLeft();
-  }, [flipLeft, status]);
-
-  const handleFlipRight = useCallback(() => {
-    if (status !== 'idle') return;
-
-    flipRight();
-  }, [flipRight, status]);
 
   useEffect(() => {
     console.log('showInfo', showInfo);
   }, [showInfo]);
+
   return (
     <div
       className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
-      ref={ref}
       style={{
         paddingBottom: showInfo ? '0px' : '101px',
       }}
@@ -112,9 +34,9 @@ const Card = ({
         style={{
           height: showInfo ? '60%' : '100%',
         }}
-        isDrag={isDrag && !showInfo}
-        flipLeft={!showInfo ? handleFlipLeft : undefined}
-        flipRight={!showInfo ? handleFlipRight : undefined}
+        isDrag={false}
+        flipLeft={undefined}
+        flipRight={undefined}
       />
       {showInfo ? (
         <div className='relative w-full bg-white rounded-b-8 pb-10'>
@@ -163,4 +85,4 @@ const Card = ({
   );
 };
 
-export default React.memo(Card);
+export default Preview;

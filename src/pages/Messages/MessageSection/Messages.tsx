@@ -62,11 +62,11 @@ const TextMessageStyled = styled.p<{ align: Align; isFirst?: boolean }>`
 
   ${({ align }) =>
     align === 'left'
-      ? tw`rounded-l-2 rounded-r-test`
-      : tw`rounded-r-2 rounded-l-test`}
+      ? tw`rounded-l-2 rounded-r-16`
+      : tw`rounded-r-2 rounded-l-16`}
       
   ${({ align, isFirst }) =>
-    isFirst && (align === 'left' ? tw`rounded-tl-test` : tw`rounded-tr-test`)}
+    isFirst && (align === 'left' ? tw`rounded-tl-16` : tw`rounded-tr-16`)}
 `;
 
 const ImageMessageStyled = styled.div`

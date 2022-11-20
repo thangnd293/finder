@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import ProfileMobile from './ProfileMobile';
 
 import Button from '@/components/Button';
@@ -8,6 +10,7 @@ import Information from '@/components/Information';
 import useMediaQuery from '@/hooks/useMediaQuery';
 
 import { RESPONSIVE } from '@/common/constants/responsive';
+import { PATH } from '@/common/constants/route';
 
 interface Props {}
 
@@ -37,10 +40,12 @@ const Profile = ({}: Props) => {
               backgroundImage: 'linear-gradient(to bottom,#fff0 -5%,#fff 20%)',
             }}
           >
-            <Button
-              className='-translate-y-2'
-              label={'Edit Info ( 70% complete )'}
-            />
+            <Link to={PATH.APP.PROFILE.EDIT}>
+              <Button
+                className='-translate-y-2'
+                label={'Edit Info ( 70% complete )'}
+              />
+            </Link>
           </div>
         </div>
       </Card>

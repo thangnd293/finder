@@ -22,6 +22,7 @@ const Button = ({
   size = 'medium',
   width,
   disabled,
+  className,
   onClick,
   ...props
 }: Props) => {
@@ -34,6 +35,7 @@ const Button = ({
 
   return (
     <ButtonStyled
+      className={className}
       variant={variant}
       size={size}
       hasIcon={hasIcon}

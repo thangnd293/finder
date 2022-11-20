@@ -12,7 +12,6 @@ export const PATH = {
       GENDER: '/app/settings/gender',
       LANGUAGES: '/app/settings/global/languages',
       TEST_1: '/app/settings/test-1',
-      TEST_2: '/app/settings/test-2',
     },
     EXPLORE: {
       SELF: '/app/explore',

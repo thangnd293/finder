@@ -153,6 +153,7 @@ const Onboarding = ({}: Props) => {
                 <div>
                   <p className='block mb-1 text-16 font-semibold'>Ảnh hồ sơ</p>
                   <UploadImageGroup
+                    itemClassName='h-[176px] w-[130px] gap-x-1 gap-y-2'
                     data={[]}
                     length={6}
                     onChange={data => {

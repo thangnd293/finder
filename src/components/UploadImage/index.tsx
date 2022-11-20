@@ -7,10 +7,11 @@ import { UploadCard } from './UploadCard';
 interface Props {
   id: string;
   imageSrc: string;
+  className?: string;
   onChange: (image: string) => void;
 }
 
-const UploadImage: FC<Props> = ({ id, imageSrc, onChange }) => {
+const UploadImage: FC<Props> = ({ id, imageSrc, className, onChange }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [image, setImage] = useState<HTMLImageElement>();
   const [cropImage, setCropImage] = useState<CropImage>();
@@ -42,7 +43,12 @@ const UploadImage: FC<Props> = ({ id, imageSrc, onChange }) => {
 
   return (
     <div key={id}>
-      <UploadCard id={id} image={imageSrc} onChange={onChangeFile} />
+      <UploadCard
+        className={className}
+        id={id}
+        image={imageSrc}
+        onChange={onChangeFile}
+      />
       <UploadModal
         onChange={image => onChange(image)}
         cropImage={cropImage}

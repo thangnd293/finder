@@ -12,7 +12,7 @@ const PersonalityTypeContainer = styled.div<{
   hasAction?: boolean;
   active: boolean;
 }>`
-  ${tw`shrink-0 w-fit px-0.8 py-0.4 flex items-center space-x-0.5 border border-solid border-black text-text-secondary rounded-full`}
+  ${tw`shrink-0 w-fit px-0.8 py-0.4 flex items-center space-x-0.5 border border-solid border-black text-text-secondary rounded-full cursor-default`}
   ${({ hasAction }) => hasAction && tw`cursor-pointer`}
   ${({ active }) => active && tw`border-primary text-primary`}
 `;
