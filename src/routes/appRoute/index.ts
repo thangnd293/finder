@@ -6,6 +6,8 @@ import Home from '@/pages/Home';
 import Messages from '@/pages/Messages';
 import Profile from '@/pages/Profile';
 import ProfileEdit from '@/pages/ProfileEdit';
+import ProfileEditGender from '@/pages/ProfileEditGender/index';
+import ProfileEditInterests from '@/pages/ProfileEditInterests';
 
 import { PATH } from '@/common/constants/route';
 
@@ -28,7 +30,17 @@ const appChildRoute: IRoute[] = [
     Component: ProfileEdit,
   },
   {
-    name: 'Setting',
+    name: 'Profile edit interests',
+    path: PATH.APP.PROFILE.EDIT_INTERESTS,
+    Component: ProfileEditInterests,
+  },
+  {
+    name: 'Profile edit interests',
+    path: PATH.APP.PROFILE.EDIT_GENDER,
+    Component: ProfileEditGender,
+  },
+  {
+    name: 'Cài đặt',
     path: PATH.APP.SETTING.SELF,
     Component: Profile,
   },
@@ -43,7 +55,7 @@ const appChildRoute: IRoute[] = [
     Component: Profile,
   },
   {
-    name: 'Messages',
+    name: 'Nhắn tin',
     path: PATH.APP.MESSAGES.CHAT,
     Component: Messages,
   },

@@ -5,6 +5,8 @@ export const PATH = {
     PROFILE: {
       SELF: '/app/profile',
       EDIT: '/app/profile/edit',
+      EDIT_INTERESTS: '/app/profile/edit/interests',
+      EDIT_GENDER: '/app/profile/edit/gender',
     },
     SETTING: {
       SELF: '/app/settings',

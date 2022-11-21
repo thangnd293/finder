@@ -77,6 +77,8 @@ export enum ControlPanelType {
   Gender = 'settings/gender',
   Profile = 'profile',
   ProfileEdit = 'profile/edit',
+  ProfileEditInterests = 'profile/edit/interests',
+  ProfileEditGender = 'profile/edit/gender',
 }
 
 export const controlPanels: Record<
@@ -105,6 +107,14 @@ export const controlPanels: Record<
   },
   [ControlPanelType.ProfileEdit]: {
     path: PATH.APP.PROFILE.EDIT,
+    prev: ControlPanelType.Profile,
+  },
+  [ControlPanelType.ProfileEditInterests]: {
+    path: PATH.APP.PROFILE.EDIT_INTERESTS,
+    prev: ControlPanelType.Profile,
+  },
+  [ControlPanelType.ProfileEditGender]: {
+    path: PATH.APP.PROFILE.EDIT_GENDER,
     prev: ControlPanelType.Profile,
   },
 };
@@ -173,7 +183,9 @@ function Panels({ activeTab, isFirstRender }: TabsProps) {
       <AnimatePresence>
         {(activeTab === ControlPanelType.Profile ||
           activeTab === ControlPanelType.Settings ||
-          activeTab === ControlPanelType.ProfileEdit) && (
+          activeTab === ControlPanelType.ProfileEdit ||
+          activeTab === ControlPanelType.ProfileEditInterests ||
+          activeTab === ControlPanelType.ProfileEditGender) && (
           <motion.div
             initial={{ opacity: 0, x: '-100%' }}
             animate={{ opacity: 1, x: 0 }}

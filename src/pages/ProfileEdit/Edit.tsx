@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { LifeStyle, fakeData, lifeStyles } from '.';
 
 import ArrowLeftIcon from '@/assets/svgs/ArrowLeftIcon';
 import Button from '@/components/Button';
+import SettingFieldLink from '@/components/SettingFieldLink';
 import Space from '@/components/Space';
 import Textarea from '@/components/Textarea';
 import { UploadImageGroup } from '@/components/UploadImageGroup';
+
+import { PATH } from '@/common/constants/route';
 
 const MAX_LENGTH_INTRODUCTION = 500;
 
@@ -60,6 +64,16 @@ const Edit = ({ lifeStylesData, onLifeStyleActive }: Props) => {
         Không nên đưa tên người dùng trên các mạng xã hội hoặc thông tin liên
         lạc khác vào hồ sơ của bạn.
       </p>
+
+      <p className='px-1 pb-0.8 text-14 uppercase text-text-secondary font-semibold'>
+        Sở Thích
+      </p>
+      <SettingFieldLink
+        className='px-[24px]'
+        to={PATH.APP.PROFILE.EDIT_INTERESTS}
+        label='Tập gym, Phát triển bản thân, Âm nhạc, Phim kinh dị, Tự làm mọi việc'
+      />
+      <Space h={20} />
       <p className='px-1 pb-0.8 text-14 uppercase text-text-secondary font-semibold'>
         Phong cách sống
       </p>
@@ -71,6 +85,24 @@ const Edit = ({ lifeStylesData, onLifeStyleActive }: Props) => {
           onClick={() => onLifeStyleActive(item.tab)}
         />
       ))}
+      <Space h={20} />
+      <Input label={'Chức danh'} placeholder={'Thêm Chức Danh'} />
+      <Space h={20} />
+      <Input label={'Công ty'} placeholder={'Thêm Tên Công Ty'} />
+      <Space h={20} />
+      <Input label={'Trường'} placeholder={'Thêm Tên Trường'} />
+      <Space h={20} />
+      <Input label={'Đang sống tại'} placeholder={'Thêm địa điểm'} />
+      <Space h={20} />
+      <p className='px-1 pb-0.8 text-14 uppercase text-text-secondary font-semibold'>
+        Giới tính
+      </p>
+      <SettingFieldLink
+        className='px-[24px]'
+        to={PATH.APP.PROFILE.EDIT_GENDER}
+        label='Nam'
+      />
+      <div className='h-2'></div>
     </div>
   );
 };
@@ -88,7 +120,7 @@ const LifeStyleItem = ({ label, value, icon, onClick }: LifeStyleItemProps) => {
   return (
     <div
       onClick={onClick}
-      className='flex items-center justify-between px-[24px] h-[52px] border-0 border-y border-solid border-gray-20 not-last:border-b-0 bg-white group cursor-pointer'
+      className='flex items-center justify-between px-[24px] h-[52px] border-0 border-y border-solid border-gray-20 not-last:border-b-0 font-light bg-white group cursor-pointer'
     >
       <div className='flex items-center gap-0.5'>
         <img
@@ -108,6 +140,35 @@ const LifeStyleItem = ({ label, value, icon, onClick }: LifeStyleItemProps) => {
           className='rotate-180 text-gray-20 group-hover:text-primary'
         />
       </p>
+    </div>
+  );
+};
+
+interface InputProps {
+  label: string;
+  value?: string;
+  placeholder?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const Input = ({ label, value, placeholder, onChange }: InputProps) => {
+  const id = useId();
+  return (
+    <div>
+      <label
+        className='pl-0.8 pb-1 text-14 text-text-secondary font-semibold uppercase'
+        htmlFor={id}
+      >
+        {label}
+      </label>
+      <input
+        className='w-full py-1.6 px-[24px] bg-white outline-none border-0 border-y border-solid border-gray-20 text-16 text-text-secondary text-light'
+        id={id}
+        type='text'
+        value={value}
+        placeholder={placeholder}
+        onChange={onChange}
+      />
     </div>
   );
 };

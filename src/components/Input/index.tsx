@@ -37,7 +37,7 @@ const Input = ({ name, label, placeholder, icon, width = 'auto' }: Props) => {
   const hasIcon = !!icon;
 
   return (
-    <>
+    <div>
       {label && (
         <label className='block mb-1 text-16 font-semibold' htmlFor={id}>
           {label}
@@ -59,7 +59,7 @@ const Input = ({ name, label, placeholder, icon, width = 'auto' }: Props) => {
       {meta.touched && meta.error && (
         <p className='my-0.4 text-text-error text-12'>{meta.error}</p>
       )}
-    </>
+    </div>
   );
 };
 

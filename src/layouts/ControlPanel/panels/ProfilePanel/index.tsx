@@ -1,8 +1,6 @@
 import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
 
-import ArrowLeftIcon from '@/assets/svgs/ArrowLeftIcon';
-import Button from '@/components/Button';
+import SettingFieldLink from '@/components/SettingFieldLink';
 import Slider from '@/components/Slider';
 import Switch from '@/components/Switch';
 
@@ -72,26 +70,6 @@ const ProfilePanel = ({}: Props) => {
 };
 
 export default ProfilePanel;
-
-interface SettingFieldLinkProps {
-  to: string;
-  label: string;
-  value?: string;
-}
-
-const SettingFieldLink = ({ to, label, value }: SettingFieldLinkProps) => {
-  return (
-    <Link
-      to={to}
-      className='group flex items-center justify-between px-1.6 h-[52px] border-0 border-y border-solid border-gray-20 not-last:border-b-0 bg-white'
-    >
-      <span className='text-16'>{label}</span>
-      <span className='inline-flex items-center gap-0.8 text-text-secondary group-hover:text-primary'>
-        {value} <ArrowLeftIcon width={12} className='rotate-180' />
-      </span>
-    </Link>
-  );
-};
 
 interface SettingFieldSliderProps {
   label: string;
