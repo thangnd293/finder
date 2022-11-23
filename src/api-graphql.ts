@@ -264,7 +264,7 @@ export interface MySettingInput {
 export interface PaginationInput {
   /** @default 0*/
   page?: number;
-  /** @default 10*/
+  /** @default 100*/
   size?: number;
 }
 
@@ -421,6 +421,8 @@ export interface GetAllUserArgs {
 
 export interface GetCurrentAddressArgs {}
 
+export interface GetCurrentUserArgs {}
+
 export interface GetOneConversationArgs {
   input?: FilterGetOneConversation;
 }
@@ -437,6 +439,14 @@ export interface SignInAsAdminArgs {
 export interface StatisticUserArgs {
   filter?: FilterStatisticUser;
   pagination?: PaginationInput;
+}
+
+export interface VerifyTokenFacebookArgs {
+  token: string;
+}
+
+export interface VerifyTokenGoogleArgs {
+  token: string;
 }
 
 export interface ChangePasswordArgs {
@@ -552,7 +562,7 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
     args: boolean,
     optionalArgs: boolean,
   ) => {
-    let observableQuery: any;
+    let observableQuery: ZenObservable.Subscription;
     const parsedQuery = query.definitions[0] as OperationDefinitionNode;
     const queryName = parsedQuery?.name?.value;
     if (queryName) {
@@ -785,6 +795,24 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
 
       return abortableQuery(queryTemplate, false, false);
     },
+    getCurrentUser(fields: GenFields<User>): ExecutableQuery<User> {
+      const fragment = queryBuilder(fields);
+      let isString = false;
+      let isFragment = false;
+      let fragmentName = '';
+      if (fragment)
+        ({ isString, isFragment, fragmentName } = guessFragmentType(fragment));
+
+      const queryTemplate = gql`
+      query getCurrentUser  {
+        getCurrentUser {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+      return abortableQuery(queryTemplate, false, false);
+    },
     getOneConversation(
       fields: GenFields<Conversation>,
     ): ExecutableQueryWithOptionalArgs<Conversation, GetOneConversationArgs> {
@@ -870,6 +898,46 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       `;
 
       return abortableQuery(queryTemplate, true, true);
+    },
+    verifyTokenFacebook(
+      fields: GenFields<JwtPayload>,
+    ): ExecutableQueryWithArgs<JwtPayload, VerifyTokenFacebookArgs> {
+      const fragment = queryBuilder(fields);
+      let isString = false;
+      let isFragment = false;
+      let fragmentName = '';
+      if (fragment)
+        ({ isString, isFragment, fragmentName } = guessFragmentType(fragment));
+
+      const queryTemplate = gql`
+      query verifyTokenFacebook ($token: String!) {
+        verifyTokenFacebook(token: $token) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+      return abortableQuery(queryTemplate, true, false);
+    },
+    verifyTokenGoogle(
+      fields: GenFields<JwtPayload>,
+    ): ExecutableQueryWithArgs<JwtPayload, VerifyTokenGoogleArgs> {
+      const fragment = queryBuilder(fields);
+      let isString = false;
+      let isFragment = false;
+      let fragmentName = '';
+      if (fragment)
+        ({ isString, isFragment, fragmentName } = guessFragmentType(fragment));
+
+      const queryTemplate = gql`
+      query verifyTokenGoogle ($token: String!) {
+        verifyTokenGoogle(token: $token) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+      return abortableQuery(queryTemplate, true, false);
     },
     changePassword(): QueryWithArgs<boolean, ChangePasswordArgs> {
       const queryTemplate = gql`

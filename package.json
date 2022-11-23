@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "pmp": "pmp -o src/api-graphql.ts --codegen-functions"
+    "pmp": "pmp -o src/api-graphql.ts --codegen-functions",
+    "gen:luxury": "node node_modules/generate-graphql-api/dist/index.js -o ./src/api-graphql.ts --codegen-functions"
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
