@@ -29,4 +29,4 @@ export const PATH = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
   },
-};
+} as const;

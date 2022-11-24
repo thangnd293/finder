@@ -2,6 +2,8 @@ import { ButtonHTMLAttributes } from 'react';
 
 import { ButtonStyled } from './styles';
 
+import LoadingIcon from '@/assets/svgs/LoadingIcon';
+
 export type Variant = 'solid' | 'outline' | 'ghost' | 'link';
 export type Size = 'small' | 'medium' | 'large';
 export type Width = number | 'auto' | 'full';
@@ -13,6 +15,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
   width?: Width;
   onClick?: () => void;
+  loading?: boolean;
 }
 
 const Button = ({
@@ -22,6 +25,7 @@ const Button = ({
   size = 'medium',
   width,
   disabled,
+  loading,
   className,
   onClick,
   ...props
@@ -39,7 +43,7 @@ const Button = ({
       variant={variant}
       size={size}
       hasIcon={hasIcon}
-      disabled={disabled}
+      disabled={disabled || loading}
       width={typeof width === 'string' ? width : undefined}
       onClick={handleClick}
       style={{
@@ -47,7 +51,7 @@ const Button = ({
       }}
       {...props}
     >
-      {icon} <span>{label}</span>
+      {icon} <span>{label}</span> {loading && <LoadingIcon height='20px' />}
     </ButtonStyled>
   );
 };

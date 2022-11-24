@@ -1,5 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 
+import { useUserStore } from '@/store/user';
+
 import SettingFieldLink from '@/components/SettingFieldLink';
 import Slider from '@/components/Slider';
 import Switch from '@/components/Switch';
@@ -62,7 +64,10 @@ const ProfilePanel = ({}: Props) => {
           onChangeChecked={e => setIsOnlyShowInAges(e.target.checked)}
         />
       </div>
-      <button className='w-full h-[52px] text-center align-middle bg-white text-16 border-0 border-y border-solid border-gray-20'>
+      <button
+        onClick={() => useUserStore.getState().logout()}
+        className='w-full h-[52px] text-center align-middle bg-white text-16 border-0 border-y border-solid border-gray-20'
+      >
         Đăng xuất
       </button>
     </div>

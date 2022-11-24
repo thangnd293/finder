@@ -1,10 +1,10 @@
 import { Formik } from 'formik';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import HobbiesDialog from './Dialogs/HobbiesDialog';
-import Header from './Header';
 
 import EmailIcon from '@/assets/svgs/EmailIcon';
 import UserIcon from '@/assets/svgs/UserIcon';
@@ -61,6 +61,18 @@ const FIND_GENDER = [
 interface Props {}
 
 const Onboarding = ({}: Props) => {
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
+
+  useEffect(() => {
+    try {
+      const token = query.get('token');
+      if (!token) return;
+      const jwt = jwtDecode<JwtPayload>(token);
+      console.log(jwt);
+    } catch (error) {}
+  }, [query]);
+
   const [hobbies, setHobbies] = useState<string[]>([]);
 
   const onHobbiesChange = (values: string[]) => {
@@ -101,7 +113,6 @@ const Onboarding = ({}: Props) => {
 
   return (
     <>
-      <Header />
       <div className='w-full max-w-[900px] mx-auto'>
         <h1 className='py-[36px] text-center text-32 font-bold uppercase'>
           Tạo tài khoản

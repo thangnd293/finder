@@ -42,7 +42,15 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
   }, [items]);
 
   const handleSetImage = useCallback(
-    (imageSrc: string) => {
+    (id?: number) => (imageSrc: string) => {
+      if (id && items?.[id]) {
+        const newItems = [...items];
+        newItems[id] = { ...items[id], src: imageSrc };
+
+        setItems(newItems);
+        return;
+      }
+
       let flag = false;
 
       setItems(
@@ -68,13 +76,13 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
       className={`list ${className ? className : ''}`}
       draggedItemClassName='dragged'
     >
-      {items.map(item =>
+      {items.map((item, index) =>
         item.src ? (
           <SortableItem key={item.id}>
             <div tw='flex justify-center' key={item.id}>
               <UploadImage
                 imageSrc={item.src}
-                onChange={handleSetImage}
+                onChange={handleSetImage(index)}
                 id={item.id}
               />
             </div>
@@ -84,7 +92,7 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
             key={item.id}
             className={itemClassName}
             imageSrc={item.src}
-            onChange={handleSetImage}
+            onChange={handleSetImage()}
             id={item.id}
           />
         ),
