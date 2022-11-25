@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { v4 as uuid } from 'uuid';
 import * as Yup from 'yup';
 
+import { useLoadingStore } from '../../api-graphql';
 import HobbiesDialog from './Dialogs/HobbiesDialog';
 
 import { useUserStore } from '@/store/user';
@@ -80,6 +81,15 @@ const Onboarding = ({}: Props) => {
   const location = useLocation();
   const query = useMemo(() => new URLSearchParams(location.search), [location]);
   const user = useUserStore(s => s.user);
+
+  const loading = useLoadingStore(s =>
+    [
+      s.uploadFileLoading,
+      s.getCurrentUserLoading,
+      s.changeSettingLoading,
+      s.updateProfileLoading,
+    ].find(value => value),
+  );
 
   if (user && !user.isFirstLogin) {
     return <Navigate to='/app' replace />;
@@ -261,6 +271,7 @@ const Onboarding = ({}: Props) => {
               <Space h={40} />
               <div className='w-fit mx-auto'>
                 <Button
+                  loading={loading}
                   className='uppercase'
                   type='submit'
                   label={'Tiếp tục'}

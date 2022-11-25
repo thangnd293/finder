@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
+import { theme } from 'twin.macro';
 
 export interface SpinProps {
   className?: string;
@@ -11,7 +12,7 @@ export interface SpinProps {
 
 const LoadingIcon: React.FC<SpinProps & React.HTMLProps<HTMLDivElement>> = ({
   className = '',
-  color = '#0d6efd',
+  color = theme('colors.primary'),
   height = '2rem',
   style = {},
   duration = '1.2s',
