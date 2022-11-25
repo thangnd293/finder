@@ -8,10 +8,14 @@ interface Props {
   children: React.ReactNode;
 }
 const PrivateRoute = ({ children }: Props) => {
-  const accessToken = useUserStore(s => s.accessToken);
+  const [accessToken, user] = useUserStore(s => [s.accessToken, s.user]);
 
   if (!isTokenExpired(accessToken)) {
     return <Navigate to='/auth/login' replace />;
+  }
+
+  if (user && user.isFirstLogin) {
+    return <Navigate to='/app/onboarding' replace />;
   }
 
   return <>{children}</>;

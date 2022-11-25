@@ -1,4 +1,5 @@
 import { SignInArgs, User } from '@/api-graphql';
+import { getUserCurrentFragment } from '@/service/user';
 import Cookies from 'js-cookie';
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -15,6 +16,7 @@ interface UserStore {
 interface UserAction {
   signIn: (args: SignInArgs) => Promise<boolean>;
   logout: () => void;
+  setUser: (user: User) => void;
 }
 
 export const useUserStore = create<UserStore & UserAction>()(
@@ -31,27 +33,7 @@ export const useUserStore = create<UserStore & UserAction>()(
         set({ accessToken, refreshToken });
 
         const user = await apiCaller
-          .getCurrentUser([
-            '_id',
-            'aboutMe',
-            'age',
-            'birthDays',
-            'calcDistance',
-            'calcDistance',
-            'company',
-            'createdAt',
-            'email',
-            'gender',
-            'images',
-            'isDeleted',
-            'jobTitle',
-            'keyword',
-            'lastActive',
-            'liveAt',
-            'phoneNumber',
-            'school',
-            'showMeTinder',
-          ])
+          .getCurrentUser(getUserCurrentFragment)
           .$fetch();
 
         set({ user });
@@ -61,6 +43,7 @@ export const useUserStore = create<UserStore & UserAction>()(
         set({ accessToken: undefined, refreshToken: undefined });
         location.reload();
       },
+      setUser: user => set({ user }),
     }),
     {
       name: 'user',

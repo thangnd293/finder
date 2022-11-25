@@ -13,7 +13,7 @@ interface Props {
 
 const UploadImage: FC<Props> = ({ id, imageSrc, className, onChange }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [image, setImage] = useState<HTMLImageElement>();
+  const [image, setImage] = useState<File>();
   const [cropImage, setCropImage] = useState<CropImage>();
 
   useEffect(() => {
@@ -23,22 +23,20 @@ const UploadImage: FC<Props> = ({ id, imageSrc, className, onChange }) => {
 
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target;
-    const imageFile = new Image();
 
     const file = files?.[0];
 
     if (!file) return;
     setIsVisible(true);
-
-    imageFile.src = URL.createObjectURL(file);
-
-    imageFile.onload = () => {
-      setImage(imageFile);
-    };
+    setImage(file);
   };
 
   const closeModal = () => {
     setIsVisible(false);
+  };
+
+  const handleChange = (image: string) => {
+    onChange(image);
   };
 
   return (
@@ -50,7 +48,7 @@ const UploadImage: FC<Props> = ({ id, imageSrc, className, onChange }) => {
         onChange={onChangeFile}
       />
       <UploadModal
-        onChange={image => onChange(image)}
+        onChange={handleChange}
         cropImage={cropImage}
         image={image}
         isVisible={isVisible}

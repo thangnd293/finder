@@ -336,6 +336,7 @@ export interface UpdateUserInput {
   company?: string;
   gender?: GenderEnum;
   images?: string[];
+  isFirstLogin?: boolean;
   jobTitle?: string;
   liveAt?: string;
   phoneNumber?: string;
@@ -359,6 +360,7 @@ export interface User {
   geoLocation: Maybe<GeoLocation>;
   images: Maybe<string[]>;
   isDeleted: boolean;
+  isFirstLogin: boolean;
   jobTitle: Maybe<string>;
   keyword: Maybe<string>;
   lastActive: Maybe<string>;
@@ -525,6 +527,10 @@ export interface UpdateLocationArgs {
 
 export interface UpdateProfileArgs {
   input: UpdateUserInput;
+}
+
+export interface UploadFileArgs {
+  file: File;
 }
 
 interface Abortable {
@@ -1146,6 +1152,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       const queryTemplate = gql`
         mutation updateProfile($input: UpdateUserInput!) {
           updateProfile(input: $input)
+        }
+      `;
+      return abortableQuery(queryTemplate, true, false);
+    },
+    uploadFile(): QueryWithArgs<string, UploadFileArgs> {
+      const queryTemplate = gql`
+        mutation uploadFile($file: Upload!) {
+          uploadFile(file: $file)
         }
       `;
       return abortableQuery(queryTemplate, true, false);

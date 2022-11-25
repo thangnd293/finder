@@ -1,7 +1,7 @@
 import Card from '@/components/Card';
 import PersonalityType from '@/components/PersonalityType';
 
-import { HOBBIES } from '@/common/constants/data';
+// import { HOBBIES } from '@/common/constants/data';
 
 interface Props {}
 
@@ -24,14 +24,15 @@ const ProfileEditInterests = ({}: Props) => {
           <span>(5/5)</span>
         </div>
         <div className='flex justify-center flex-wrap gap-0.8 py-1.6 px-1.2 bg-white'>
-          {HOBBIES.map((hobbit, index) => (
+          {/* TODO */}
+          {/* {HOBBIES.map((hobbit, index) => (
             <PersonalityType
               key={index}
-              text={hobbit}
+              tag={hobbit}
               // isActive={existsHobbit(hobbit)}
               // onClick={onHobbitClick}
             />
-          ))}
+          ))} */}
         </div>
       </Card>
     </div>

@@ -14,6 +14,7 @@
     "@apollo/client": "^3.7.1",
     "@giphy/react-components": "^6.2.0",
     "@lottiefiles/react-lottie-player": "^3.4.7",
+    "apollo-upload-client": "^17.0.0",
     "array-move": "^3.0.1",
     "axios": "^1.2.0",
     "emoji-picker-react": "^4.4.5",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.4.0",
+    "@types/apollo-upload-client": "^17.0.2",
     "@types/node": "^18.11.5",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",

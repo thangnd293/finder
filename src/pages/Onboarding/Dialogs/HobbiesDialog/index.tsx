@@ -1,3 +1,6 @@
+import { Tag, TagResult } from '@/api-graphql';
+import { apiCaller } from '@/service/index';
+import { useField, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 
 import EditIcon from '@/assets/svgs/EditIcon';
@@ -7,43 +10,53 @@ import Modal from '@/components/Modal';
 import PersonalityType from '@/components/PersonalityType';
 import Space from '@/components/Space';
 
-import { HOBBIES } from '@/common/constants/data';
-
 const MAX_HOBBIES = 5;
 const MIN_HOBBIES = 3;
 
 interface Props {
-  values: string[];
-  onChangeValue: (hobbies: string[]) => void;
+  name: string;
 }
 
-const HobbiesDialog = ({ values, onChangeValue }: Props) => {
-  const [hobbies, setHobbies] = useState<string[]>(values);
+const HobbiesDialog = ({ name }: Props) => {
+  const [hobbiesList, setHobbiesList] = useState<TagResult['results']>();
 
   useEffect(() => {
-    setHobbies(values);
-  }, [values]);
+    apiCaller
+      .getAllTag(['totalCount', { results: ['_id', 'name'] }])
+      .$args({})
+      .$fetch()
+      .then(value => {
+        setHobbiesList(value.results);
+      });
+  }, []);
+
+  const { setFieldValue } = useFormikContext();
+  const [fields] = useField(name);
+  const data = fields.value || [];
+
+  const [hobbies, setHobbies] = useState<Tag[]>(data || []);
 
   const [showDialog, setShowDialog] = useState(false);
 
-  const onHobbitClick = (value: string) => {
+  const onHobbitClick = (value: Tag) => {
     const index = hobbies.indexOf(value);
     if (index === -1) {
       if (hobbies.length === MAX_HOBBIES) return;
 
       setHobbies([...hobbies, value]);
     } else {
-      setHobbies(hobbies.filter(item => item !== value));
+      setHobbies(hobbies.filter(item => item._id !== value._id));
     }
   };
 
   const handleSubmit = () => {
-    onChangeValue(hobbies);
     setShowDialog(false);
+    setFieldValue(name, hobbies);
   };
 
-  const existsHobbit = (value: string) => hobbies.indexOf(value) !== -1;
-  const showEdit = values.length > 0;
+  const existsHobbit = (value: Tag) =>
+    !!hobbies.find(hobbit => hobbit._id === value._id);
+  const showEdit = hobbies.length > 0;
 
   return (
     <>
@@ -67,10 +80,10 @@ const HobbiesDialog = ({ values, onChangeValue }: Props) => {
             vào hồ sơ.
           </p>
           <div className='flex justify-center gap-0.8 flex-wrap max-w-[552px] mx-auto my-1.2'>
-            {HOBBIES.map((hobbit, index) => (
+            {hobbiesList?.map((hobbit, index) => (
               <PersonalityType
                 key={index}
-                text={hobbit}
+                tag={hobbit || ''}
                 isActive={existsHobbit(hobbit)}
                 onClick={onHobbitClick}
               />
