@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "gen": "pmp -o src/api-graphql.ts --codegen-functions",
+    "gen": "pmp -o src/api-graphql.ts --codegen-functions --codegen-react-hooks",
     "gen:luxury": "node node_modules/generate-graphql-api/dist/index.js -o ./src/api-graphql.ts --codegen-functions"
   },
   "dependencies": {

@@ -1,11 +1,21 @@
+import { useGetAllTag } from '@/api-graphql';
+// import { HOBBIES } from '@/common/constants/data';
+import { useEffect } from 'react';
+
 import Card from '@/components/Card';
 import PersonalityType from '@/components/PersonalityType';
-
-// import { HOBBIES } from '@/common/constants/data';
 
 interface Props {}
 
 const ProfileEditInterests = ({}: Props) => {
+  const [loadHobbies, { data }] = useGetAllTag([{ results: ['_id', 'name'] }]);
+
+  const hobbies = data?.getAllTag.results || [];
+
+  useEffect(() => {
+    loadHobbies();
+  }, []);
+
   const handleDone = () => {
     console.log('done');
   };
@@ -25,14 +35,14 @@ const ProfileEditInterests = ({}: Props) => {
         </div>
         <div className='flex justify-center flex-wrap gap-0.8 py-1.6 px-1.2 bg-white'>
           {/* TODO */}
-          {/* {HOBBIES.map((hobbit, index) => (
+          {hobbies.map((hobbit, index) => (
             <PersonalityType
               key={index}
               tag={hobbit}
               // isActive={existsHobbit(hobbit)}
               // onClick={onHobbitClick}
             />
-          ))} */}
+          ))}
         </div>
       </Card>
     </div>

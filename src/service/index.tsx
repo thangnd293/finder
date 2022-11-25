@@ -23,9 +23,9 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-export const apiCaller = apiProvider(
-  new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-  }),
-);
+export const graphqlClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+export const apiCaller = apiProvider(graphqlClient);

@@ -1,3 +1,18 @@
+import {
+  DocumentNode,
+  MutationHookOptions,
+  MutationTuple,
+  QueryHookOptions,
+  SubscriptionHookOptions,
+  gql,
+  useLazyQuery,
+  useMutation,
+  useSubscription,
+} from '@apollo/client';
+import { ApolloClient, execute } from '@apollo/client/core';
+import { OperationDefinitionNode } from 'graphql';
+import create from 'zustand';
+
 /* eslint-disable */
 
 // *******************************************************
@@ -86,9 +101,6 @@ const guessFragmentType = (fragment: string | DocumentNode) => {
   }
   return { isString, isFragment, fragmentName };
 };
-
-import { OperationDefinitionNode } from 'graphql';
-import { ApolloClient, execute, DocumentNode, gql } from '@apollo/client/core';
 
 export interface Address {
   city: Maybe<string>;
@@ -483,6 +495,10 @@ export interface DeclineBlockUserArgs {
   user_id: string;
 }
 
+export interface DeleteFileArgs {
+  fileUrl: string;
+}
+
 export interface LikeUserArgs {
   user_id: string;
 }
@@ -567,7 +583,7 @@ export type ExecutableQueryWithArgs<T, A> = QueryWithArgs<T, A>;
 export interface ExecutableQueryWithOptionalArgs<T, A>
   extends QueryWithOptionalArgs<T, A>,
     Executable<T> {}
-import create from 'zustand';
+
 export const useLoadingStore = create<
   {
     [K in keyof ReturnType<typeof apiProvider> as K extends `${string}`
@@ -1044,6 +1060,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       `;
       return abortableQuery(queryTemplate, true, false);
     },
+    deleteFile(): QueryWithArgs<boolean, DeleteFileArgs> {
+      const queryTemplate = gql`
+        mutation deleteFile($fileUrl: String!) {
+          deleteFile(fileUrl: $fileUrl)
+        }
+      `;
+      return abortableQuery(queryTemplate, true, false);
+    },
     likeUser(): QueryWithArgs<boolean, LikeUserArgs> {
       const queryTemplate = gql`
         mutation likeUser($user_id: ObjectID!) {
@@ -1165,4 +1189,648 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       return abortableQuery(queryTemplate, true, false);
     },
   };
+};
+
+export const useConfirmMail = (
+  options?: QueryHookOptions<{ confirmMail: boolean }, ConfirmMailArgs>,
+) => {
+  const query = gql`
+    query confirmMail($code: Float!, $email: String!) {
+      confirmMail(code: $code, email: $email)
+    }
+  `;
+  return useLazyQuery<{ confirmMail: boolean }, ConfirmMailArgs>(
+    query,
+    options,
+  );
+};
+
+export const useCreateMultiTag = (
+  options?: QueryHookOptions<{ createMultiTag: boolean }>,
+) => {
+  const query = gql`
+    query createMultiTag {
+      createMultiTag
+    }
+  `;
+  return useLazyQuery<{ createMultiTag: boolean }>(query, options);
+};
+
+export const useCreateMultiUser = (
+  options?: QueryHookOptions<{ createMultiUser: boolean }>,
+) => {
+  const query = gql`
+    query createMultiUser {
+      createMultiUser
+    }
+  `;
+  return useLazyQuery<{ createMultiUser: boolean }>(query, options);
+};
+
+export const useDeleteAccount = (
+  options?: QueryHookOptions<{ deleteAccount: boolean }>,
+) => {
+  const query = gql`
+    query deleteAccount {
+      deleteAccount
+    }
+  `;
+  return useLazyQuery<{ deleteAccount: boolean }>(query, options);
+};
+
+export const useForgotPassword = (
+  options?: QueryHookOptions<{ forgotPassword: boolean }, ForgotPasswordArgs>,
+) => {
+  const query = gql`
+    query forgotPassword($email: String!) {
+      forgotPassword(email: $email)
+    }
+  `;
+  return useLazyQuery<{ forgotPassword: boolean }, ForgotPasswordArgs>(
+    query,
+    options,
+  );
+};
+
+export const useGetAllConversation = (
+  fields: GenFields<ConversationResult>,
+  options?: QueryHookOptions<
+    { getAllConversation: ConversationResult },
+    GetAllConversationArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getAllConversation ($pagination: PaginationInput) {
+        getAllConversation(pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<
+    { getAllConversation: ConversationResult },
+    GetAllConversationArgs
+  >(query, options);
+};
+
+export const useGetAllMessage = (
+  fields: GenFields<MessageResult>,
+  options?: QueryHookOptions<
+    { getAllMessage: MessageResult },
+    GetAllMessageArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getAllMessage ($filter: FilterGetAllMessage,$pagination: PaginationMessageInput) {
+        getAllMessage(filter: $filter,pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ getAllMessage: MessageResult }, GetAllMessageArgs>(
+    query,
+    options,
+  );
+};
+
+export const useGetAllReportsUser = (
+  fields: GenFields<UserResult>,
+  options?: QueryHookOptions<
+    { getAllReportsUser: UserResult },
+    GetAllReportsUserArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getAllReportsUser ($pagination: PaginationInput) {
+        getAllReportsUser(pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ getAllReportsUser: UserResult }, GetAllReportsUserArgs>(
+    query,
+    options,
+  );
+};
+
+export const useGetAllTag = (
+  fields: GenFields<TagResult>,
+  options?: QueryHookOptions<{ getAllTag: TagResult }, GetAllTagArgs>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getAllTag ($filter: FilterGetAllTag,$pagination: PaginationInput) {
+        getAllTag(filter: $filter,pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ getAllTag: TagResult }, GetAllTagArgs>(query, options);
+};
+
+export const useGetAllUser = (
+  fields: GenFields<UserResult>,
+  options?: QueryHookOptions<{ getAllUser: UserResult }, GetAllUserArgs>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getAllUser ($filter: FilterGetAllUser,$pagination: PaginationInput) {
+        getAllUser(filter: $filter,pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ getAllUser: UserResult }, GetAllUserArgs>(
+    query,
+    options,
+  );
+};
+
+export const useGetCurrentAddress = (
+  fields: GenFields<Address>,
+  options?: QueryHookOptions<{ getCurrentAddress: Address }>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getCurrentAddress  {
+        getCurrentAddress {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ getCurrentAddress: Address }>(query, options);
+};
+
+export const useGetCurrentUser = (
+  fields: GenFields<User>,
+  options?: QueryHookOptions<{ getCurrentUser: User }>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getCurrentUser  {
+        getCurrentUser {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ getCurrentUser: User }>(query, options);
+};
+
+export const useGetOneConversation = (
+  fields: GenFields<Conversation>,
+  options?: QueryHookOptions<
+    { getOneConversation: Conversation },
+    GetOneConversationArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getOneConversation ($input: FilterGetOneConversation) {
+        getOneConversation(input: $input) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<
+    { getOneConversation: Conversation },
+    GetOneConversationArgs
+  >(query, options);
+};
+
+export const useRefreshToken = (
+  fields: GenFields<JwtPayload>,
+  options?: QueryHookOptions<{ refreshToken: JwtPayload }>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query refreshToken  {
+        refreshToken {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ refreshToken: JwtPayload }>(query, options);
+};
+
+export const useResetCache = (
+  options?: QueryHookOptions<{ resetCache: boolean }>,
+) => {
+  const query = gql`
+    query resetCache {
+      resetCache
+    }
+  `;
+  return useLazyQuery<{ resetCache: boolean }>(query, options);
+};
+
+export const useSignInAsAdmin = (
+  fields: GenFields<JwtPayload>,
+  options?: QueryHookOptions<{ signInAsAdmin: JwtPayload }, SignInAsAdminArgs>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query signInAsAdmin ($email: String!,$password: String!) {
+        signInAsAdmin(email: $email,password: $password) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ signInAsAdmin: JwtPayload }, SignInAsAdminArgs>(
+    query,
+    options,
+  );
+};
+
+export const useStatisticUser = (
+  fields: GenFields<UserResult>,
+  options?: QueryHookOptions<{ statisticUser: UserResult }, StatisticUserArgs>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query statisticUser ($filter: FilterStatisticUser,$pagination: PaginationInput) {
+        statisticUser(filter: $filter,pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ statisticUser: UserResult }, StatisticUserArgs>(
+    query,
+    options,
+  );
+};
+
+export const useVerifyTokenFacebook = (
+  fields: GenFields<JwtPayload>,
+  options?: QueryHookOptions<
+    { verifyTokenFacebook: JwtPayload },
+    VerifyTokenFacebookArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query verifyTokenFacebook ($token: String!) {
+        verifyTokenFacebook(token: $token) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<
+    { verifyTokenFacebook: JwtPayload },
+    VerifyTokenFacebookArgs
+  >(query, options);
+};
+
+export const useVerifyTokenGoogle = (
+  fields: GenFields<JwtPayload>,
+  options?: QueryHookOptions<
+    { verifyTokenGoogle: JwtPayload },
+    VerifyTokenGoogleArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query verifyTokenGoogle ($token: String!) {
+        verifyTokenGoogle(token: $token) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<{ verifyTokenGoogle: JwtPayload }, VerifyTokenGoogleArgs>(
+    query,
+    options,
+  );
+};
+
+export const useChangePassword = (
+  options?: MutationHookOptions<
+    { changePassword: boolean },
+    ChangePasswordArgs
+  >,
+) => {
+  const mutation = gql`
+    mutation changePassword(
+      $confirmPassword: String!
+      $newPassword: String!
+      $oldPassword: String!
+    ) {
+      changePassword(
+        confirmPassword: $confirmPassword
+        newPassword: $newPassword
+        oldPassword: $oldPassword
+      )
+    }
+  `;
+  return useMutation<{ changePassword: boolean }, ChangePasswordArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useChangeSetting = (
+  options?: MutationHookOptions<{ changeSetting: boolean }, ChangeSettingArgs>,
+) => {
+  const mutation = gql`
+    mutation changeSetting($input: MySettingInput!) {
+      changeSetting(input: $input)
+    }
+  `;
+  return useMutation<{ changeSetting: boolean }, ChangeSettingArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useConfirmBlockUser = (
+  options?: MutationHookOptions<
+    { confirmBlockUser: boolean },
+    ConfirmBlockUserArgs
+  >,
+) => {
+  const mutation = gql`
+    mutation confirmBlockUser($user_id: ObjectID!) {
+      confirmBlockUser(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ confirmBlockUser: boolean }, ConfirmBlockUserArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useConfirmDeleteAccount = (
+  options?: MutationHookOptions<
+    { confirmDeleteAccount: boolean },
+    ConfirmDeleteAccountArgs
+  >,
+) => {
+  const mutation = gql`
+    mutation confirmDeleteAccount($code: Float!, $email: String!) {
+      confirmDeleteAccount(code: $code, email: $email)
+    }
+  `;
+  return useMutation<
+    { confirmDeleteAccount: boolean },
+    ConfirmDeleteAccountArgs
+  >(mutation, options);
+};
+
+export const useCreateConversation = (
+  fields: GenFields<Conversation>,
+  options?: MutationHookOptions<
+    { createConversation: Conversation },
+    CreateConversationArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const mutation = gql`
+      mutation createConversation ($input: CreateConversationInput!) {
+        createConversation(input: $input) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useMutation<
+    { createConversation: Conversation },
+    CreateConversationArgs
+  >(mutation, options);
+};
+
+export const useCreateTag = (
+  options?: MutationHookOptions<{ createTag: boolean }, CreateTagArgs>,
+) => {
+  const mutation = gql`
+    mutation createTag($createTagInput: CreateTagInput!) {
+      createTag(createTagInput: $createTagInput)
+    }
+  `;
+  return useMutation<{ createTag: boolean }, CreateTagArgs>(mutation, options);
+};
+
+export const useDeclineBlockUser = (
+  options?: MutationHookOptions<
+    { declineBlockUser: boolean },
+    DeclineBlockUserArgs
+  >,
+) => {
+  const mutation = gql`
+    mutation declineBlockUser($user_id: ObjectID!) {
+      declineBlockUser(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ declineBlockUser: boolean }, DeclineBlockUserArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useDeleteFile = (
+  options?: MutationHookOptions<{ deleteFile: boolean }, DeleteFileArgs>,
+) => {
+  const mutation = gql`
+    mutation deleteFile($fileUrl: String!) {
+      deleteFile(fileUrl: $fileUrl)
+    }
+  `;
+  return useMutation<{ deleteFile: boolean }, DeleteFileArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useLikeUser = (
+  options?: MutationHookOptions<{ likeUser: boolean }, LikeUserArgs>,
+) => {
+  const mutation = gql`
+    mutation likeUser($user_id: ObjectID!) {
+      likeUser(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ likeUser: boolean }, LikeUserArgs>(mutation, options);
+};
+
+export const useRemoveMessage = (
+  fields: GenFields<Message>,
+  options?: MutationHookOptions<{ removeMessage: Message }, RemoveMessageArgs>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const mutation = gql`
+      mutation removeMessage ($message_id: ObjectID!) {
+        removeMessage(message_id: $message_id) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useMutation<{ removeMessage: Message }, RemoveMessageArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useReportUser = (
+  options?: MutationHookOptions<{ reportUser: boolean }, ReportUserArgs>,
+) => {
+  const mutation = gql`
+    mutation reportUser($reasonReport: String!, $userReport: ObjectID!) {
+      reportUser(reasonReport: $reasonReport, userReport: $userReport)
+    }
+  `;
+  return useMutation<{ reportUser: boolean }, ReportUserArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useResetPassword = (
+  options?: MutationHookOptions<{ resetPassword: boolean }, ResetPasswordArgs>,
+) => {
+  const mutation = gql`
+    mutation resetPassword($input: ResetPasswordInput!) {
+      resetPassword(input: $input)
+    }
+  `;
+  return useMutation<{ resetPassword: boolean }, ResetPasswordArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useSignIn = (
+  fields: GenFields<JwtPayload>,
+  options?: MutationHookOptions<{ signIn: JwtPayload }, SignInArgs>,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const mutation = gql`
+      mutation signIn ($input: LoginInput!) {
+        signIn(input: $input) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useMutation<{ signIn: JwtPayload }, SignInArgs>(mutation, options);
+};
+
+export const useSignUp = (
+  options?: MutationHookOptions<{ signUp: boolean }, SignUpArgs>,
+) => {
+  const mutation = gql`
+    mutation signUp($input: RegisterInput!) {
+      signUp(input: $input)
+    }
+  `;
+  return useMutation<{ signUp: boolean }, SignUpArgs>(mutation, options);
+};
+
+export const useSkipUser = (
+  options?: MutationHookOptions<{ skipUser: boolean }, SkipUserArgs>,
+) => {
+  const mutation = gql`
+    mutation skipUser($user_id: ObjectID!) {
+      skipUser(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ skipUser: boolean }, SkipUserArgs>(mutation, options);
+};
+
+export const useUnSkipUser = (
+  options?: MutationHookOptions<{ unSkipUser: boolean }, UnSkipUserArgs>,
+) => {
+  const mutation = gql`
+    mutation unSkipUser($user_id: ObjectID!) {
+      unSkipUser(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ unSkipUser: boolean }, UnSkipUserArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useUnlikeUser = (
+  options?: MutationHookOptions<{ unlikeUser: boolean }, UnlikeUserArgs>,
+) => {
+  const mutation = gql`
+    mutation unlikeUser($user_id: ObjectID!) {
+      unlikeUser(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ unlikeUser: boolean }, UnlikeUserArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useUpdateLocation = (
+  options?: MutationHookOptions<
+    { updateLocation: boolean },
+    UpdateLocationArgs
+  >,
+) => {
+  const mutation = gql`
+    mutation updateLocation($coordinates: [Float!]!) {
+      updateLocation(coordinates: $coordinates)
+    }
+  `;
+  return useMutation<{ updateLocation: boolean }, UpdateLocationArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useUpdateProfile = (
+  options?: MutationHookOptions<{ updateProfile: boolean }, UpdateProfileArgs>,
+) => {
+  const mutation = gql`
+    mutation updateProfile($input: UpdateUserInput!) {
+      updateProfile(input: $input)
+    }
+  `;
+  return useMutation<{ updateProfile: boolean }, UpdateProfileArgs>(
+    mutation,
+    options,
+  );
+};
+
+export const useUploadFile = (
+  options?: MutationHookOptions<{ uploadFile: string }, UploadFileArgs>,
+) => {
+  const mutation = gql`
+    mutation uploadFile($file: Upload!) {
+      uploadFile(file: $file)
+    }
+  `;
+  return useMutation<{ uploadFile: string }, UploadFileArgs>(mutation, options);
 };

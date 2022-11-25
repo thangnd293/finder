@@ -1,9 +1,10 @@
-import { Tag, TagResult } from '@/api-graphql';
+import { Tag, TagResult, useGetAllTag } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
 import { useField, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 
 import EditIcon from '@/assets/svgs/EditIcon';
+import LoadingIcon from '@/assets/svgs/LoadingIcon';
 import PlusIcon from '@/assets/svgs/PlusIcon';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
@@ -18,17 +19,11 @@ interface Props {
 }
 
 const HobbiesDialog = ({ name }: Props) => {
-  const [hobbiesList, setHobbiesList] = useState<TagResult['results']>();
+  const [loadHobbies, { data: bobbiesData, loading }] = useGetAllTag([
+    { results: ['_id', 'name'] },
+  ]);
 
-  useEffect(() => {
-    apiCaller
-      .getAllTag(['totalCount', { results: ['_id', 'name'] }])
-      .$args({})
-      .$fetch()
-      .then(value => {
-        setHobbiesList(value.results);
-      });
-  }, []);
+  const hobbiesList = bobbiesData?.getAllTag.results || [];
 
   const { setFieldValue } = useFormikContext();
   const [fields] = useField(name);
@@ -37,6 +32,11 @@ const HobbiesDialog = ({ name }: Props) => {
   const [hobbies, setHobbies] = useState<Tag[]>(data || []);
 
   const [showDialog, setShowDialog] = useState(false);
+
+  useEffect(() => {
+    if (!showDialog) return;
+    loadHobbies();
+  }, [showDialog]);
 
   const onHobbitClick = (value: Tag) => {
     const index = hobbies.indexOf(value);
@@ -72,14 +72,24 @@ const HobbiesDialog = ({ name }: Props) => {
       />
 
       <Modal visible={showDialog} onClose={() => setShowDialog(false)}>
-        <div className='w-[640px] max-h-[80vh] p-2 overflow-y-auto scroll-hidden text-center'>
-          <h3 className='text-32 text-base font-semibold'>Sở Thích</h3>
-          <Space h={20} />
+        <div className='w-[640px] h-[80vh] p-2 flex flex-col text-center'>
+          <h3 className='text-32 text-base font-semibold mb-2'>Sở Thích</h3>
           <p className='text-14 text-text-secondary'>
             Hãy cho mọi người biết bạn thích những gì bằng cách thêm thông tin
             vào hồ sơ.
           </p>
-          <div className='flex justify-center gap-0.8 flex-wrap max-w-[552px] mx-auto my-1.2'>
+          {loading && (
+            <div className='flex-1 flex justify-center items-center'>
+              <LoadingIcon />
+            </div>
+          )}
+          <div
+            style={{
+              visibility: loading ? 'hidden' : 'unset',
+              opacity: loading ? 0 : 1,
+            }}
+            className='flex-1 flex justify-center gap-0.8 flex-wrap max-w-[552px] mx-auto my-1.2  overflow-y-auto scroll-hidden'
+          >
             {hobbiesList?.map((hobbit, index) => (
               <PersonalityType
                 key={index}
