@@ -15,7 +15,7 @@ class Draggable {
 
   constructor(target: HTMLElement, options?: IOptions) {
     this.opts = {
-      ...options
+      ...options,
     };
 
     this.target = target;
@@ -54,7 +54,7 @@ class Draggable {
   protected setTransform(position: [number, number], transition?: string) {
     this.prevPosition = position;
     if (!this.target) return;
-    let target = this.target;
+    const target = this.target;
 
     if (this.opts.setCSS) {
       if (transition) {
@@ -85,7 +85,7 @@ class Draggable {
     const { originPosition, shiftPosition } = this.distanceFormula.start(
       element,
       this.initPosition,
-      e
+      e,
     );
 
     this.shiftPosition = shiftPosition;
@@ -97,7 +97,7 @@ class Draggable {
       this.initPosition,
       this.originPosition,
       this.shiftPosition,
-      e
+      e,
     );
 
     this.setTransform([x, y]);
@@ -128,7 +128,7 @@ class Draggable {
       this.initPosition,
       this.originPosition,
       this.shiftPosition,
-      e
+      e,
     );
 
     ({ x, y } = this.handleStepSize(x, y));
@@ -141,7 +141,7 @@ class Draggable {
     this.opts.onMove?.(e, element, this.setTransform);
 
     // handle event target
-    let elemBelow = document.elementsFromPoint(e.pageX, e.pageY);
+    const elemBelow = document.elementsFromPoint(e.pageX, e.pageY);
     this.opts.onTarget?.(e, element, elemBelow);
   }
 
@@ -153,12 +153,12 @@ class Draggable {
     const element = this.target;
 
     // calc endPosition
-    let [x, y] = this.distanceFormula.end(
+    const [x, y] = this.distanceFormula.end(
       element,
       this.initPosition,
       this.originPosition,
       this.shiftPosition,
-      e
+      e,
     );
 
     this.dragging = false;
@@ -167,7 +167,7 @@ class Draggable {
     this.opts.onEnd?.(e, element, [x, y], this.setTransform);
 
     // handle event dropAtElement
-    let elemBelow = document.elementsFromPoint(e.pageX, e.pageY);
+    const elemBelow = document.elementsFromPoint(e.pageX, e.pageY);
 
     this.opts.onDropAtElement?.(e, element, elemBelow);
 
@@ -200,14 +200,14 @@ class Draggable {
         ? 0
         : clamp(x, [
             this.opts.maxDistance?.x?.min ?? -Infinity,
-            this.opts.maxDistance?.x?.max ?? Infinity
+            this.opts.maxDistance?.x?.max ?? Infinity,
           ]);
     y =
       this.opts.direction === 'horizontal'
         ? 0
         : clamp(y, [
             this.opts.maxDistance?.y?.min ?? -Infinity,
-            this.opts.maxDistance?.y?.max ?? Infinity
+            this.opts.maxDistance?.y?.max ?? Infinity,
           ]);
     return { x, y };
   }
@@ -218,13 +218,13 @@ class Draggable {
         x,
         typeof this.opts.stepSize === 'object'
           ? this.opts.stepSize.x
-          : this.opts.stepSize
+          : this.opts.stepSize,
       );
       y = getNearestScale(
         y,
         typeof this.opts.stepSize === 'object'
           ? this.opts.stepSize.y
-          : this.opts.stepSize
+          : this.opts.stepSize,
       );
     }
     return { x, y };

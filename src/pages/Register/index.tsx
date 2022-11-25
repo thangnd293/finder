@@ -1,16 +1,17 @@
 import { useLoadingStore } from '@/api-graphql';
+import { apiCaller } from '@/service/index';
 import { Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
 
-import { handleError } from '../../common/utils/handleError';
-import { apiCaller } from '../../service/index';
 import { OtpModal } from './OtpModal';
 import { useRegisterStore } from './store';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Space from '@/components/Space';
+
+import { handleError } from '@/common/utils/handleError';
 
 interface IFormData {
   email: string;

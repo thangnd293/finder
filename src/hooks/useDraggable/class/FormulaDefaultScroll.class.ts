@@ -49,26 +49,20 @@ class FormulaDefaultScroll extends DistanceFormula {
     return [x, y];
   }
 
-  end(
-    node: HTMLElement,
-    initPosition: [number, number],
-    originPosition: [number, number],
-    shiftPosition: [number, number],
-    event: MouseEvent,
-  ): [number, number] {
+  end(node: HTMLElement, initPosition: [number, number]): [number, number] {
     const rectParent = (
       node.parentElement as HTMLDivElement
     ).getBoundingClientRect();
     const [initX, initY] = initPosition;
 
-    let x = rectParent.x - initX;
-    let y = rectParent.y - initY;
+    const x = rectParent.x - initX;
+    const y = rectParent.y - initY;
 
     return [x, y];
   }
 
   getPosition = (elem: any) => {
-    var left = 0,
+    let left = 0,
       top = 0;
 
     do {

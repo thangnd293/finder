@@ -1,3 +1,4 @@
+import { apiCaller } from '@/service/index';
 import { GoogleLoginButton } from 'react-social-login-buttons';
 import { IResolveParams, LoginSocialGoogle } from 'reactjs-social-login';
 
@@ -14,7 +15,7 @@ export const LoginGoogle = () => {
       discoveryDocs='claims_supported'
       access_type='offline'
       onResolve={({ provider, data }: IResolveParams) => {
-        console.log({ provider, data });
+        apiCaller.verifyTokenGoogle(['accessToken', 'accessToken']);
       }}
       onReject={err => {
         console.log(err);

@@ -1,11 +1,8 @@
-import { Tag } from '@/api-graphql';
-import { GenderEnum, LookingFor } from '@/api-graphql';
+import { GenderEnum, LookingFor, Tag } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
 import { getUserCurrentFragment } from '@/service/user';
 import { Formik } from 'formik';
-import jwtDecode, { JwtPayload } from 'jwt-decode';
-import { useEffect, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { v4 as uuid } from 'uuid';
 import * as Yup from 'yup';
@@ -74,12 +71,9 @@ const FIND_GENDER: Array<{ id: LookingFor; label: string }> = [
   },
 ];
 
-interface Props {}
-
-const Onboarding = ({}: Props) => {
+const Onboarding = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const query = useMemo(() => new URLSearchParams(location.search), [location]);
+
   const user = useUserStore(s => s.user);
 
   const loading = useLoadingStore(s =>
@@ -94,15 +88,6 @@ const Onboarding = ({}: Props) => {
   if (user && !user.isFirstLogin) {
     return <Navigate to='/app' replace />;
   }
-
-  useEffect(() => {
-    try {
-      const token = query.get('token');
-      if (!token) return;
-      const jwt = jwtDecode<JwtPayload>(token);
-      console.log(jwt);
-    } catch (error) {}
-  }, [query]);
 
   const initialValues: FormData = {
     username: 'Phạm Minh Phát',
@@ -132,10 +117,8 @@ const Onboarding = ({}: Props) => {
 
   const handleSubmit = async ({
     birthDays,
-    email,
     findGender,
     gender,
-    showGender,
     username,
     images,
     tags,

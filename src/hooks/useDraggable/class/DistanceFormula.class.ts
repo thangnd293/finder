@@ -32,7 +32,7 @@ export class DistanceFormulaInit extends DistanceFormula {
     initPosition: [number, number],
     event: MouseEvent,
   ): { shiftPosition: [number, number]; originPosition: [number, number] } {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   move(
     node: HTMLElement,
@@ -41,7 +41,7 @@ export class DistanceFormulaInit extends DistanceFormula {
     shiftPosition: [number, number],
     event: MouseEvent,
   ): [number, number] {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
   end(
     node: HTMLElement,
@@ -50,7 +50,7 @@ export class DistanceFormulaInit extends DistanceFormula {
     shiftPosition: [number, number],
     event: MouseEvent,
   ): [number, number] {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }
 

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import {
   DocumentNode,
   MutationHookOptions,
@@ -10,6 +11,9 @@ import {
   useSubscription,
 } from '@apollo/client';
 import { ApolloClient, execute } from '@apollo/client/core';
+=======
+import { ApolloClient, DocumentNode, execute, gql } from '@apollo/client/core';
+>>>>>>> Stashed changes
 import { OperationDefinitionNode } from 'graphql';
 import create from 'zustand';
 

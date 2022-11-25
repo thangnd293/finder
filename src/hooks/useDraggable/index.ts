@@ -11,7 +11,7 @@ const defaultOptions = {
   direction: 'both',
   maxDistance: {
     x: { max: Infinity, min: -Infinity },
-    y: { max: Infinity, min: -Infinity }
+    y: { max: Infinity, min: -Infinity },
   },
   stepSize: 0,
   delay: 150,
@@ -21,17 +21,17 @@ const defaultOptions = {
   onEnd: function () {},
   onDelayEnd: function () {},
   onTarget: function () {},
-  onDropAtElement: function () {}
+  onDropAtElement: function () {},
 } as const;
 
 const useDraggable: TUseDraggable = <T extends HTMLElement>(
   options?: IOptions,
-  dependencyList?: any
+  dependencyList?: any,
 ) => {
   const opts = useMemo(() => {
     return {
       ...defaultOptions,
-      ...options
+      ...options,
     };
   }, [options, dependencyList]);
 

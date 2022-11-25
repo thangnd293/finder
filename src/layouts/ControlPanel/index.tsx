@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useContext, useLayoutEffect, useMemo, useState } from 'react';
-import React from 'react';
+import React, { useContext, useLayoutEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import MainNavBar from './MainNavBar';
@@ -36,7 +35,7 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
           isFirstRender: false,
         }));
       }
-    }, []);
+    }, [currentPanel.isFirstRender]);
 
     useLayoutEffect(() => {
       setCurrentPanel(() => {
@@ -119,14 +118,14 @@ export const controlPanels: Record<
   },
 };
 
-function initPanel(path: string, isFirstRender: boolean = false) {
+function initPanel(path: string, isFirstRender = false) {
   let panel = ControlPanelType.Recs;
 
   if (Object.values(ControlPanelType).includes(path as ControlPanelType)) {
     panel = path as ControlPanelType;
   }
 
-  let prev = controlPanels[panel].prev;
+  const prev = controlPanels[panel].prev;
 
   return {
     panel,

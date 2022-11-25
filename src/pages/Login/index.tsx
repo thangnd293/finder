@@ -1,10 +1,10 @@
 import { useLoadingStore } from '@/api-graphql';
 import { Formik } from 'formik';
-import { toast } from 'react-toastify/dist/core';
 import * as Yup from 'yup';
 
-import { useUserStore } from '../../store/user';
 import { LoginGoogle } from './LoginGoogle';
+
+import { useAuthStore } from '@/store/auth';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -39,7 +39,7 @@ const Login = ({}: Props) => {
 
   const onSubmit = async (values: IFormData) => {
     try {
-      const response = await useUserStore.getState().signIn({ input: values });
+      const response = await useAuthStore.getState().signIn({ input: values });
 
       if (response) {
         navigate('/app');
@@ -87,9 +87,8 @@ const Login = ({}: Props) => {
         )}
       </Formik>
       <div className='mt-2 flex flex-col items-center justify-center gap-1'>
-        <hr className='w-10 border-gray-20' />
-        <span>Hoặc</span>
-        <hr className='w-10 border-gray-20' />
+        <span className='font-bold'>Hoặc</span>
+
         <LoginGoogle />
       </div>
     </div>
