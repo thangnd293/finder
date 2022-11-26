@@ -7,6 +7,7 @@ import Carousel from '../Carousel';
 import Information from '../Information';
 import { flipLeft, flipRight } from './utils';
 
+import DownArrowColorIcon from '@/assets/svgs/DownArrowColorIcon';
 import HomeIcon from '@/assets/svgs/HomeIcon';
 import InfoIcon from '@/assets/svgs/InfoIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
@@ -135,7 +136,12 @@ const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
       />
       {showInfo ? (
         <div className='relative w-full bg-white rounded-b-8 pb-10'>
-          <button onClick={handleHiddenInfo}>unlock</button>
+          <button
+            className='absolute -top-3 right-1.2'
+            onClick={handleHiddenInfo}
+          >
+            <DownArrowColorIcon width={52} height={52} />
+          </button>
           <Information user={user} />
         </div>
       ) : (

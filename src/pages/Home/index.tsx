@@ -13,7 +13,10 @@ import {
 
 import HomeMobile from './HomeMobile';
 
+import { useUserStore } from '@/store/user';
+
 import CardBox from '@/components/CardController';
+import Loading from '@/components/Loading';
 
 import useMediaQuery from '@/hooks/useMediaQuery';
 
@@ -25,6 +28,8 @@ const SIZE_PER_PAGE = 10;
 interface Props {}
 
 const Home = ({}: Props) => {
+  const { user } = useUserStore();
+
   const [data, setData] = useState<UserResult | null>(null);
   const [userList, setUserList] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -94,40 +99,8 @@ const Home = ({}: Props) => {
     setIsLoading(false);
   }
 
-  const updateData = () => {
-    console.log(userList);
+  const updateData = (type: 'like' | 'skip') => {
     if (!data) return;
-    // let countDuplicate = 0;
-    // const newUserList = [...userList];
-
-    // const duplicate = newUserList.filter(user =>
-    //   data.results?.some(u => u?._id === user?._id),
-    // );
-
-    // countDuplicate = duplicate.length;
-    // const nextUser = data.results![countDuplicate];
-    // if (userList.length < NUMBER_OF_CARDS) {
-    //   newUserList.unshift(nextUser);
-    // } else {
-    //   if (prevUser) {
-    //     newUserList.pop();
-    //     newUserList.unshift(nextUser);
-    //   }
-    // }
-
-    // setData(prev => {
-    //   return (
-    //     prev && {
-    //       totalCount: prev.totalCount! - countDuplicate,
-    //       results: prev.results!.slice(countDuplicate + 1),
-    //     }
-    //   );
-    // });
-
-    // setCurrUser(newUserList[newUserList.length - 2]);
-    // setPrevUser(newUserList[newUserList.length - 1]);
-    // setUserList(newUserList);
-
     setUserList(prev => {
       const newData = [...prev];
       const duplicate = newData.filter(user =>
@@ -139,10 +112,8 @@ const Home = ({}: Props) => {
       if (prev.length < NUMBER_OF_CARDS) {
         newData.unshift(nextUser);
       } else {
-        if (prevUser) {
-          newData.pop();
-          newData.unshift(nextUser);
-        }
+        newData.pop();
+        newData.unshift(nextUser);
       }
       setData(prev => {
         return (
@@ -152,33 +123,40 @@ const Home = ({}: Props) => {
           }
         );
       });
-      setCurrUser(newData[newData.length - 2]);
-      setPrevUser(newData[newData.length - 1]);
+
+      if (type === 'like') {
+        setCurrUser(newData[newData.length - 2]);
+        setPrevUser(null);
+      } else {
+        setCurrUser(newData[newData.length - 2]);
+        setPrevUser(newData[newData.length - 1]);
+      }
       return newData;
     });
   };
 
-  // useEffect(() => {
-  //   console.log('currUser: ', currUser);
-  //   console.log('userList: ', userList);
-  // }, [currUser, userList]);
-
-  const onLike = () => {
-    updateData();
-  };
-
-  const onBack = useCallback(() => {
+  const onBack = useCallback(async () => {
     if (prevUser) {
       setData(prev => {
-        return prev && { ...prev, results: [...prev.results!, prevUser] };
+        return prev && { ...prev, results: [userList[0], ...prev.results!] };
       });
+
+      setUserList(prev => {
+        return prev.slice(1);
+      });
+
       setPrevUser(null);
       setCurrUser(userList[userList.length - 1]);
+      await apiCaller.unSkipUser().$args({ user_id: prevUser._id }).$fetch();
     }
   }, [data, prevUser, userList]);
 
-  const onNope = useCallback(async () => {
-    updateData();
+  const onLike = useCallback(() => {
+    updateData('like');
+  }, [updateData]);
+
+  const onNope = useCallback(() => {
+    updateData('skip');
   }, [updateData]);
 
   const value: IHomeContext = useMemo(
@@ -194,20 +172,19 @@ const Home = ({}: Props) => {
   );
 
   if (isMobile) return <HomeMobile />;
-  console.log('data', data);
   return (
     <HomeContext.Provider value={value}>
       <div
         id='card-box'
         className='w-full h-full flex items-center justify-center overflow-hidden'
       >
-        <h1
-          className={`${
+        <div
+          className={` ${
             isLoading && !data?.results?.length ? 'block' : 'hidden'
           }`}
         >
-          Loading
-        </h1>
+          <Loading image={user?.images?.[0]} />
+        </div>
         <CardBox
           className={`${
             isLoading && !data?.results?.length ? 'hidden' : 'block'
