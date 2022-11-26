@@ -29,4 +29,5 @@ export const PATH = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
   },
-};
+  'VERIFY-EMAIL': '/verify-success',
+} as const;

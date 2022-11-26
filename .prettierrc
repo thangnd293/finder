@@ -19,7 +19,7 @@
     "@/routes",
     "@/typings",
     "@/pages",
-    "@/redux",
+    "@/store",
     "@/assets|@/component",
     "@/hooks",
     "@/services",

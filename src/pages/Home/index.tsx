@@ -1,7 +1,15 @@
-import { GetAllUserArgs, UserResult } from '@/api-graphql';
+import { GetAllUserArgs, User, UserResult } from '@/api-graphql';
 import { apiCaller } from '@/service';
 import { fragmentGetAllUser } from '@/service/user/index';
-import { useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import HomeMobile from './HomeMobile';
 
@@ -11,41 +19,225 @@ import useMediaQuery from '@/hooks/useMediaQuery';
 
 import { RESPONSIVE } from '@/common/constants/responsive';
 
+const NUMBER_OF_CARDS = 3;
+const SIZE_PER_PAGE = 10;
+
 interface Props {}
 
 const Home = ({}: Props) => {
   const [data, setData] = useState<UserResult | null>(null);
+  const [userList, setUserList] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isFirstLoad = useRef(true);
+  const [prevUser, setPrevUser] = useState<User | null>(null);
+  const [currUser, setCurrUser] = useState<User | null>(null);
+
   const isMobile = useMediaQuery({
     mediaQuery: `(max-width: ${RESPONSIVE.md}px)`,
   });
 
   useEffect(() => {
     const fetch = async () => {
-      const args: GetAllUserArgs = {};
-      const data = await apiCaller
-        .getAllUser(fragmentGetAllUser)
-        .$args({})
-        .$fetch();
-
-      setData(data);
+      await getData();
     };
     fetch();
   }, []);
 
   useEffect(() => {
-    console.log('data', data);
-  }, [data]);
+    const fetch = async () => {
+      if (
+        data &&
+        data.totalCount! > 5 &&
+        data.results!.length <= 3 &&
+        !isLoading
+      ) {
+        await getData();
+      }
+    };
+    fetch();
+  }, [data, getData, isLoading]);
+
+  useEffect(() => {
+    if (data?.results && isFirstLoad.current) {
+      setUserList(data?.results.slice(0, 2));
+      setCurrUser(data?.results[1]);
+      setData(prev => {
+        return (
+          prev && {
+            totalCount: data.totalCount,
+            results: prev.results!.slice(2),
+          }
+        );
+      });
+      isFirstLoad.current = false;
+    }
+  }, [data, isFirstLoad]);
+
+  function fetchData() {
+    const args: GetAllUserArgs = {
+      pagination: {
+        page: 1,
+        size: SIZE_PER_PAGE,
+      },
+    };
+
+    return apiCaller.getAllUser(fragmentGetAllUser).$args(args).$fetch();
+  }
+
+  async function getData() {
+    setIsLoading(true);
+    const { totalCount, results } = await fetchData();
+    setData({
+      totalCount,
+      results: results!.filter(user => !userList.some(u => u._id === user._id)),
+    });
+    setIsLoading(false);
+  }
+
+  const updateData = () => {
+    console.log(userList);
+    if (!data) return;
+    // let countDuplicate = 0;
+    // const newUserList = [...userList];
+
+    // const duplicate = newUserList.filter(user =>
+    //   data.results?.some(u => u?._id === user?._id),
+    // );
+
+    // countDuplicate = duplicate.length;
+    // const nextUser = data.results![countDuplicate];
+    // if (userList.length < NUMBER_OF_CARDS) {
+    //   newUserList.unshift(nextUser);
+    // } else {
+    //   if (prevUser) {
+    //     newUserList.pop();
+    //     newUserList.unshift(nextUser);
+    //   }
+    // }
+
+    // setData(prev => {
+    //   return (
+    //     prev && {
+    //       totalCount: prev.totalCount! - countDuplicate,
+    //       results: prev.results!.slice(countDuplicate + 1),
+    //     }
+    //   );
+    // });
+
+    // setCurrUser(newUserList[newUserList.length - 2]);
+    // setPrevUser(newUserList[newUserList.length - 1]);
+    // setUserList(newUserList);
+
+    setUserList(prev => {
+      const newData = [...prev];
+      const duplicate = newData.filter(user =>
+        data.results?.some(u => u?._id === user?._id),
+      );
+
+      const countDuplicate = duplicate.length;
+      const nextUser = data.results![countDuplicate];
+      if (prev.length < NUMBER_OF_CARDS) {
+        newData.unshift(nextUser);
+      } else {
+        if (prevUser) {
+          newData.pop();
+          newData.unshift(nextUser);
+        }
+      }
+      setData(prev => {
+        return (
+          prev && {
+            totalCount: prev.totalCount! - countDuplicate,
+            results: prev.results!.slice(countDuplicate + 1),
+          }
+        );
+      });
+      setCurrUser(newData[newData.length - 2]);
+      setPrevUser(newData[newData.length - 1]);
+      return newData;
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log('currUser: ', currUser);
+  //   console.log('userList: ', userList);
+  // }, [currUser, userList]);
+
+  const onLike = () => {
+    updateData();
+  };
+
+  const onBack = useCallback(() => {
+    if (prevUser) {
+      setData(prev => {
+        return prev && { ...prev, results: [...prev.results!, prevUser] };
+      });
+      setPrevUser(null);
+      setCurrUser(userList[userList.length - 1]);
+    }
+  }, [data, prevUser, userList]);
+
+  const onNope = useCallback(async () => {
+    updateData();
+  }, [updateData]);
+
+  const value: IHomeContext = useMemo(
+    () => ({
+      userList,
+      currUser,
+      prevUser,
+      onLike,
+      onNope,
+      onBack,
+    }),
+    [userList, currUser, prevUser, onLike, onNope],
+  );
 
   if (isMobile) return <HomeMobile />;
-
+  console.log('data', data);
   return (
-    <div
-      id='card-box'
-      className='w-full h-full flex items-center justify-center overflow-hidden'
-    >
-      <CardBox />
-    </div>
+    <HomeContext.Provider value={value}>
+      <div
+        id='card-box'
+        className='w-full h-full flex items-center justify-center overflow-hidden'
+      >
+        <h1
+          className={`${
+            isLoading && !data?.results?.length ? 'block' : 'hidden'
+          }`}
+        >
+          Loading
+        </h1>
+        <CardBox
+          className={`${
+            isLoading && !data?.results?.length ? 'hidden' : 'block'
+          }`}
+        />
+      </div>
+    </HomeContext.Provider>
   );
 };
 
 export default Home;
+
+interface IHomeContext {
+  userList: User[];
+  currUser: User | null;
+  prevUser: User | null;
+  onLike: () => void;
+  onNope: () => void;
+  onBack: () => void;
+}
+
+const initState: IHomeContext = {
+  userList: [],
+  currUser: null,
+  prevUser: null,
+  onLike: () => {},
+  onNope: () => {},
+  onBack: () => {},
+};
+
+const HomeContext = createContext<IHomeContext>(initState);
+
+export const useHomeContext = () => useContext(HomeContext);

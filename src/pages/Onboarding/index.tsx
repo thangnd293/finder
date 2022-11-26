@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import HobbiesDialog from './Dialogs/HobbiesDialog';
@@ -61,6 +62,18 @@ const FIND_GENDER = [
 interface Props {}
 
 const Onboarding = ({}: Props) => {
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
+
+  useEffect(() => {
+    try {
+      const token = query.get('token');
+      if (!token) return;
+      const jwt = jwtDecode<JwtPayload>(token);
+      console.log(jwt);
+    } catch (error) {}
+  }, [query]);
+
   const [hobbies, setHobbies] = useState<string[]>([]);
 
   const onHobbiesChange = (values: string[]) => {

@@ -16,7 +16,7 @@ const InputStyled = styled.input<{ hasIcon?: boolean; width: Width }>`
   ${({ width }) => widthStyles[width]}
 `;
 
-interface Props {
+interface Props extends React.ComponentProps<'input'> {
   name: string;
   label?: string;
   placeholder: string;
@@ -24,7 +24,14 @@ interface Props {
   width?: Width;
 }
 
-const Input = ({ name, label, placeholder, icon, width = 'auto' }: Props) => {
+const Input = ({
+  name,
+  label,
+  placeholder,
+  icon,
+  width = 'auto',
+  ...rest
+}: Props) => {
   const id = useId();
   const [field, meta] = useField(name);
 
@@ -54,6 +61,7 @@ const Input = ({ name, label, placeholder, icon, width = 'auto' }: Props) => {
           width={width}
           {...inputProps}
           {...field}
+          {...rest}
         />
       </div>
       {meta.touched && meta.error && (

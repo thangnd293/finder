@@ -35,7 +35,7 @@ const detectDirectMove = (x: number, y: Number) => {
 const DURATION = 500;
 const INERTIA = -2;
 
-type Status = 'idle' | 'like' | 'nope';
+type Status = 'idle' | 'like' | 'nope' | 'hasLike';
 type Callback = () => void;
 
 const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
@@ -57,7 +57,6 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
 
     const handleMouseMove = (e: MouseEvent) => {
       translateX = e.clientX - velocity.current.x - position.current.x;
-
       translateY = e.clientY - velocity.current.y - position.current.y;
 
       const xMulti = translateX * 0.01;
@@ -129,12 +128,10 @@ const useCardSwipe = <T extends HTMLElement = HTMLDivElement>(
     };
 
     el.addEventListener('mousedown', handleMouseDown);
-
     return () => {
       el.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMoveUp);
     };
-  }, [el, onLike, onNope, isDisable]);
+  }, [el, isDisable, onLike]);
 
   const swipeToRight = useCallback(() => {
     if (!el) return;

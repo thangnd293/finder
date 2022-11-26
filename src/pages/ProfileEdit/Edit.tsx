@@ -1,7 +1,9 @@
 import { useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { LifeStyle, fakeData, lifeStyles } from '.';
+import { IInformationData, LifeStyle, fakeData, lifeStyles } from '.';
+
+import { useUserStore } from '@/store/user';
 
 import ArrowLeftIcon from '@/assets/svgs/ArrowLeftIcon';
 import Button from '@/components/Button';
@@ -15,18 +17,22 @@ import { PATH } from '@/common/constants/route';
 const MAX_LENGTH_INTRODUCTION = 500;
 
 interface Props {
+  data: IInformationData;
   lifeStylesData: Record<LifeStyle, string>;
   onLifeStyleActive: (value: LifeStyle | null) => void;
 }
-const Edit = ({ lifeStylesData, onLifeStyleActive }: Props) => {
+const Edit = ({ data, lifeStylesData, onLifeStyleActive }: Props) => {
   const [introduction, setIntroduction] = useState('');
-
+  const { user } = useUserStore();
   return (
     <div className='w-full h-full relative'>
       <UploadImageGroup
         className='p-0.8 gap-1'
         itemClassName='!w-[114px] !h-[156px]'
-        data={fakeData.images}
+        data={data.images.map((image, index) => ({
+          id: index.toString(),
+          src: image,
+        }))}
         length={9}
         onChange={data => {
           console.log(data);
@@ -44,7 +50,7 @@ const Edit = ({ lifeStylesData, onLifeStyleActive }: Props) => {
         className='px-1 pb-0.8 text-14 uppercase text-text-secondary font-semibold'
         htmlFor='introduction'
       >
-        Giới thiệu Dac Thang
+        Giới thiệu {user?.username}
       </label>
       <div className='relative'>
         <Textarea
@@ -53,11 +59,11 @@ const Edit = ({ lifeStylesData, onLifeStyleActive }: Props) => {
           maxLength={MAX_LENGTH_INTRODUCTION}
           rows={3}
           maxRows={12}
-          value={introduction}
+          value={data.aboutMe}
           onChange={e => setIntroduction(e.target.value)}
         />
         <span className='absolute bottom-0 right-0'>
-          {MAX_LENGTH_INTRODUCTION - introduction.length}
+          {MAX_LENGTH_INTRODUCTION - data.aboutMe.length}
         </span>
       </div>
       <p className='px-1.6 mt-1 mb-3 text-14 text-text-secondary font-light text-center'>

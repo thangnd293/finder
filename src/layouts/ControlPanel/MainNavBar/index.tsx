@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { controlPanels, useControlPanelContext } from '..';
 
+import { useUserStore } from '@/store/user';
+
 import ExploreIcon from '@/assets/svgs/ExploreIcon';
 import ShieldIcon from '@/assets/svgs/ShieldIcon';
 import Modal from '@/components/Modal';
@@ -12,7 +14,7 @@ interface Props {}
 const MainNavBar = ({}: Props) => {
   const { currentPanel, setCurrentPanel } = useControlPanelContext();
   const [showModal, setShowModal] = useState(false);
-
+  const { user } = useUserStore();
   const path = controlPanels[currentPanel.prev].path;
 
   function handleToggle() {
@@ -36,11 +38,10 @@ const MainNavBar = ({}: Props) => {
         <div
           className='w-3.6 h-3.6 rounded-full bg-cover bg-center'
           style={{
-            backgroundImage:
-              'url("https://images-ssl.gotinder.com/63197e7abb27b00100c8d6ba/172x216_75_1d363f5f-d87d-448f-95ff-797c646111ad.webp")',
+            backgroundImage: `url(${user?.images![0]})`,
           }}
         />
-        <h2 className='mx-0.8 text-white'>Dac Thang</h2>
+        <h2 className='mx-0.8 text-white'>{user?.username}</h2>
       </Link>
       <div className='flex items-center justify-between mx-1.2'>
         <button className='flex items-center justify-center w-4 h-4 mx-0.8 rounded-full bg-overlay-default text-white hover:bg-background-icon-button-overlay hover:text-primary'>

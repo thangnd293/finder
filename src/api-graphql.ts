@@ -1,5 +1,6 @@
 import { ApolloClient, DocumentNode, execute, gql } from '@apollo/client/core';
 import { OperationDefinitionNode } from 'graphql';
+import create from 'zustand';
 
 /* eslint-disable */
 
@@ -383,7 +384,8 @@ export interface UserResult {
 }
 
 export interface ConfirmMailArgs {
-  token: string;
+  code: number;
+  email: string;
 }
 
 export interface CreateMultiTagArgs {}
@@ -517,6 +519,11 @@ export interface UnlikeUserArgs {
   user_id: string;
 }
 
+export interface UpdateLocationArgs {
+  /** Position 0 is Longitude , 1 is Latitude*/
+  coordinates: number[];
+}
+
 export interface UpdateProfileArgs {
   input: UpdateUserInput;
 }
@@ -556,6 +563,20 @@ export interface ExecutableQueryWithOptionalArgs<T, A>
   extends QueryWithOptionalArgs<T, A>,
     Executable<T> {}
 
+export const useLoadingStore = create<
+  {
+    [K in keyof ReturnType<typeof apiProvider> as K extends `${string}`
+      ? `${K}Loading`
+      : K]?: boolean;
+  } & {
+    setLoading: ({ name, loading }: { name: string; loading: boolean }) => void;
+  }
+>(set => ({
+  setLoading: ({ name, loading }: { name: string; loading: boolean }) => {
+    set({ [`${name}Loading`]: loading });
+  },
+}));
+
 export const apiProvider = (apolloClient: ApolloClient<any>) => {
   const abortableQuery = <T, A = null>(
     query: DocumentNode,
@@ -568,7 +589,7 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
     if (queryName) {
       let variables: { [x: string]: any } = {};
       let pending = false;
-
+      useLoadingStore.getState().setLoading({ name: queryName, loading: true });
       const $abort = () => {
         if (observableQuery && !observableQuery.closed) {
           observableQuery.unsubscribe();
@@ -592,6 +613,9 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
               reject({ gqlErrors: [error], variables, query: queryName }),
             complete: () => {
               pending = false;
+              useLoadingStore
+                .getState()
+                .setLoading({ name: queryName, loading: false });
             },
           });
         });
@@ -636,8 +660,8 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
   return {
     confirmMail(): QueryWithArgs<boolean, ConfirmMailArgs> {
       const queryTemplate = gql`
-        query confirmMail($token: String!) {
-          confirmMail(token: $token)
+        query confirmMail($code: Float!, $email: String!) {
+          confirmMail(code: $code, email: $email)
         }
       `;
       return abortableQuery(queryTemplate, true, false);
@@ -1107,6 +1131,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       const queryTemplate = gql`
         mutation unlikeUser($user_id: ObjectID!) {
           unlikeUser(user_id: $user_id)
+        }
+      `;
+      return abortableQuery(queryTemplate, true, false);
+    },
+    updateLocation(): QueryWithArgs<boolean, UpdateLocationArgs> {
+      const queryTemplate = gql`
+        mutation updateLocation($coordinates: [Float!]!) {
+          updateLocation(coordinates: $coordinates)
         }
       `;
       return abortableQuery(queryTemplate, true, false);

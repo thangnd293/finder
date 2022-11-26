@@ -15,6 +15,9 @@ export const fragmentGetAllUser: GenFields<UserResult> = [
       'liveAt',
       'school',
       'username',
+      {
+        tags: ['_id', 'name', 'type'],
+      },
     ],
   },
 ];

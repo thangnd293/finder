@@ -28,10 +28,9 @@ export const ButtonStyled = styled.button<{
   hasIcon?: boolean;
   disabled?: boolean;
 }>`
-  ${tw` `}
+  ${tw`flex min-w-fit items-center gap-1`}
   ${({ variant }) => variantStyles[variant]}
     ${({ size }) => sizeStyles[size]}
     ${({ width }) => width && widthStyles[width]}
-    ${({ hasIcon }) => hasIcon && tw`flex items-center gap-1`}
     ${({ disabled }) => disabled && tw`opacity-50 cursor-not-allowed`}
 `;

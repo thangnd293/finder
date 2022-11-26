@@ -25,16 +25,15 @@ export const UploadCard: FC<{
           <PlusIcon />
         </div>
       )}
-      {!image && (
-        <input
-          id={`upload-image-${id}`}
-          name='upload-image'
-          type='file'
-          accept='image/png, image/jpeg'
-          onChange={onChange}
-          hidden
-        />
-      )}
+
+      <input
+        id={`upload-image-${id}`}
+        name='upload-image'
+        type='file'
+        accept='image/png, image/jpeg'
+        onChange={onChange}
+        hidden
+      />
     </CardBox>
   );
 };
