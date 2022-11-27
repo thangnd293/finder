@@ -1,3 +1,4 @@
+
 import { apiCaller } from '@/service/index';
 import { Formik } from 'formik';
 import { toast } from 'react-toastify';
@@ -10,6 +11,7 @@ import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import Space from '@/components/Space';
 
+
 import { useNavigate } from '@/hooks/useNavigate';
 
 import { handleError } from '@/common/utils/handleError';
@@ -20,6 +22,7 @@ interface IFormData {
 }
 
 export const OtpModal = () => {
+
   const navigate = useNavigate();
   const email = useRegisterStore(s => s.email);
 
@@ -53,6 +56,7 @@ export const OtpModal = () => {
 
   return (
     <>
+
       <Modal visible={Boolean(email)}>
         <div className='p-5'>
           <h1 className='max-w-[70%]mx-auto text-32  text-center font-semibold'>

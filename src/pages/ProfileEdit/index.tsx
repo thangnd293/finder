@@ -1,8 +1,11 @@
+import { User } from '@/api-graphql';
+import { Formik, FormikHelpers, FormikValues } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useOnClickOutside } from 'usehooks-ts';
 
+import { useUserStore } from '../../store/user';
 import Edit from './Edit';
 import Preview from './Preview';
 import ProfileEditMobile from './ProfileEditMobile';
@@ -35,6 +38,16 @@ export enum LifeStyle {
   Pets = 'pets',
 }
 
+export interface IInformationData {
+  images: string[];
+  aboutMe: string;
+  jobTitle: string;
+  company: string;
+  liveAt: string;
+  school: string;
+  gender: string;
+}
+
 interface Props {}
 
 const ProfileEdit = ({}: Props) => {
@@ -49,6 +62,18 @@ const ProfileEdit = ({}: Props) => {
 
   const lifeStyleRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(lifeStyleRef, () => setLifeStyleTabActive(null));
+
+  const { user } = useUserStore();
+
+  const initialValues: IInformationData = {
+    images: user?.images || [],
+    aboutMe: user?.aboutMe || '',
+    jobTitle: user?.jobTitle || '',
+    company: user?.company || '',
+    liveAt: user?.liveAt || '',
+    school: user?.school || '',
+    gender: user!.gender!,
+  };
 
   const onLifeStyleActive = (value: LifeStyle | null) => {
     setLifeStyleTabActive(value);
@@ -78,10 +103,23 @@ const ProfileEdit = ({}: Props) => {
             Xem trước
           </ButtonStyled>
         </div>
-        <div className='flex-1 overflow-auto scroll-hidden'>
-          <TabElement {...props} />
-        </div>
-        <div className='text-center'>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={function (
+            values: FormikValues,
+            formikHelpers: FormikHelpers<FormikValues>,
+          ): void | Promise<any> {
+            throw new Error('Function not implemented.');
+          }}
+          enableReinitialize
+        >
+          {({ values }) => (
+            <form className='flex-1 overflow-auto scroll-hidden'>
+              <TabElement {...props} data={values} />
+            </form>
+          )}
+        </Formik>
+        <div className='w-fit mx-auto'>
           <Button className='inline-block' label='Lưu' />
         </div>
         {lifeStyleTabActive && (

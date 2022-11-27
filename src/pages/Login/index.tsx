@@ -13,6 +13,7 @@ import { Link } from '@/components/react-router-dom/Link';
 
 import { useNavigate } from '@/hooks/useNavigate';
 
+import { PATH } from '@/common/constants/route';
 import { handleError } from '@/common/utils/handleError';
 
 interface IFormData {
@@ -42,7 +43,7 @@ const Login = ({}: Props) => {
       const response = await useUserStore.getState().signIn({ input: values });
 
       if (response) {
-        navigate('/app');
+        navigate(PATH.APP.HOME);
       }
     } catch (error) {
       handleError(error);

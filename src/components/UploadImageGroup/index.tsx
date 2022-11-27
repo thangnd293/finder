@@ -58,6 +58,15 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
 
   const handleSetImage = useCallback(
     (id?: number) => (imageSrc: string) => {
+      if (id && items?.[id]) {
+        const newItems = [...items];
+        newItems[id] = { ...items[id], src: imageSrc };
+
+        setItems(newItems);
+        return;
+      }
+
+      let flag = false;
       const newItems = [...items];
       if (typeof id === 'undefined') {
         const idNotFound = newItems.findIndex(item => item.src === '');

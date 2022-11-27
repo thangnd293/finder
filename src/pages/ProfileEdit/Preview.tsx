@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 
+import { useUserStore } from '@/store/user';
+
 import HomeIcon from '@/assets/svgs/HomeIcon';
 import InfoIcon from '@/assets/svgs/InfoIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
@@ -10,6 +12,7 @@ interface Props {}
 
 const Preview = ({}: Props) => {
   const [showInfo, setShowInfo] = React.useState(false);
+  const { user } = useUserStore();
 
   const handleShowInfo = () => {
     setShowInfo(true);
@@ -31,6 +34,7 @@ const Preview = ({}: Props) => {
       }}
     >
       <Carousel
+        images={user?.images!}
         style={{
           height: showInfo ? '60%' : '100%',
         }}
@@ -41,7 +45,7 @@ const Preview = ({}: Props) => {
       {showInfo ? (
         <div className='relative w-full bg-white rounded-b-8 pb-10'>
           <button onClick={handleHiddenInfo}>unlock</button>
-          <Information />
+          <Information user={user!} />
         </div>
       ) : (
         <>
@@ -57,7 +61,8 @@ const Preview = ({}: Props) => {
             onClick={handleShowInfo}
           >
             <p className='text-32 font-bold'>
-              Nguyen Dac Thang <span className='text-26 font-normal'>22</span>
+              {user?.username}{' '}
+              <span className='text-26 font-normal'>{user?.age}</span>
             </p>
             <div className='flex items-center'>
               <div className='flex-1'>

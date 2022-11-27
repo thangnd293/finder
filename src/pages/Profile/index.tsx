@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 
 import ProfileMobile from './ProfileMobile';
 
+import { useUserStore } from '@/store/user';
+
 import Button from '@/components/Button';
 import Card from '@/components/Card';
 import Carousel from '@/components/Carousel';
@@ -19,17 +21,20 @@ const Profile = ({}: Props) => {
     mediaQuery: `(max-width: ${RESPONSIVE.md}px)`,
   });
 
+  const { user } = useUserStore();
+
   if (isMobile) return <ProfileMobile />;
+
   return (
     <div className='flex items-center justify-center w-full h-full'>
       <Card className='relative overflow-hidden'>
         <div className='w-full h-full overflow-x-hidden overflow-y-scroll scroll-hidden'>
           <div className='w-full h-full '>
             <div className='h-4/5'>
-              <Carousel isDrag={false} />
+              <Carousel images={user!.images!} isDrag={false} />
             </div>
             <div className='bg-white pb-6'>
-              <Information />
+              <Information user={user!} />
             </div>
           </div>
         </div>

@@ -13,6 +13,7 @@ const HomePanel = () => {
   const [currentTab, setCurrentTab] = useState<Tab>(Tab.Matches);
   const matchesRef = useRef<HTMLButtonElement>(null);
   const hrRef = useRef<HTMLHRElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     matchesRef.current?.click();
@@ -25,6 +26,10 @@ const HomePanel = () => {
       hr.style.transition = 'all 150ms linear';
     }
   }, [hrRef]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const onTabClick = (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
@@ -74,7 +79,7 @@ const HomePanel = () => {
       <AnimatePresence>
         {currentTab === Tab.Matches && (
           <motion.div
-            initial={{ x: '-100%' }}
+            initial={{ x: isMounted ? '-100%' : '0' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ ease: 'linear', duration: 0.2 }}

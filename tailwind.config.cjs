@@ -95,7 +95,7 @@ const colors = {
   'overlay-default': 'rgba(0, 0, 0, 0.56)',
   'background-icon-button-overlay': 'rgba(17, 20, 24, 0.8)',
   'background-tapping': 'rgba(0, 0, 0, 0.24)',
-
+  'background-loading': '#fa6f6880',
   current: 'currentColor',
   transparent: 'transparent',
 };
