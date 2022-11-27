@@ -1,5 +1,4 @@
 import { useId, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import { IInformationData, LifeStyle, fakeData, lifeStyles } from '.';
 
@@ -27,6 +26,7 @@ const Edit = ({ data, lifeStylesData, onLifeStyleActive }: Props) => {
   return (
     <div className='w-full h-full relative'>
       <UploadImageGroup
+        name='image'
         className='p-0.8 gap-1'
         itemClassName='!w-[114px] !h-[156px]'
         data={data.images.map((image, index) => ({
@@ -34,9 +34,6 @@ const Edit = ({ data, lifeStylesData, onLifeStyleActive }: Props) => {
           src: image,
         }))}
         length={9}
-        onChange={data => {
-          console.log(data);
-        }}
       />
       <p className='px-1.6 mt-2 mb-3 text-14 text-text-secondary font-light text-center'>
         Thêm video, ảnh hoặc loop để hoàn thành thêm 4% hồ sơ của bạn, cùng cơ

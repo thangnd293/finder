@@ -1,10 +1,12 @@
 import { apiProvider } from '@/api-graphql';
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
+
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { createUploadLink } from 'apollo-upload-client';
 
 import { useUserStore } from '../store/user';
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: 'https://finder-gold.vercel.app/graphql',
 });
 
@@ -22,9 +24,9 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-export const apiCaller = apiProvider(
-  new ApolloClient({
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-  }),
-);
+export const graphqlClient = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+export const apiCaller = apiProvider(graphqlClient);

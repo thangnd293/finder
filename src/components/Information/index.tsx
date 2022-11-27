@@ -62,22 +62,22 @@ const Information = ({ user, onReport }: Props) => {
           </p>
         )}
         <div className='flex flex-wrap gap-0.4 py-1.2'>
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
         </div>
       </SectionWrapper>
       <Divider />
       <SectionWrapper>
         <p className='text-18 font-medium'>Sở thích</p>
         <div className='flex flex-wrap gap-0.4 py-1.2'>
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
         </div>
       </SectionWrapper>
       {onReport && (

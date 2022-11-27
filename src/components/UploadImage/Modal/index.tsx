@@ -1,7 +1,5 @@
-import html2canvas from 'html2canvas';
 import { FC, SVGProps, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import tw from 'twin.macro';
 
 import { BOX_HEIGHT, BOX_WIDTH, CropImage } from '../CropImage.class';
 import { useEventListener } from '../useEventListener';
@@ -11,7 +9,7 @@ import Modal from '@/components/Modal';
 interface UploadModalProps {
   isVisible: boolean;
   cropImage?: CropImage;
-  image?: HTMLImageElement;
+  image?: File;
   onChange: (image: string) => void;
   closeModal: () => void;
 }
@@ -66,21 +64,21 @@ export const UploadModal: FC<UploadModalProps> = ({
 
   return (
     <Modal visible={isVisible} isOutside={false}>
-      <div tw='bg-white rounded-[8px] space-y-1.5 px-1 select-none'>
-        <p tw='text-center font-bold text-[20px]'>Chỉnh sửa ảnh</p>
+      <div className='bg-white rounded-[8px] space-y-1.5 px-1 select-none'>
+        <p className='text-center font-bold text-[20px]'>Chỉnh sửa ảnh</p>
         <div
           id='crop-image-complete'
           style={{ height: BOX_HEIGHT + 'px', width: BOX_WIDTH + 'px' }}
-          tw='relative overflow-hidden rounded-[8px] flex justify-center items-center cursor-pointer'
+          className='relative overflow-hidden rounded-[8px] flex justify-center items-center cursor-pointer'
           onMouseDown={cropImage?.onMove}
         >
           {image && (
             <div
-              tw='absolute'
+              className='absolute'
               style={{
-                height: image.height + 'px',
-                width: image.width + 'px',
-                backgroundImage: `url(${image.src})`,
+                height: cropImage?.image?.height + 'px',
+                width: cropImage?.image?.width + 'px',
+                backgroundImage: `url(${cropImage?.image?.src})`,
                 backgroundRepeat: 'no-repeat',
                 transform: `scale(${zoom * zoomDefault}) translate(${
                   translate.x
@@ -89,7 +87,7 @@ export const UploadModal: FC<UploadModalProps> = ({
             />
           )}
         </div>
-        <div tw='py-0.5 flex gap-1.5 items-center px-1'>
+        <div className='py-0.5 flex gap-1.5 items-center px-1'>
           <Slider
             min='1'
             max='5'
@@ -97,21 +95,21 @@ export const UploadModal: FC<UploadModalProps> = ({
             defaultValue={1}
             type='range'
             onChange={cropImage?.onZoom}
-            tw='w-full block'
+            className='w-full block'
           />
 
           <button
             onClick={cropImage?.onRotate}
-            tw='block border border-solid border-[#33333357] rounded-[50%] p-0.8'
+            className='block border border-solid border-[#33333357] rounded-[50%] p-0.8'
           >
             <ChangeIcon />
           </button>
         </div>
-        <div tw='flex justify-between font-bold text-[#333] items-center'>
+        <div className='flex justify-between font-bold text-[#333] items-center'>
           <button onClick={closeModal}>Hủy</button>
           <button
             onClick={cropImage?.saveImage}
-            tw='text-white bg-primary py-0.5 px-1 rounded-[20px]'
+            className='text-white bg-primary py-0.5 px-1 rounded-[20px]'
           >
             Chọn
           </button>

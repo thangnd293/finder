@@ -1,5 +1,3 @@
-import { randomUUID } from 'crypto';
-
 export const BOX_WIDTH = 320;
 export const BOX_HEIGHT = (320 / 11) * 15;
 
@@ -16,12 +14,18 @@ export class CropImage {
   _zoomDefault = 1;
   _rotate = 0;
   _zoom = 1;
+  image!: HTMLImageElement;
 
-  constructor(public id: string, private image: HTMLImageElement) {
-    const zoomX = BOX_WIDTH / image.width;
-    const zoomY = BOX_HEIGHT / image.height;
-    const zoom = zoomX < zoomY ? zoomY : zoomX;
-    this.zoomDefault = zoom;
+  constructor(public id: string, private fileImage: File) {
+    const imageFile = new Image();
+    imageFile.src = URL.createObjectURL(fileImage);
+    imageFile.onload = () => {
+      this.image = imageFile;
+      const zoomX = BOX_WIDTH / imageFile.width;
+      const zoomY = BOX_HEIGHT / imageFile.height;
+      const zoom = zoomX < zoomY ? zoomY : zoomX;
+      this.zoomDefault = zoom;
+    };
   }
 
   get height(): number {
@@ -51,7 +55,7 @@ export class CropImage {
     return new Promise<HTMLImageElement>((res, rej) => {
       const image = new Image();
 
-      image.src = canvas.toDataURL('image/jpeg');
+      image.src = canvas.toDataURL(this.fileImage.type);
       image.onload = () => {
         res(image);
       };
@@ -84,7 +88,7 @@ export class CropImage {
     );
 
     // As Base64 string
-    const base64 = canvas.toDataURL('image/jpeg');
+    const base64 = canvas.toDataURL(this.fileImage.type);
     this.imageBiding(base64);
     // downloadURI(base64, 'name.jpg');
   };

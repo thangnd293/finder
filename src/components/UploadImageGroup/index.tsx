@@ -1,4 +1,5 @@
 import arrayMove from 'array-move';
+import { useField, useFormikContext } from 'formik';
 import { FC, useCallback, useEffect, useState } from 'react';
 import SortableList, { SortableItem } from 'react-easy-sort';
 import styled from 'styled-components';
@@ -12,21 +13,25 @@ interface IData {
   src: string;
 }
 interface UploadImageGroupProps {
+  name: string;
   length?: number;
-  data: IData[];
   className?: string;
   itemClassName?: string;
-  onChange: (data: IData[]) => void;
+  onChange?: (data: IData[]) => void;
 }
 export const UploadImageGroup: FC<UploadImageGroupProps> = ({
+  name,
   length = 4,
-  data,
   className,
   itemClassName,
   onChange,
 }) => {
+  const { setFieldValue } = useFormikContext();
+  const [fields] = useField(name);
+  const data = fields.value || [];
+
   const [items, setItems] = useState<IData[]>([
-    ...data,
+    ...data.map((value: string) => ({ id: uuid(), src: value })),
     ...Array.from({ length: length - data.length }).map(() => ({
       id: uuid(),
       src: '',
@@ -38,8 +43,18 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
   };
 
   useEffect(() => {
-    onChange(items.filter(item => item.src));
+    onChange?.(items.filter(item => item.src));
   }, [items]);
+
+  const setFormValue = useCallback(
+    (items: IData[]) => {
+      setFieldValue(
+        name,
+        items.filter(item => item.src).map(item => item.src),
+      );
+    },
+    [name],
+  );
 
   const handleSetImage = useCallback(
     (id?: number) => (imageSrc: string) => {
@@ -52,20 +67,24 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
       }
 
       let flag = false;
+      const newItems = [...items];
+      if (typeof id === 'undefined') {
+        const idNotFound = newItems.findIndex(item => item.src === '');
 
-      setItems(
-        items.map(item => {
-          if (item.src === '' && !flag) {
-            flag = true;
-            return {
-              ...item,
-              src: imageSrc,
-            };
-          }
+        newItems[idNotFound] = { ...items[idNotFound], src: imageSrc };
 
-          return item;
-        }),
-      );
+        setItems(newItems);
+        setFormValue(newItems);
+        return;
+      }
+
+      if (items?.[id]) {
+        newItems[id] = { ...items[id], src: imageSrc };
+
+        setItems(newItems);
+        setFormValue(newItems);
+        return;
+      }
     },
     [items],
   );
@@ -81,6 +100,7 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
           <SortableItem key={item.id}>
             <div tw='flex justify-center' key={item.id}>
               <UploadImage
+                className={itemClassName}
                 imageSrc={item.src}
                 onChange={handleSetImage(index)}
                 id={item.id}
@@ -89,11 +109,11 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
           </SortableItem>
         ) : (
           <UploadImage
-            key={item.id}
             className={itemClassName}
             imageSrc={item.src}
             onChange={handleSetImage()}
             id={item.id}
+            key={item.id}
           />
         ),
       )}

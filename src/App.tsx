@@ -68,9 +68,27 @@ function renderRoutes(
       );
     }
 
-    return (
+    return isIndex ? (
+      <Fragment key={index}>
+        <Route
+          index={isIndex}
+          element={
+            <Protect>
+              <Element />
+            </Protect>
+          }
+        />
+        <Route
+          path={path}
+          element={
+            <Protect>
+              <Element />
+            </Protect>
+          }
+        />
+      </Fragment>
+    ) : (
       <Route
-        index={isIndex}
         key={index}
         path={path}
         element={

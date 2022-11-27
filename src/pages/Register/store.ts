@@ -6,7 +6,14 @@ interface RegisterStore {
   email: string | null;
 }
 
-export const useRegisterStore = create<IStore<RegisterStore>>((set, get) => ({
-  email: null,
-  setEmail: email => set({ email }),
-}));
+interface RegisterAction {
+  clear: () => void;
+}
+
+export const useRegisterStore = create<IStore<RegisterStore> & RegisterAction>(
+  (set, get) => ({
+    email: null,
+    setEmail: email => set({ email }),
+    clear: () => set({ email: null }),
+  }),
+);

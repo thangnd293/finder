@@ -28,7 +28,7 @@ export const ButtonStyled = styled.button<{
   hasIcon?: boolean;
   disabled?: boolean;
 }>`
-  ${tw`flex min-w-fit items-center gap-1`}
+  ${tw`flex min-w-fit items-center gap-1 justify-center`}
   ${({ variant }) => variantStyles[variant]}
     ${({ size }) => sizeStyles[size]}
     ${({ width }) => width && widthStyles[width]}

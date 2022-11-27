@@ -1,6 +1,5 @@
 import { useField, useFormikContext } from 'formik';
-import React from 'react';
-import { ChangeEvent, useEffect, useId, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useId, useRef, useState } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
@@ -72,8 +71,8 @@ const DayInput = ({ name, label }: Props) => {
       </label>
       <div className='flex space-x-1'>
         <Input
-          id={id}
           name={'day'}
+          value={day}
           limit={2}
           placeholder='DD'
           onError={onError}
@@ -86,6 +85,7 @@ const DayInput = ({ name, label }: Props) => {
         <Input
           ref={monthRef}
           name={'month'}
+          value={month}
           limit={2}
           placeholder='MM'
           onError={onError}
@@ -98,6 +98,7 @@ const DayInput = ({ name, label }: Props) => {
         <Input
           ref={yearRef}
           name={'year'}
+          value={year}
           limit={4}
           placeholder='YY'
           onError={onError}
@@ -118,6 +119,7 @@ export default DayInput;
 interface InputProps {
   id?: string;
   name: string;
+  value: string;
   limit: number;
   placeholder?: string;
   onChangeValue?: (value: string) => void;
@@ -133,10 +135,19 @@ const InputStyled = styled.input<{ error?: boolean }>`
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
-    { id, name, limit, placeholder, onChangeValue, onError, onNext, onFocused },
+    {
+      id,
+      name,
+      value,
+      limit,
+      placeholder,
+      onChangeValue,
+      onError,
+      onNext,
+      onFocused,
+    },
     ref,
   ) => {
-    const [value, setValue] = useState('');
     const [hasFocus, setHasFocus] = useState(false);
     const [hasError, setHasError] = useState(false);
 
@@ -150,7 +161,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       if (value.length <= limit) {
-        setValue(value);
         onChangeValue?.(value);
         setHasError(value.length !== limit || !value.isNumeric());
       } else {

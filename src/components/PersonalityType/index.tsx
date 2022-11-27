@@ -1,11 +1,13 @@
+import { Tag } from '@/api-graphql';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
 interface Props {
   icon?: string;
-  text: string;
+  tag: Tag;
   isActive?: boolean;
-  onClick?: (hobbit: string) => void;
+  onClick?: (hobbit: Tag) => void;
+  key?: number;
 }
 
 const PersonalityTypeContainer = styled.div<{
@@ -17,10 +19,16 @@ const PersonalityTypeContainer = styled.div<{
   ${({ active }) => active && tw`border-primary text-primary`}
 `;
 
-const PersonalityType = ({ icon, text, isActive = false, onClick }: Props) => {
+const PersonalityType = ({
+  icon,
+  tag,
+  isActive = false,
+  onClick,
+  key,
+}: Props) => {
   const hasIcon = !!icon;
   const handleClick = () => {
-    onClick?.(text);
+    onClick?.(tag);
   };
 
   return (
@@ -33,10 +41,10 @@ const PersonalityType = ({ icon, text, isActive = false, onClick }: Props) => {
         <img
           className='w-1.6 h-1.6 object-cover object-center aspect-square'
           src={icon}
-          alt={text}
+          alt={tag.name || tag._id}
         />
       )}
-      <p className='text-14'>{text}</p>
+      <p className='text-14'>{tag.name}</p>
     </PersonalityTypeContainer>
   );
 };

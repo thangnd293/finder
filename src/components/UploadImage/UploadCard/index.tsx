@@ -38,7 +38,9 @@ export const UploadCard: FC<{
   );
 };
 
-const CardBox = styled.label``;
+const CardBox = styled.label`
+  ${tw``}
+`;
 
 const Image = styled.img`
   -khtml-user-select: none;

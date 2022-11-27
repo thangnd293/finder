@@ -147,7 +147,7 @@ const ProfileEdit = ({}: Props) => {
                     (option, index) => (
                       <PersonalityType
                         key={index}
-                        text={option}
+                        tag={option}
                         isActive={
                           option === fakeData.lifeStyle[lifeStyleTabActive]
                         }
