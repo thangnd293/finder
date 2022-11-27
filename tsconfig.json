@@ -17,15 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/assets/*": ["src/assets/*"],
-      "@/common/*": ["src/common/*"],
-      "@/store/*": ["src/store/*"],
-      "@/languages/*": ["src/languages/*"],
-      "@/layouts/*": ["src/layouts/*"],
-      "@/pages/*": ["src/pages/*"],
-      "@/typings/*": ["src/typings/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src", "types", "**/*.ts", "**/*.tsx", "windi.config.ts"],
