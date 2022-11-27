@@ -1,7 +1,7 @@
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import { Carousel, SearchContextManager } from '@giphy/react-components';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import EmojiIcon from '@/assets/svgs/EmojiIcon';
 import GifIcon from '@/assets/svgs/GifIcon';

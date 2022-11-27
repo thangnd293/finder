@@ -149,7 +149,7 @@ export class CropImage {
     const zoomDefault = zoomX < zoomY ? zoomY : zoomX;
     this.zoomDefault = zoomDefault;
 
-    let { x, y } = this.translate;
+    const { x, y } = this.translate;
     const zoom = this.zoom * this.zoomDefault;
 
     this.translateBiding(x, y, zoom);
@@ -163,7 +163,7 @@ export class CropImage {
     this.dispatchEvent('zoom', { zoom: zoomParams });
     this._zoom = zoomParams;
 
-    let { x, y } = this.translate;
+    const { x, y } = this.translate;
     const zoom = zoomParams * this.zoomDefault;
 
     this.translateBiding(x, y, zoom);
@@ -203,8 +203,8 @@ export class CropImage {
     const handleMouseMove = (event: MouseEvent) => {
       if (!this.image) return;
 
-      let x = translateInit.x + event.clientX - this.initTranslate.x;
-      let y = translateInit.y + event.clientY - this.initTranslate.y;
+      const x = translateInit.x + event.clientX - this.initTranslate.x;
+      const y = translateInit.y + event.clientY - this.initTranslate.y;
 
       this.translate = { x, y };
     };
@@ -241,7 +241,7 @@ function getRadianAngle(degreeValue: number) {
 }
 
 function downloadURI(uri: string, name: string) {
-  var link = document.createElement('a');
+  const link = document.createElement('a');
   // If you don't know the name or want to use
   // the webserver default set name = ''
   link.setAttribute('download', name);

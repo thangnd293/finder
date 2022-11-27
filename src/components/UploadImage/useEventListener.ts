@@ -2,8 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import { CropImageEvent } from './CropImage.class';
 
-import { useEventListener as useEventListenerMain } from '@/hooks/useEventListener';
-
 export const useEventListener = <
   T extends CropImageEvent,
   Name extends string = T extends `${infer Name}-${string}` ? Name : T,

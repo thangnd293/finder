@@ -1,5 +1,4 @@
 import { apiProvider } from '@/api-graphql';
-
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';

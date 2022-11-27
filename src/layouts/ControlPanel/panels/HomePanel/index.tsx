@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 
 import Matches from './Matches/index';
 import Messages from './Messages';

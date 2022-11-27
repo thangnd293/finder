@@ -10,7 +10,7 @@
     "format:check": "prettier --check src",
     "format:fix": "prettier --write src ",
     "lint": "eslint . --ext .tsx,.ts",
-    "lint:fix": "eslint --fix --ext .tsx,.ts",
+    "lint:fix": "yarn lint --fix",
     "gen": "pmp -o src/api-graphql.ts --codegen-functions --codegen-react-hooks",
     "gen:luxury": "node node_modules/generate-graphql-api/dist/index.js -o ./src/api-graphql.ts --codegen-functions",
     "prepare": "husky install"

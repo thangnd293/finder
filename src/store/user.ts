@@ -1,5 +1,4 @@
 import { SignInArgs, User } from '@/api-graphql';
-
 import { getUserCurrentFragment } from '@/service/user';
 import Cookies from 'js-cookie';
 import create from 'zustand';

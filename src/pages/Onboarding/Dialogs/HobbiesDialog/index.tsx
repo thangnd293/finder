@@ -1,5 +1,4 @@
-import { Tag, TagResult, useGetAllTag } from '@/api-graphql';
-import { apiCaller } from '@/service/index';
+import { Tag, useGetAllTag } from '@/api-graphql';
 import { useField, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 
@@ -9,7 +8,6 @@ import PlusIcon from '@/assets/svgs/PlusIcon';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
 import PersonalityType from '@/components/PersonalityType';
-import Space from '@/components/Space';
 
 const MAX_HOBBIES = 5;
 const MIN_HOBBIES = 3;

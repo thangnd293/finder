@@ -33,19 +33,21 @@ const Preview = ({}: Props) => {
         paddingBottom: showInfo ? '0px' : '101px',
       }}
     >
-      <Carousel
-        images={user?.images!}
-        style={{
-          height: showInfo ? '60%' : '100%',
-        }}
-        isDrag={false}
-        flipLeft={undefined}
-        flipRight={undefined}
-      />
-      {showInfo ? (
+      {user?.images && (
+        <Carousel
+          images={user.images}
+          style={{
+            height: showInfo ? '60%' : '100%',
+          }}
+          isDrag={false}
+          flipLeft={undefined}
+          flipRight={undefined}
+        />
+      )}
+      {showInfo && user ? (
         <div className='relative w-full bg-white rounded-b-8 pb-10'>
           <button onClick={handleHiddenInfo}>unlock</button>
-          <Information user={user!} />
+          <Information user={user} />
         </div>
       ) : (
         <>

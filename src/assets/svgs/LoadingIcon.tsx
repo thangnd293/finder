@@ -18,7 +18,7 @@ const LoadingIcon: React.FC<SpinProps & React.HTMLProps<HTMLDivElement>> = ({
   duration = '1.2s',
   ...others
 }) => {
-  let resolvedHeight = typeof height === 'number' ? `${height}px` : height;
+  const resolvedHeight = typeof height === 'number' ? `${height}px` : height;
 
   return (
     <LoadingStyled

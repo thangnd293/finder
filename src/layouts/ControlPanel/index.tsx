@@ -119,14 +119,14 @@ export const controlPanels: Record<
   },
 };
 
-function initPanel(path: string, isFirstRender: boolean = false) {
+function initPanel(path: string, isFirstRender = false) {
   let panel = ControlPanelType.Recs;
 
   if (Object.values(ControlPanelType).includes(path as ControlPanelType)) {
     panel = path as ControlPanelType;
   }
 
-  let prev = controlPanels[panel].prev;
+  const prev = controlPanels[panel].prev;
 
   return {
     panel,

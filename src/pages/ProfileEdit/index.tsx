@@ -1,4 +1,3 @@
-import { User } from '@/api-graphql';
 import { Formik, FormikHelpers, FormikValues } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';

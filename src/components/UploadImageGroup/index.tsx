@@ -66,7 +66,7 @@ export const UploadImageGroup: FC<UploadImageGroupProps> = ({
         return;
       }
 
-      let flag = false;
+      const flag = false;
       const newItems = [...items];
       if (typeof id === 'undefined') {
         const idNotFound = newItems.findIndex(item => item.src === '');

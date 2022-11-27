@@ -21,7 +21,7 @@ type Point = {
   y: number;
 };
 
-const detectDirectMove = (x: number, y: Number) => {
+const detectDirectMove = (x: number, y: number) => {
   if (x < 0 && y < 0) return Direction.TopLeft;
   if (x > 0 && y < 0) return Direction.TopRight;
   if (x < 0 && y > 0) return Direction.BottomLeft;

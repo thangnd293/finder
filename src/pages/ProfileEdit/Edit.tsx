@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { IInformationData, LifeStyle, fakeData, lifeStyles } from '.';
+import { IInformationData, LifeStyle, lifeStyles } from '.';
 
 import { useUserStore } from '@/store/user';
 

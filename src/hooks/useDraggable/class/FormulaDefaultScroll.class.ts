@@ -61,14 +61,14 @@ class FormulaDefaultScroll extends DistanceFormula {
     ).getBoundingClientRect();
     const [initX, initY] = initPosition;
 
-    let x = rectParent.x - initX;
-    let y = rectParent.y - initY;
+    const x = rectParent.x - initX;
+    const y = rectParent.y - initY;
 
     return [x, y];
   }
 
   getPosition = (elem: any) => {
-    var left = 0,
+    let left = 0,
       top = 0;
 
     do {

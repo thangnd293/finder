@@ -1,6 +1,5 @@
 import { useLoadingStore } from '@/api-graphql';
 import { Formik } from 'formik';
-import { toast } from 'react-toastify/dist/core';
 import * as Yup from 'yup';
 
 import { useUserStore } from '../../store/user';

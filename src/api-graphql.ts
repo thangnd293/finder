@@ -1,13 +1,10 @@
 import {
   DocumentNode,
   MutationHookOptions,
-  MutationTuple,
   QueryHookOptions,
-  SubscriptionHookOptions,
   gql,
   useLazyQuery,
   useMutation,
-  useSubscription,
 } from '@apollo/client';
 import { ApolloClient, execute } from '@apollo/client/core';
 import { OperationDefinitionNode } from 'graphql';
