@@ -1,6 +1,6 @@
 import { GetAllUserArgs, User, UserResult } from '@/api-graphql';
 import { apiCaller } from '@/service';
-import { fragmentGetAllUser } from '@/service/user/index';
+import { getAllUserFragment } from '@/service/user';
 import {
   createContext,
   useCallback,
@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react';
 
+import SocketIO from '../../socket/index';
 import HomeMobile from './HomeMobile';
 
 import { useUserStore } from '@/store/user';
@@ -28,7 +29,7 @@ const SIZE_PER_PAGE = 10;
 interface Props {}
 
 const Home = ({}: Props) => {
-  const { user } = useUserStore();
+  const { user, refreshToken } = useUserStore();
 
   const [data, setData] = useState<UserResult | null>(null);
   const [userList, setUserList] = useState<User[]>([]);
@@ -42,6 +43,7 @@ const Home = ({}: Props) => {
   });
 
   useEffect(() => {
+    SocketIO.getInstance('refreshToken');
     const fetch = async () => {
       await getData();
     };
@@ -86,7 +88,7 @@ const Home = ({}: Props) => {
       },
     };
 
-    return apiCaller.getAllUser(fragmentGetAllUser).$args(args).$fetch();
+    return apiCaller.getAllUser(getAllUserFragment).$args(args).$fetch();
   }
 
   async function getData() {

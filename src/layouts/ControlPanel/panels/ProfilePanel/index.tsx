@@ -1,5 +1,5 @@
 import { LookingFor } from '@/api-graphql';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { useUserStore } from '@/store/user';
 
@@ -44,6 +44,12 @@ const ProfilePanel = ({}: Props) => {
   const [isOnlyShowInAges, setIsOnlyShowInAges] = useState(
     onlyShowDistanceThisRange,
   );
+
+  useEffect(() => {
+    return () => {
+      console.log('vao');
+    };
+  }, []);
 
   return (
     <div className='flex flex-col w-full h-full bg-gray-10'>

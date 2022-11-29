@@ -1,5 +1,6 @@
 import { User } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
+import { getUsersMatchedFragment } from '@/service/user';
 import { useEffect, useState } from 'react';
 
 import Container from '../Container';
@@ -17,17 +18,7 @@ const PickUser = ({ target, onChoose }: Props) => {
   useEffect(() => {
     const fetchUserMatched = async () => {
       const data = await apiCaller
-        .getAllUserMatched([
-          'totalCount',
-          {
-            results: [
-              '_id',
-              {
-                user: ['_id', 'username', 'images'],
-              },
-            ],
-          },
-        ])
+        .getAllUserMatched(getUsersMatchedFragment)
         .$args({})
         .$fetch();
       const users = data.results?.map(item => item.user);

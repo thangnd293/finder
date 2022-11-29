@@ -31,9 +31,6 @@ const MainNavBar = ({}: Props) => {
     });
   }
 
-  useEffect(() => {
-    console.log('showReportDialog', showReportDialog);
-  }, [showReportDialog]);
   return (
     <>
       <Link

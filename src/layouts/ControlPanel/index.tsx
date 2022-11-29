@@ -1,6 +1,16 @@
+import { User } from '@/api-graphql';
+import { apiCaller } from '@/service/index';
+import { getUsersMatchedFragment } from '@/service/user';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useContext, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import React from 'react';
+import { createContext } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import MainNavBar from './MainNavBar';
@@ -22,12 +32,33 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
       return initPanel(currentPath, true);
     });
 
+    const [usersMatched, setUsersMatched] = useState<User[]>([]);
+
+    useEffect(() => {
+      const fetchUsersMatched = async () => {
+        const data = await apiCaller
+          .getAllUserMatched(getUsersMatchedFragment)
+          .$args({
+            isMessaged: false,
+          })
+          .$fetch();
+        console.log(data);
+
+        const users = data.results?.map(item => item.user) ?? [];
+
+        setUsersMatched(users);
+      };
+
+      fetchUsersMatched();
+    }, []);
+
     const value = useMemo(() => {
       return {
         currentPanel,
         setCurrentPanel,
+        usersMatched,
       };
-    }, [currentPanel, setCurrentPanel]);
+    }, [currentPanel, setCurrentPanel, usersMatched]);
 
     useLayoutEffect(() => {
       if (currentPanel.isFirstRender) {
@@ -136,6 +167,7 @@ function initPanel(path: string, isFirstRender = false) {
 }
 
 interface IControlPanelContext {
+  usersMatched: User[];
   currentPanel: {
     panel: ControlPanelType;
     prev: ControlPanelType;
@@ -152,6 +184,7 @@ interface IControlPanelContext {
 const ControlPanelContext = React.createContext<IControlPanelContext>({
   currentPanel: initPanel(PATH.APP.HOME, true),
   setCurrentPanel: () => {},
+  usersMatched: [],
 });
 
 export const useControlPanelContext = () => useContext(ControlPanelContext);
@@ -162,8 +195,6 @@ interface TabsProps {
 }
 
 function Panels({ activeTab, isFirstRender }: TabsProps) {
-  console.log('activeTab', activeTab);
-
   return (
     <>
       <AnimatePresence>
