@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { controlPanels, useControlPanelContext } from '..';
@@ -6,14 +6,17 @@ import { controlPanels, useControlPanelContext } from '..';
 import { useUserStore } from '@/store/user';
 
 import ExploreIcon from '@/assets/svgs/ExploreIcon';
+import FlagIcon from '@/assets/svgs/FlagIcon';
 import ShieldIcon from '@/assets/svgs/ShieldIcon';
 import Modal from '@/components/Modal';
+import ReportDialog from '@/components/ReportDialog';
 
 interface Props {}
 
 const MainNavBar = ({}: Props) => {
   const { currentPanel, setCurrentPanel } = useControlPanelContext();
-  const [showModal, setShowModal] = useState(false);
+  const [showSecurityDialog, setShowSecurityDialog] = useState(false);
+  const [showReportDialog, setShowReportDialog] = useState(false);
   const { user } = useUserStore();
   const path = controlPanels[currentPanel.prev].path;
 
@@ -28,6 +31,9 @@ const MainNavBar = ({}: Props) => {
     });
   }
 
+  useEffect(() => {
+    console.log('showReportDialog', showReportDialog);
+  }, [showReportDialog]);
   return (
     <>
       <Link
@@ -48,15 +54,45 @@ const MainNavBar = ({}: Props) => {
           <ExploreIcon />
         </button>
         <button
-          onClick={() => setShowModal(!showModal)}
+          onClick={() => setShowSecurityDialog(!showSecurityDialog)}
           className='flex items-center justify-center w-4 h-4 ml-0.8 mr-0.4 rounded-full bg-overlay-default text-white hover:bg-background-icon-button-overlay hover:text-primary'
         >
-          <ShieldIcon />
+          <ShieldIcon width={22} height={22} />
         </button>
       </div>
-      <Modal visible={showModal} onClose={() => setShowModal(false)}>
-        <div className='w-10 h-10 bg-base text-white'>Hello world</div>
+      <Modal
+        className='p-0 w-40'
+        visible={showSecurityDialog}
+        onClose={() => setShowSecurityDialog(false)}
+      >
+        <h1 className='text-24 py-1.8 text-center font-semibold'>
+          Bộ Công Cụ An Toàn
+        </h1>
+        <button
+          className='flex w-full items-center justify-start gap-1.4 px-2 border-0 border-y border-solid border-gray-20'
+          onClick={() => {
+            setShowReportDialog(true);
+            setShowSecurityDialog(false);
+          }}
+        >
+          <FlagIcon className='text-primary' />
+          <span className='flex items-center justify-start flex-1 h-[54px] uppercase font-semibold'>
+            Báo cáo
+          </span>
+        </button>
+        <button
+          className='w-full h-[54px] text-center uppercase font-semibold'
+          onClick={() => setShowSecurityDialog(false)}
+        >
+          Hủy
+        </button>
       </Modal>
+      {showReportDialog && (
+        <ReportDialog
+          visible={showReportDialog}
+          onClose={() => setShowReportDialog(false)}
+        />
+      )}
     </>
   );
 };

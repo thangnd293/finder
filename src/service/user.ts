@@ -36,4 +36,7 @@ export const getUserCurrentFragment = [
       },
     ],
   },
+  {
+    matched: ['_id', 'images', 'username'],
+  },
 ] as GenFields<User>;

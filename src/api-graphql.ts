@@ -1,15 +1,3 @@
-import {
-  DocumentNode,
-  MutationHookOptions,
-  QueryHookOptions,
-  gql,
-  useLazyQuery,
-  useMutation,
-} from '@apollo/client';
-import { ApolloClient, execute } from '@apollo/client/core';
-import { OperationDefinitionNode } from 'graphql';
-import create from 'zustand';
-
 /* eslint-disable */
 
 // *******************************************************
@@ -99,6 +87,19 @@ const guessFragmentType = (fragment: string | DocumentNode) => {
   return { isString, isFragment, fragmentName };
 };
 
+import {
+  useMutation,
+  useLazyQuery,
+  useSubscription,
+  QueryHookOptions,
+  MutationHookOptions,
+  SubscriptionHookOptions,
+  MutationTuple,
+} from '@apollo/client';
+
+import { OperationDefinitionNode } from 'graphql';
+import { ApolloClient, execute, DocumentNode, gql } from '@apollo/client/core';
+
 export interface Address {
   city: Maybe<string>;
   country: Maybe<string>;
@@ -133,6 +134,7 @@ export interface Conversation {
   members: User[];
   messagePin: Maybe<Message>;
   updatedAt: string;
+  user: User;
 }
 
 export interface ConversationResult {
@@ -290,6 +292,7 @@ export interface RegisterInput {
 
 export interface Reports {
   createdAt: string;
+  descriptionReport: string;
   reasonReport: string;
   reportBy: User;
 }
@@ -428,6 +431,11 @@ export interface GetAllTagArgs {
 
 export interface GetAllUserArgs {
   filter?: FilterGetAllUser;
+  pagination?: PaginationInput;
+}
+
+export interface GetAllUserMatchedArgs {
+  isMessaged?: boolean;
   pagination?: PaginationInput;
 }
 
@@ -580,7 +588,7 @@ export type ExecutableQueryWithArgs<T, A> = QueryWithArgs<T, A>;
 export interface ExecutableQueryWithOptionalArgs<T, A>
   extends QueryWithOptionalArgs<T, A>,
     Executable<T> {}
-
+import create from 'zustand';
 export const useLoadingStore = create<
   {
     [K in keyof ReturnType<typeof apiProvider> as K extends `${string}`
@@ -812,6 +820,29 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       const queryTemplate = gql`
       query getAllUser ($filter: FilterGetAllUser,$pagination: PaginationInput) {
         getAllUser(filter: $filter,pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+      return abortableQuery(queryTemplate, true, true);
+    },
+    getAllUserMatched(
+      fields: GenFields<ConversationResult>,
+    ): ExecutableQueryWithOptionalArgs<
+      ConversationResult,
+      GetAllUserMatchedArgs
+    > {
+      const fragment = queryBuilder(fields);
+      let isString = false;
+      let isFragment = false;
+      let fragmentName = '';
+      if (fragment)
+        ({ isString, isFragment, fragmentName } = guessFragmentType(fragment));
+
+      const queryTemplate = gql`
+      query getAllUserMatched ($isMessaged: Boolean,$pagination: PaginationInput) {
+        getAllUserMatched(isMessaged: $isMessaged,pagination: $pagination) {
           ${isString ? fragment : '...' + fragmentName}
         }
       } ${isFragment ? fragment : ''}
@@ -1353,6 +1384,29 @@ export const useGetAllUser = (
     query,
     options,
   );
+};
+
+export const useGetAllUserMatched = (
+  fields: GenFields<ConversationResult>,
+  options?: QueryHookOptions<
+    { getAllUserMatched: ConversationResult },
+    GetAllUserMatchedArgs
+  >,
+) => {
+  const fragment = queryBuilder(fields);
+  const { isString, isFragment, fragmentName } = guessFragmentType(fragment);
+  const query = gql`
+      query getAllUserMatched ($isMessaged: Boolean,$pagination: PaginationInput) {
+        getAllUserMatched(isMessaged: $isMessaged,pagination: $pagination) {
+          ${isString ? fragment : '...' + fragmentName}
+        }
+      } ${isFragment ? fragment : ''}
+      `;
+
+  return useLazyQuery<
+    { getAllUserMatched: ConversationResult },
+    GetAllUserMatchedArgs
+  >(query, options);
 };
 
 export const useGetCurrentAddress = (
