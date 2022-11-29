@@ -84,7 +84,7 @@ const HomePanel = () => {
             exit={{ x: '-100%' }}
             transition={{ ease: 'linear', duration: 0.2 }}
             className='
-            w-full h-full overflow-y-scroll scroll-hidden bg-gold-15 absolute top-4.5 pb-4.5'
+            w-full h-full overflow-y-scroll scroll-hidden absolute top-4.5 pb-4.5'
           >
             <Matches />
           </motion.div>

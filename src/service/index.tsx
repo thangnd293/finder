@@ -6,7 +6,7 @@ import { createUploadLink } from 'apollo-upload-client';
 import { useUserStore } from '../store/user';
 
 const httpLink = createUploadLink({
-  uri: 'https://finder-gold.vercel.app/graphql',
+  uri: 'https://baashop.herokuapp.com/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {

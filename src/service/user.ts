@@ -1,4 +1,4 @@
-import { GenFields, User } from '@/api-graphql';
+import { ConversationResult, GenFields, User, UserResult } from '@/api-graphql';
 
 export const getUserCurrentFragment = [
   '_id',
@@ -40,3 +40,37 @@ export const getUserCurrentFragment = [
     matched: ['_id', 'images', 'username'],
   },
 ] as GenFields<User>;
+
+export const getAllUserFragment: GenFields<UserResult> = [
+  'totalCount',
+  {
+    results: [
+      '_id',
+      'aboutMe',
+      'age',
+      'calcDistance',
+      'company',
+      'images',
+      'jobTitle',
+      'lastActive',
+      'liveAt',
+      'school',
+      'username',
+      {
+        tags: ['_id', 'name', 'type'],
+      },
+    ],
+  },
+];
+
+export const getUsersMatchedFragment: GenFields<ConversationResult> = [
+  'totalCount',
+  {
+    results: [
+      '_id',
+      {
+        user: ['_id', 'username', 'images'],
+      },
+    ],
+  },
+];

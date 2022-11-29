@@ -13,7 +13,7 @@ interface ClientToServerEvents {
 class SocketIO {
   private static instance: Socket<ServerToClientEvents, ClientToServerEvents>;
   private constructor(token: string) {
-    SocketIO.instance = io('https://finder-gold.vercel.app/graphql', {
+    SocketIO.instance = io('https://baashop.herokuapp.com/graphql', {
       auth: {
         token: token,
       },

@@ -10,9 +10,6 @@ const useClickOutside = <T extends HTMLElement = HTMLDivElement>(
     if (!el) return;
 
     const handleClick = (event: MouseEvent) => {
-      console.log('click');
-      console.log(el);
-
       if (
         !el.contains(event.target as Node) &&
         !exceptions.some(exception => exception.contains(event.target as Node))

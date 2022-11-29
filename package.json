@@ -12,7 +12,7 @@
     "lint": "eslint . --ext .tsx,.ts",
     "lint:fix": "yarn lint --fix",
     "gen": "pmp -o src/api-graphql.ts --codegen-functions --codegen-react-hooks",
-    "gen:luxury": "node node_modules/generate-graphql-api/dist/index.js -o ./src/api-graphql.ts --codegen-functions",
+    "gen:luxury": "node node_modules/generate-graphql-api/dist/index.js -o ./src/api-graphql.ts --codegen-functions --codegen-react-hooks",
     "prepare": "husky install"
   },
   "dependencies": {

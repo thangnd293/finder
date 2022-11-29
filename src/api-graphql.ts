@@ -202,6 +202,8 @@ export interface FilterGetOneConversation {
 
 export interface FilterStatisticUser {
   filterByDate?: FilterByDate;
+  gender?: GenderEnum;
+  isInActive?: boolean;
   sortOption?: SortOption;
   username?: string;
 }
@@ -396,6 +398,8 @@ export interface UserResult {
   totalCount: Maybe<number>;
 }
 
+export interface CalUserPercentArgs {}
+
 export interface ConfirmMailArgs {
   code: number;
   email: string;
@@ -514,6 +518,7 @@ export interface RemoveMessageArgs {
 
 export interface ReportUserArgs {
   reasonReport: string;
+  reportDetail: string;
   userReport: string;
 }
 
@@ -530,6 +535,10 @@ export interface SignUpArgs {
 }
 
 export interface SkipUserArgs {
+  user_id: string;
+}
+
+export interface UnMatchedArgs {
   user_id: string;
 }
 
@@ -684,6 +693,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
   };
 
   return {
+    calUserPercent(): ExecutableQuery<number> {
+      const queryTemplate = gql`
+        query calUserPercent {
+          calUserPercent
+        }
+      `;
+      return abortableQuery(queryTemplate, false, false);
+    },
     confirmMail(): QueryWithArgs<boolean, ConfirmMailArgs> {
       const queryTemplate = gql`
         query confirmMail($code: Float!, $email: String!) {
@@ -1126,8 +1143,16 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
     },
     reportUser(): QueryWithArgs<boolean, ReportUserArgs> {
       const queryTemplate = gql`
-        mutation reportUser($reasonReport: String!, $userReport: ObjectID!) {
-          reportUser(reasonReport: $reasonReport, userReport: $userReport)
+        mutation reportUser(
+          $reasonReport: String!
+          $reportDetail: String!
+          $userReport: ObjectID!
+        ) {
+          reportUser(
+            reasonReport: $reasonReport
+            reportDetail: $reportDetail
+            userReport: $userReport
+          )
         }
       `;
       return abortableQuery(queryTemplate, true, false);
@@ -1176,6 +1201,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       `;
       return abortableQuery(queryTemplate, true, false);
     },
+    unMatched(): QueryWithArgs<boolean, UnMatchedArgs> {
+      const queryTemplate = gql`
+        mutation unMatched($user_id: ObjectID!) {
+          unMatched(user_id: $user_id)
+        }
+      `;
+      return abortableQuery(queryTemplate, true, false);
+    },
     unSkipUser(): QueryWithArgs<boolean, UnSkipUserArgs> {
       const queryTemplate = gql`
         mutation unSkipUser($user_id: ObjectID!) {
@@ -1217,6 +1250,17 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       return abortableQuery(queryTemplate, true, false);
     },
   };
+};
+
+export const useCalUserPercent = (
+  options?: QueryHookOptions<{ calUserPercent: number }>,
+) => {
+  const query = gql`
+    query calUserPercent {
+      calUserPercent
+    }
+  `;
+  return useLazyQuery<{ calUserPercent: number }>(query, options);
 };
 
 export const useConfirmMail = (
@@ -1753,8 +1797,16 @@ export const useReportUser = (
   options?: MutationHookOptions<{ reportUser: boolean }, ReportUserArgs>,
 ) => {
   const mutation = gql`
-    mutation reportUser($reasonReport: String!, $userReport: ObjectID!) {
-      reportUser(reasonReport: $reasonReport, userReport: $userReport)
+    mutation reportUser(
+      $reasonReport: String!
+      $reportDetail: String!
+      $userReport: ObjectID!
+    ) {
+      reportUser(
+        reasonReport: $reasonReport
+        reportDetail: $reportDetail
+        userReport: $userReport
+      )
     }
   `;
   return useMutation<{ reportUser: boolean }, ReportUserArgs>(
@@ -1814,6 +1866,17 @@ export const useSkipUser = (
     }
   `;
   return useMutation<{ skipUser: boolean }, SkipUserArgs>(mutation, options);
+};
+
+export const useUnMatched = (
+  options?: MutationHookOptions<{ unMatched: boolean }, UnMatchedArgs>,
+) => {
+  const mutation = gql`
+    mutation unMatched($user_id: ObjectID!) {
+      unMatched(user_id: $user_id)
+    }
+  `;
+  return useMutation<{ unMatched: boolean }, UnMatchedArgs>(mutation, options);
 };
 
 export const useUnSkipUser = (

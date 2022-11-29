@@ -23,8 +23,6 @@ export const useUserStore = create<UserStore & UserAction>()(
   persist(
     (set, get) => ({
       signIn: async args => {
-        console.log('run');
-
         const { accessToken, refreshToken } = await apiCaller
           .signIn(['accessToken', 'refreshToken'])
           .$args(args)

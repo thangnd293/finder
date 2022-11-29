@@ -35,8 +35,6 @@ interface Props {
 }
 
 const ReportDialog = ({ target, visible, onClose }: Props) => {
-  console.log('tart', target);
-
   const [_target, setTarget] = useState<User | undefined>(target);
   const [reason, setReason] = useState('');
   const [detail, setDetail] = useState('');
@@ -72,7 +70,8 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
       .reportUser()
       .$args({
         userReport: _target._id,
-        reasonReport: `${reason}; ${detail}`,
+        reasonReport: reason,
+        reportDetail: detail,
       })
       .$fetch();
 

@@ -38,7 +38,6 @@ const InputChat = ({}: Props) => {
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setMessage(prev => prev + emojiData.emoji);
-    console.log(message + emojiData.emoji);
   };
 
   const gf = new GiphyFetch('wa13x8D1dErL2IgFZ13xyVVT6cxr5ZF1');

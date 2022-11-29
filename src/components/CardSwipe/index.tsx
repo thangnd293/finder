@@ -97,7 +97,6 @@ const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
   }, [showInfo]);
 
   const onReport = () => {
-    console.log('report');
     setShowReportDialog(true);
   };
 

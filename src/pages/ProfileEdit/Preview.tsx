@@ -22,10 +22,6 @@ const Preview = ({}: Props) => {
     setShowInfo(false);
   };
 
-  useEffect(() => {
-    console.log('showInfo', showInfo);
-  }, [showInfo]);
-
   return (
     <div
       className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
