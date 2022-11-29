@@ -62,22 +62,22 @@ const Information = ({ user, onReport }: Props) => {
           </p>
         )}
         <div className='flex flex-wrap gap-0.4 py-1.2'>
+          {/* <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
           <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
           <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
           <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} /> */}
         </div>
       </SectionWrapper>
       <Divider />
       <SectionWrapper>
         <p className='text-18 font-medium'>Sở thích</p>
         <div className='flex flex-wrap gap-0.4 py-1.2'>
+          {/* <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
           <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
           <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
           <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} /> */}
         </div>
       </SectionWrapper>
       {onReport && (
@@ -87,7 +87,7 @@ const Information = ({ user, onReport }: Props) => {
             onClick={onReport}
             className='w-full border-none py-2 text-14 text-center text-text-secondary font-semibold uppercase opacity-60 duration-300 hover:opacity-100'
           >
-            Bao cao {user.username}
+            Báo cáo {user.username}
           </button>
           <Divider />
         </>

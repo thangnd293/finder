@@ -1,10 +1,11 @@
 import { User } from '@/api-graphql';
 import { apiCaller } from '@/service';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
 
 import Carousel from '../Carousel';
 import Information from '../Information';
+import ReportDialog from '../ReportDialog';
 import { flipLeft, flipRight } from './utils';
 
 import DownArrowColorIcon from '@/assets/svgs/DownArrowColorIcon';
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
+  const [showReportDialog, setShowReportDialog] = useState(false);
   const {
     _id: id,
     username,
@@ -94,6 +96,11 @@ const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
     onShowInfo(showInfo);
   }, [showInfo]);
 
+  const onReport = () => {
+    console.log('report');
+    setShowReportDialog(true);
+  };
+
   const handleShowInfo = () => {
     if (status !== 'idle') return;
     setDisable(true);
@@ -118,79 +125,88 @@ const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
   }, [flipRight, status]);
 
   return (
-    <div
-      className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
-      ref={ref}
-      style={{
-        paddingBottom: showInfo ? '0px' : '101px',
-      }}
-    >
-      <Carousel
-        images={images!}
+    <>
+      <div
+        className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
+        ref={ref}
         style={{
-          height: showInfo ? '60%' : '100%',
+          paddingBottom: showInfo ? '0px' : '101px',
         }}
-        isDrag={isDrag && !showInfo}
-        flipLeft={!showInfo ? handleFlipLeft : undefined}
-        flipRight={!showInfo ? handleFlipRight : undefined}
-      />
-      {showInfo ? (
-        <div className='relative w-full bg-white rounded-b-8 pb-10'>
-          <button
-            className='absolute -top-3 right-1.2'
-            onClick={handleHiddenInfo}
-          >
-            <DownArrowColorIcon width={52} height={52} />
-          </button>
-          <Information user={user} />
-        </div>
-      ) : (
-        <>
-          <div
-            className='w-full h-1/3 absolute bottom-[100px]'
-            style={{
-              backgroundImage:
-                'linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(255, 255, 255, 0) 100%)',
-            }}
-          ></div>
-          <div
-            className='w-full h-fit p-1.6 absolute bottom-[100px] text-white cursor-pointer'
-            onClick={handleShowInfo}
-          >
-            <p className='text-32 font-bold'>
-              {username} <span className='text-26 font-normal'>{age}</span>
-            </p>
-            <div className='flex items-center'>
-              <div className='flex-1'>
-                {isRecentActive && (
-                  <p className='space-x-0.4'>
-                    <span className='inline-block w-0.8 h-0.8 rounded-full bg-indicator-green'></span>
-                    <span className='text-14'>Có hoạt động gần đây</span>
-                  </p>
-                )}
-                {liveAt && (
-                  <p className='flex items-center gap-0.5'>
-                    <HomeIcon />
-                    <span className='text-18'>Sống tại {liveAt}</span>
-                  </p>
-                )}
-                {calcDistance !== null && (
-                  <p className='flex items-center gap-0.5'>
-                    <LocationIcon />
-                    <span className='text-18'>
-                      Cách xa {Math.round(calcDistance / 1000)} km
-                    </span>
-                  </p>
-                )}
-              </div>
-              <button className='hover:scale-125 duration-300 cursor-pointer'>
-                <InfoIcon />
-              </button>
-            </div>
+      >
+        <Carousel
+          images={images!}
+          style={{
+            height: showInfo ? '60%' : '100%',
+          }}
+          isDrag={isDrag && !showInfo}
+          flipLeft={!showInfo ? handleFlipLeft : undefined}
+          flipRight={!showInfo ? handleFlipRight : undefined}
+        />
+        {showInfo ? (
+          <div className='relative w-full bg-white rounded-b-8 pb-10'>
+            <button
+              className='absolute -top-3 right-1.2'
+              onClick={handleHiddenInfo}
+            >
+              <DownArrowColorIcon width={52} height={52} />
+            </button>
+            <Information user={user} onReport={onReport} />
           </div>
-        </>
+        ) : (
+          <>
+            <div
+              className='w-full h-1/3 absolute bottom-[100px]'
+              style={{
+                backgroundImage:
+                  'linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(255, 255, 255, 0) 100%)',
+              }}
+            ></div>
+            <div
+              className='w-full h-fit p-1.6 absolute bottom-[100px] text-white cursor-pointer'
+              onClick={handleShowInfo}
+            >
+              <p className='text-32 font-bold'>
+                {username} <span className='text-26 font-normal'>{age}</span>
+              </p>
+              <div className='flex items-center'>
+                <div className='flex-1'>
+                  {isRecentActive && (
+                    <p className='space-x-0.4'>
+                      <span className='inline-block w-0.8 h-0.8 rounded-full bg-indicator-green'></span>
+                      <span className='text-14'>Có hoạt động gần đây</span>
+                    </p>
+                  )}
+                  {liveAt && (
+                    <p className='flex items-center gap-0.5'>
+                      <HomeIcon />
+                      <span className='text-18'>Sống tại {liveAt}</span>
+                    </p>
+                  )}
+                  {calcDistance !== null && (
+                    <p className='flex items-center gap-0.5'>
+                      <LocationIcon />
+                      <span className='text-18'>
+                        Cách xa {Math.round(calcDistance / 1000)} km
+                      </span>
+                    </p>
+                  )}
+                </div>
+                <button className='hover:scale-125 duration-300 cursor-pointer'>
+                  <InfoIcon />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      {showReportDialog && (
+        <ReportDialog
+          visible={showReportDialog}
+          target={user}
+          onClose={() => setShowReportDialog(false)}
+        />
       )}
-    </div>
+    </>
   );
 };
 
