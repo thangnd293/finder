@@ -9,6 +9,7 @@ interface Props {
 }
 const PrivateRoute = ({ children }: Props) => {
   const [accessToken, user] = useUserStore(s => [s.accessToken, s.user]);
+  console.log({ user });
 
   if (!isTokenExpired(accessToken)) {
     return <Navigate to='/auth/login' replace />;

@@ -16,6 +16,7 @@ export const getUserCurrentFragment = [
   'images',
   'isDeleted',
   'jobTitle',
+  'isFirstLogin',
   'keyword',
   'lastActive',
   'liveAt',

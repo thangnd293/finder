@@ -1,12 +1,15 @@
-import { apiProvider } from '@/api-graphql';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 
 import { useUserStore } from '../store/user';
 
+import { ENDPOINT } from '@/common/constants/endpoint';
+
+import { apiProvider } from '@/api-graphql';
+
 const httpLink = createUploadLink({
-  uri: 'https://finder-gold.vercel.app/graphql',
+  uri: ENDPOINT,
 });
 
 const authLink = setContext((_, { headers }) => {

@@ -88,6 +88,8 @@ const guessFragmentType = (fragment: string | DocumentNode) => {
 };
 
 import {
+  DocumentNode,
+  gql,
   useMutation,
   useLazyQuery,
   useSubscription,
@@ -98,7 +100,7 @@ import {
 } from '@apollo/client';
 
 import { OperationDefinitionNode } from 'graphql';
-import { ApolloClient, execute, DocumentNode, gql } from '@apollo/client/core';
+import { ApolloClient, execute, } from '@apollo/client/core';
 
 export interface Address {
   city: Maybe<string>;
@@ -185,6 +187,7 @@ export interface FilterGetAllMessage {
 }
 
 export interface FilterGetAllTag {
+  ids?: string[];
   name?: string;
   parentType?: TagType;
   type?: TagType;

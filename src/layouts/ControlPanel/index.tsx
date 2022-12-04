@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 import React from 'react';
-import { createContext } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import MainNavBar from './MainNavBar';
