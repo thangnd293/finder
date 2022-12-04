@@ -38,7 +38,12 @@ export const useUserStore = create<UserStore & UserAction>()(
         return true;
       },
       logout: () => {
-        set({ accessToken: undefined, refreshToken: undefined });
+        set({
+          accessToken: undefined,
+          refreshToken: undefined,
+          user: undefined,
+        });
+
         location.reload();
       },
       setUser: user => set({ user }),

@@ -44,7 +44,7 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
   const [currentStep, setCurrentStep] = useState(startStep);
 
   const Step = Steps[currentStep];
-  const isFirstStep = currentStep === 0;
+  const isFirstStep = currentStep === startStep;
 
   const onChooseUser = (user: User) => {
     setTarget(user);
@@ -133,8 +133,8 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
     <Modal className='p-0 overflow-hidden' visible={visible} onClose={onClose}>
       <div className='w-40 max-h-[96vh] flex flex-col'>
         <ProgressBar
-          value={currentStep + 1}
-          max={Object.keys(EStep).length / 2}
+          value={currentStep + 1 - startStep}
+          max={Object.keys(EStep).length / 2 - startStep}
         />
         <div
           className={`w-full flex border-0 border-b border-solid border-gray-20 ${

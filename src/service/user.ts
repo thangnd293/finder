@@ -22,6 +22,7 @@ export const getUserCurrentFragment = [
   'phoneNumber',
   'school',
   'showMeTinder',
+  'isFirstLogin',
   {
     mySetting: [
       {

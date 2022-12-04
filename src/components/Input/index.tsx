@@ -1,5 +1,6 @@
 import { useField } from 'formik';
-import { ReactNode, useId } from 'react';
+import { ReactNode, useId, useState } from 'react';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import styled from 'styled-components';
 import tw, { TwStyle } from 'twin.macro';
 
@@ -35,11 +36,12 @@ const Input = ({
   placeholder,
   icon,
   width = 'auto',
+  type = 'text',
   ...rest
 }: Props) => {
   const id = useId();
   const [field, meta] = useField(name);
-
+  const [visiblePassword, setVisiblePassword] = useState(false);
   const inputProps = {
     id,
     name,
@@ -67,7 +69,17 @@ const Input = ({
           {...inputProps}
           {...field}
           {...(rest as any)}
+          type={type === 'password' && !visiblePassword ? 'password' : 'text'}
         />
+        {type === 'password' && (
+          <button
+            className='text-20 text-text-secondary absolute right-1 top-1/2 -translate-y-1/2'
+            type='button'
+            onClick={() => setVisiblePassword(!visiblePassword)}
+          >
+            {visiblePassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </button>
+        )}
       </div>
       {meta.touched && meta.error && (
         <p className='my-0.4 text-text-error text-12'>{meta.error}</p>

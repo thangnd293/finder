@@ -69,6 +69,7 @@ const Login = ({}: Props) => {
               placeholder='VD: thangnd@gmail.com'
             />
             <Input
+              type='password'
               width='full'
               label='Mật khẩu'
               name='password'
