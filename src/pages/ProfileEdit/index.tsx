@@ -4,10 +4,11 @@ import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useOnClickOutside } from 'usehooks-ts';
 
-import { useUserStore } from '../../store/user';
 import Edit from './Edit';
 import Preview from './Preview';
 import ProfileEditMobile from './ProfileEditMobile';
+
+import { useUserStore } from '@/store/user';
 
 import Button from '@/components/Button';
 import Card from '@/components/Card';

@@ -1,36 +1,24 @@
 import { getUserCurrentFragment } from '@/service/user';
-import Cookies from 'js-cookie';
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { apiCaller } from '../service/index';
 
-import { SignInArgs, User } from '@/api-graphql';
+import { User } from '@/api-graphql';
 
 interface UserStore {
-  accessToken?: string;
-  refreshToken?: string;
-
   user?: User;
 }
 
 interface UserAction {
-  signIn: (args: SignInArgs) => Promise<boolean>;
-  logout: () => void;
-  setUser: (user: User) => void;
+  setUser: (user?: User) => void;
+  getUser: () => Promise<boolean>;
 }
 
 export const useUserStore = create<UserStore & UserAction>()(
   persist(
-    (set, get) => ({
-      signIn: async args => {
-        const { accessToken, refreshToken } = await apiCaller
-          .signIn(['accessToken', 'refreshToken'])
-          .$args(args)
-          .$fetch();
-
-        set({ accessToken, refreshToken });
-
+    set => ({
+      getUser: async () => {
         const user = await apiCaller
           .getCurrentUser(getUserCurrentFragment)
           .$fetch();
@@ -38,27 +26,12 @@ export const useUserStore = create<UserStore & UserAction>()(
         set({ user });
         return true;
       },
-      logout: () => {
-        set({
-          accessToken: undefined,
-          refreshToken: undefined,
-          user: undefined,
-        });
 
-        location.reload();
-      },
       setUser: user => set({ user }),
     }),
     {
       name: 'user',
-      getStorage: () => ({
-        getItem: name => Cookies.get(name) as any,
-        removeItem: name => Cookies.remove(name) as any,
-        setItem: (name, value) => Cookies.set(name, value) as any,
-      }),
       partialize: s => ({
-        accessToken: s.accessToken,
-        refreshToken: s.refreshToken,
         user: s.user,
       }),
     },

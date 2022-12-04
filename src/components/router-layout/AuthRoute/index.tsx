@@ -1,4 +1,4 @@
-import { useUserStore } from '@/store/user';
+import { useAuthStore } from '@/store/auth';
 
 import { Navigate } from '@/components/react-router-dom/Navigate';
 
@@ -8,7 +8,7 @@ interface Props {
   children: React.ReactNode;
 }
 const AuthRoute = ({ children }: Props) => {
-  const accessToken = useUserStore(s => s.accessToken);
+  const accessToken = useAuthStore(s => s.accessToken);
 
   if (isTokenExpired(accessToken)) {
     return <Navigate to='/app' replace />;

@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
 
 import { Navigate } from '@/components/react-router-dom/Navigate';
@@ -8,7 +9,9 @@ interface Props {
   children: React.ReactNode;
 }
 const PrivateRoute = ({ children }: Props) => {
-  const [accessToken, user] = useUserStore(s => [s.accessToken, s.user]);
+  const [accessToken] = useAuthStore(s => [s.accessToken]);
+  const [user] = useUserStore(s => [s.user]);
+
   console.log({ user });
 
   if (!isTokenExpired(accessToken)) {

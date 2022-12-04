@@ -4,15 +4,15 @@ import { useGeolocated } from 'react-geolocated';
 import { toast } from 'react-toastify';
 
 import { apiCaller } from '../service/index';
-import { useUserStore } from '../store/user';
-import { useNavigate } from './useNavigate';
+
+import { useAuthStore } from '@/store/auth';
 
 import { isTokenExpired } from '@/common/utils/isTokenExpired';
 import { logColor } from '@/common/utils/logColor';
 
 export const useUpdatePosition = () => {
-  const navigate = useNavigate();
-  const accessToken = useUserStore(s => s.accessToken);
+  const [accessToken] = useAuthStore(s => [s.accessToken]);
+
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
     useGeolocated({
       positionOptions: {

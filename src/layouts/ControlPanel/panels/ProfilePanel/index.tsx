@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 
+import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
 
 import SettingFieldLink from '@/components/SettingFieldLink';
@@ -97,7 +98,7 @@ const ProfilePanel = ({}: Props) => {
         />
       </div>
       <button
-        onClick={() => useUserStore.getState().logout()}
+        onClick={() => useAuthStore.getState().logout()}
         className='w-full h-[52px] text-center align-middle bg-white text-16 border-0 border-y border-solid border-gray-20'
       >
         Đăng xuất

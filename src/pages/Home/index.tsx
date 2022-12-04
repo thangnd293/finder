@@ -30,7 +30,7 @@ const SIZE_PER_PAGE = 10;
 interface Props {}
 
 const Home = ({}: Props) => {
-  const { user, refreshToken } = useUserStore();
+  const [user] = useUserStore(s => [s.user]);
 
   const [data, setData] = useState<UserResult | null>(null);
   const [userList, setUserList] = useState<User[]>([]);

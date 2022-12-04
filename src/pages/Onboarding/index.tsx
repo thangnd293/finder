@@ -181,7 +181,7 @@ const Onboarding = ({}: Props) => {
         .$args({ input: { discovery: { lookingFor: findGender } } })
         .$fetch();
 
-      toast.promise(Promise.all([updateData, updateSetting]), {
+      await toast.promise(Promise.all([updateData, updateSetting]), {
         pending: 'Đang lưu dữ liệu...',
         error: 'Lưu dữ liệu thất bại',
         success: 'Lưu dữ liệu thành công ^^',

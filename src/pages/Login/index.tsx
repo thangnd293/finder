@@ -1,8 +1,9 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { useUserStore } from '../../store/user';
 import { LoginGoogle } from './LoginGoogle';
+
+import { useAuthStore } from '@/store/auth';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -40,7 +41,7 @@ const Login = ({}: Props) => {
 
   const onSubmit = async (values: IFormData) => {
     try {
-      const response = await useUserStore.getState().signIn({ input: values });
+      const response = await useAuthStore.getState().signIn({ input: values });
 
       if (response) {
         navigate(PATH.APP.HOME);

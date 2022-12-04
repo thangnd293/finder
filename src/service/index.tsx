@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 
-import { useUserStore } from '../store/user';
+import { useAuthStore } from '@/store/auth';
 
 import { ENDPOINT } from '@/common/constants/endpoint';
 
@@ -14,7 +14,7 @@ const httpLink = createUploadLink({
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = useUserStore.getState().accessToken;
+  const token = useAuthStore.getState().accessToken;
   console.log(`token: Bearer ${token}`);
 
   // return the headers to the context so httpLink can read them
