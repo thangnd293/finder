@@ -1,4 +1,3 @@
-import { LookingFor } from '@/api-graphql';
 import { ChangeEvent, useEffect, useState } from 'react';
 
 import { useUserStore } from '@/store/user';
@@ -8,6 +7,8 @@ import Slider from '@/components/Slider';
 import Switch from '@/components/Switch';
 
 import { PATH } from '@/common/constants/route';
+
+import { LookingFor } from '@/api-graphql';
 
 const MIN_KM = 2;
 const MAX_KM = 160;

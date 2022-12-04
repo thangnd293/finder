@@ -1,4 +1,3 @@
-import { useLoadingStore } from '@/api-graphql';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -14,6 +13,8 @@ import { useNavigate } from '@/hooks/useNavigate';
 
 import { PATH } from '@/common/constants/route';
 import { handleError } from '@/common/utils/handleError';
+
+import { useLoadingStore } from '@/api-graphql';
 
 interface IFormData {
   email: string;

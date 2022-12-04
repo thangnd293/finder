@@ -1,9 +1,9 @@
-import { User } from '@/api-graphql';
-
 import Container from '../Container';
 
 import FlagIcon from '@/assets/svgs/FlagIcon';
 import HeartIcon from '@/assets/svgs/HeartIcon';
+
+import { User } from '@/api-graphql';
 
 interface Props {
   target: User;

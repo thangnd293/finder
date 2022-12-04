@@ -1,4 +1,3 @@
-import { User } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
 import { getUsersMatchedFragment } from '@/service/user';
 import { useEffect, useState } from 'react';
@@ -6,6 +5,8 @@ import { useEffect, useState } from 'react';
 import Container from '../Container';
 
 import CheckIcon from '@/assets/svgs/CheckIcon';
+
+import { User } from '@/api-graphql';
 
 interface Props {
   target?: User;

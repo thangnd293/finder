@@ -1,10 +1,11 @@
-import { SignInArgs, User } from '@/api-graphql';
 import { getUserCurrentFragment } from '@/service/user';
 import Cookies from 'js-cookie';
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { apiCaller } from '../service/index';
+
+import { SignInArgs, User } from '@/api-graphql';
 
 interface UserStore {
   accessToken?: string;

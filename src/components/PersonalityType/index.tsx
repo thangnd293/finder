@@ -1,6 +1,7 @@
-import { Tag } from '@/api-graphql';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+
+import { Tag } from '@/api-graphql';
 
 interface Props {
   icon?: string;

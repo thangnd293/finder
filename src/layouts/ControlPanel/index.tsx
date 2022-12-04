@@ -1,4 +1,3 @@
-import { User } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
 import { getUsersMatchedFragment } from '@/service/user';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -18,6 +17,8 @@ import HomePanel from './panels/HomePanel';
 import ProfilePanel from './panels/ProfilePanel';
 
 import { PATH } from '@/common/constants/route';
+
+import { User } from '@/api-graphql';
 
 interface Props {
   className?: string;

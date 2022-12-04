@@ -1,4 +1,3 @@
-import { Tag, useGetAllTag } from '@/api-graphql';
 import { useField, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 
@@ -8,6 +7,8 @@ import PlusIcon from '@/assets/svgs/PlusIcon';
 import Button from '@/components/Button';
 import Modal from '@/components/Modal';
 import PersonalityType from '@/components/PersonalityType';
+
+import { Tag, useGetAllTag } from '@/api-graphql';
 
 const MAX_HOBBIES = 5;
 const MIN_HOBBIES = 3;

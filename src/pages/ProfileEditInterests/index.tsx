@@ -1,9 +1,10 @@
-import { useGetAllTag } from '@/api-graphql';
 // import { HOBBIES } from '@/common/constants/data';
 import { useEffect } from 'react';
 
 import Card from '@/components/Card';
 import PersonalityType from '@/components/PersonalityType';
+
+import { useGetAllTag } from '@/api-graphql';
 
 interface Props {}
 

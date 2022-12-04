@@ -1,4 +1,3 @@
-import { User } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
 import { useState } from 'react';
 
@@ -11,6 +10,8 @@ import PickUser from './steps/PickUser';
 import Reason from './steps/Reason';
 
 import ArrowLeftIcon from '@/assets/svgs/ArrowLeftIcon';
+
+import { User } from '@/api-graphql';
 
 enum EStep {
   PickUser = 0,

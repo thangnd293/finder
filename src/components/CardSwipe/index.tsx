@@ -1,4 +1,3 @@
-import { User } from '@/api-graphql';
 import { apiCaller } from '@/service';
 import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
@@ -14,6 +13,8 @@ import InfoIcon from '@/assets/svgs/InfoIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
 
 import useCardSwipe from '@/hooks/useCardSwipe';
+
+import { User } from '@/api-graphql';
 
 interface Props {
   user: User;

@@ -1,13 +1,13 @@
-import { User } from '@/api-graphql';
 import { Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
-
 
 import GenderIcon from '@/assets/svgs/GenderIcon';
 import JobIcon from '@/assets/svgs/JobIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
 import SchoolIcon from '@/assets/svgs/SchoolIcon';
+
+import { User } from '@/api-graphql';
 
 const SectionWrapper = styled.div`
   ${tw`px-1.6 py-1 space-y-0.5`}

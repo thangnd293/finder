@@ -1,4 +1,3 @@
-import { GetAllUserArgs, User, UserResult } from '@/api-graphql';
 import { apiCaller } from '@/service';
 import { getAllUserFragment } from '@/service/user';
 import {
@@ -22,6 +21,8 @@ import Loading from '@/components/Loading';
 import useMediaQuery from '@/hooks/useMediaQuery';
 
 import { RESPONSIVE } from '@/common/constants/responsive';
+
+import { GetAllUserArgs, User, UserResult } from '@/api-graphql';
 
 const NUMBER_OF_CARDS = 3;
 const SIZE_PER_PAGE = 10;

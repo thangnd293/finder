@@ -1,5 +1,6 @@
-import { User } from '@/api-graphql';
 import { Link } from 'react-router-dom';
+
+import { User } from '@/api-graphql';
 
 interface Props {
   to: string;
