@@ -22,7 +22,8 @@
     "@/assets|@/component",
     "@/hooks",
     "@/services",
-    "@/common"
+    "@/common",
+    "@/api-graphql"
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true

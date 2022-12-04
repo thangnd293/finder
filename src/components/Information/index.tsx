@@ -3,9 +3,7 @@ import { Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
-import PersonalityType from '../PersonalityType';
 
-import astrologicalSign from '@/assets/images/astrological_sign.png';
 import GenderIcon from '@/assets/svgs/GenderIcon';
 import JobIcon from '@/assets/svgs/JobIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';

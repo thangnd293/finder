@@ -1,5 +1,3 @@
-import { Tag } from '@/api-graphql';
-import { GenderEnum, LookingFor } from '@/api-graphql';
 import { apiCaller } from '@/service/index';
 import { getUserCurrentFragment } from '@/service/user';
 import { Formik } from 'formik';
@@ -10,7 +8,6 @@ import { toast } from 'react-toastify';
 import { v4 as uuid } from 'uuid';
 import * as Yup from 'yup';
 
-import { useLoadingStore } from '../../api-graphql';
 import HobbiesDialog from './Dialogs/HobbiesDialog';
 
 import { useUserStore } from '@/store/user';
@@ -31,6 +28,8 @@ import { useNavigate } from '@/hooks/useNavigate';
 
 import { dataURLtoFile } from '@/common/utils/dataURLtoFile';
 
+import { GenderEnum, LookingFor, Tag, useLoadingStore } from '@/api-graphql';
+
 type Gender = GenderEnum | 'DEFAULT';
 
 interface FormData {
@@ -40,8 +39,8 @@ interface FormData {
   showGender: boolean;
   findGender: LookingFor;
   email: string;
-  tags?: Tag[];
-  images?: string[];
+  tags: Tag[];
+  images: string[];
 }
 
 const GENDER: Array<{ id: GenderEnum | 'DEFAULT'; label: string }> = [
@@ -127,6 +126,8 @@ const Onboarding = ({}: Props) => {
       email: Yup.string()
         .email('Vui lòng nhập email hợp lệ.')
         .required('Vui lòng nhập email hợp lệ.'),
+      images: Yup.array().min(1, 'Hãy chọn ít nhất 1 ảnh'),
+      tags: Yup.array().min(1, 'Hãy ít nhất 3 sở thích của bạn'),
     },
   );
 
@@ -206,8 +207,8 @@ const Onboarding = ({}: Props) => {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          {props => (
-            <form onSubmit={props.handleSubmit}>
+          {({ handleSubmit, values, getFieldMeta }) => (
+            <form onSubmit={handleSubmit}>
               <div className='grid grid-cols-2 gap-6.5'>
                 <div>
                   <Input
@@ -253,6 +254,12 @@ const Onboarding = ({}: Props) => {
                     itemClassName='h-[176px] w-[130px] gap-x-1 gap-y-2'
                     length={6}
                   />
+                  {getFieldMeta('images').touched &&
+                    getFieldMeta('images').error && (
+                      <p className='my-0.4 text-text-error text-12'>
+                        {getFieldMeta('images').error}
+                      </p>
+                    )}
                 </div>
               </div>
               <Space h={25} />
@@ -264,10 +271,15 @@ const Onboarding = ({}: Props) => {
               <HobbiesDialog name='tags' />
               <Space h={20} />
               <div className='flex wrap gap-0.4'>
-                {props.values.tags?.map((hobbit, index) => (
+                {values.tags?.map((hobbit, index) => (
                   <PersonalityType key={index} tag={hobbit} />
                 ))}
               </div>
+              {getFieldMeta('tags').touched && getFieldMeta('tags').error && (
+                <p className='my-0.4 text-text-error text-12'>
+                  {getFieldMeta('tags').error}
+                </p>
+              )}
               <Space h={40} />
               <div className='w-fit mx-auto'>
                 <Button

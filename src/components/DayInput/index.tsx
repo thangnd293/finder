@@ -50,11 +50,11 @@ const DayInput = ({ name, label }: Props) => {
   useEffect(() => {
     const isHasError = Object.values(hasError).some(item => item);
 
-    if (!isHasError && day && month && year) {
-      setFieldValue(name, `${year}-${month}-${day}`);
-    } else {
-      helpers.setError('Vui lòng nhập ngày hợp lệ.');
+    if (isHasError) {
+      setFieldValue(name, undefined);
+      return;
     }
+    setFieldValue(name, `${year}-${month}-${day}`);
   }, [day, month, year, hasError]);
 
   const onError = ({ name, hasError }: ErrorOf) => {
@@ -63,6 +63,7 @@ const DayInput = ({ name, label }: Props) => {
       [name]: hasError,
     }));
   };
+  console.log({ error: meta.error, value: meta });
 
   return (
     <>
@@ -106,10 +107,13 @@ const DayInput = ({ name, label }: Props) => {
           onFocused={() => helpers.setTouched(true)}
         />
       </div>
-      {meta.touched &&
+      {meta.error && (
+        <p className='my-0.4 text-text-error text-12'>{meta.error}</p>
+      )}
+      {/* {meta.touched &&
         (hasError.day || hasError.month || hasError.year || meta.error) && (
           <p className='my-0.4 text-text-error text-12'>{meta.error}</p>
-        )}
+        )} */}
     </>
   );
 };

@@ -1,5 +1,7 @@
 import { Socket, io } from 'socket.io-client';
 
+import { ENDPOINT } from '@/common/constants/endpoint';
+
 interface ServerToClientEvents {
   //   noArg: () => void;
   //   basicEmit: (a: number, b: string, c: Buffer) => void;
@@ -13,7 +15,7 @@ interface ClientToServerEvents {
 class SocketIO {
   private static instance: Socket<ServerToClientEvents, ClientToServerEvents>;
   private constructor(token: string) {
-    SocketIO.instance = io('https://baashop.herokuapp.com/graphql', {
+    SocketIO.instance = io(ENDPOINT, {
       auth: {
         token: token,
       },

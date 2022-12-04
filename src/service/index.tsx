@@ -5,8 +5,10 @@ import { createUploadLink } from 'apollo-upload-client';
 
 import { useUserStore } from '../store/user';
 
+import { ENDPOINT } from '@/common/constants/endpoint';
+
 const httpLink = createUploadLink({
-  uri: 'https://baashop.herokuapp.com/graphql',
+  uri: ENDPOINT,
 });
 
 const authLink = setContext((_, { headers }) => {
