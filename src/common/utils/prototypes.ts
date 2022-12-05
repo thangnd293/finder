@@ -11,7 +11,9 @@ Date.prototype.toTime = function () {
   const minutes = this.getMinutes();
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
-  hours = hours ? hours : 12;
+  if (hours === 0) {
+    hours = ampm === 'AM' ? 0 : 12;
+  }
   const minutesStr = minutes < 10 ? '0' + minutes : minutes;
   const strTime = hours + ':' + minutesStr + ' ' + ampm;
   return strTime;

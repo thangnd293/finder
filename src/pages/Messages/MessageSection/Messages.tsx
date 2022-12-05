@@ -1,22 +1,50 @@
-import styled from 'styled-components';
-import tw, { TwStyle } from 'twin.macro';
+import { useEffect } from 'react';
 
-import randomInt from '@/common/functions/number';
+import { useMessagesContext } from '..';
+import {
+  Avatar,
+  ImageMessageStyled,
+  MessageContainer,
+  MessageWrapper,
+  TextMessageStyled,
+  Timestamp,
+} from '../styles';
 
-interface Props {}
+import { useUserStore } from '@/store/user';
 
-const Messages = ({}: Props) => {
+import SendingIcon from '@/assets/svgs/SendingIcon';
+import SentIcon from '@/assets/svgs/SentIcon';
+
+import { Message as IMessage, MessageType } from '@/api-graphql';
+
+const Messages = () => {
+  const { messages } = useMessagesContext();
+  const { user } = useUserStore();
+
+  useEffect(() => {
+    console.log('messages', messages);
+
+    const messageBox = document.getElementById('message-box');
+    if (!messageBox) return;
+    messageBox.scrollTop = messageBox.scrollHeight;
+  }, [messages]);
+
   return (
     <div className='w-full'>
-      {MESSAGES.map((message, i) => (
-        <Message
-          key={message.id}
-          align={message.sender.id !== '1' ? 'left' : 'right'}
-          message={message}
-          isFirst={MESSAGES[i - 1]?.sender.id !== message.sender.id}
-          isLast={MESSAGES[i + 1]?.sender.id !== message.sender.id}
-        />
-      ))}
+      {messages.map((message, i) => {
+        return (
+          <Message
+            key={message._id || message.uuid}
+            align={message.sender !== user?._id ? 'left' : 'right'}
+            message={message}
+            isSending={message.status === 'sending'}
+            isFirst={i > 0 && messages[i - 1]?.sender !== message.sender}
+            isLast={
+              i < messages.length && messages[i + 1]?.sender !== message.sender
+            }
+          />
+        );
+      })}
     </div>
   );
 };
@@ -94,7 +122,7 @@ const Message = ({ message, align, isFirst, isLast }: IMessageProps) => {
       )}
 
       <MessageWrapper className='group' align={align} type={message.type}>
-        {message.type === MessageEnum.Text && (
+        {message.type === MessageType.Text && (
           <TextMessageStyled align={align} isFirst={isFirst}>
             {message.text}
           </TextMessageStyled>
@@ -110,102 +138,17 @@ const Message = ({ message, align, isFirst, isLast }: IMessageProps) => {
           </ImageMessageStyled>
         )}
 
+        {align === 'right' &&
+          (isSending ? (
+            <SendingIcon className='shrink-0' />
+          ) : (
+            <SentIcon className='shrink-0' />
+          ))}
+
         <Timestamp align={align}>
-          {new Date(message.timestamp).toTime()}
+          {new Date(message.createdAt).toTime()}
         </Timestamp>
       </MessageWrapper>
-
-      {/*         
-      <MessageWrapper
-        align={align}
-        className='w-fit h-fit relative group flex items-center cursor-default'
-      >
-
-
-        {message.type === MessageEnum.Image && (
-          <ImageMessageStyled align={align}>
-            <img
-              className='w-full'
-              src={message.image}
-              alt=''
-              draggable={false}
-            />
-          </ImageMessageStyled>
-        )} */}
-      {/* <Timestamp align={align}>
-          {new Date(message.timestamp).toTime()}
-        </Timestamp> 
-      </MessageWrapper> */}
     </MessageContainer>
   );
 };
-
-type TextMessage = {
-  type: MessageEnum.Text;
-  text: string;
-};
-
-type ImageMessage = {
-  type: MessageEnum.Image;
-  image: string;
-};
-
-type GifMessage = {
-  type: MessageEnum.Video;
-  gif: string;
-};
-
-type IMessage = {
-  id: string;
-  timestamp: number;
-  sender: {
-    id: string;
-    name: string;
-    avatar: string;
-  };
-} & (TextMessage | ImageMessage | GifMessage);
-
-const USERS = [
-  {
-    id: '1',
-    name: 'Nguyen Dac Thang',
-    avatar:
-      'https://images-ssl.gotinder.com/622f2a5ef776af0100009e70/172x216_75_bfabc6b9-5918-4429-a300-6be4416e132a.webp',
-  },
-  {
-    id: '2',
-    name: 'DarkThang',
-    avatar:
-      'https://images-ssl.gotinder.com/6125c6015291bd01008b6699/320x400_75_418cb65b-fca0-411f-8c6b-86dc6dbd7d6c.webp',
-  },
-];
-
-// const IMAGEMESSAGE: ImageMessage = {
-//   id: randomInt(1, 9999999).toString(),
-//   type: MessageEnum.Image,
-//   image:
-//     'https://images-ssl.gotinder.com/6125c6015291bd01008b6699/320x400_75_418cb65b-fca0-411f-8c6b-86dc6dbd7d6c.webp',
-//   sender: USERS[randomInt(0, 1)],
-//   timestamp: Date.now(),
-// };
-
-// const MESSAGES: IMessage[] = Array.from({ length: randomInt(3, 100) }).map(
-//   (_, index) => ({
-//     id: index.toString(),
-//     type: MessageEnum.Image,
-//     image:
-//       'https://images-ssl.gotinder.com/6125c6015291bd01008b6699/320x400_75_418cb65b-fca0-411f-8c6b-86dc6dbd7d6c.webp',
-//     sender: USERS[randomInt(0, 1)],
-//     timestamp: Date.now(),
-//   }),
-// );
-
-const MESSAGES: IMessage[] = Array.from({ length: randomInt(3, 100) }).map(
-  (_, index) => ({
-    id: index.toString(),
-    type: MessageEnum.Text,
-    text: 'Hello world!',
-    sender: USERS[randomInt(0, 1)],
-    timestamp: Date.now(),
-  }),
-);

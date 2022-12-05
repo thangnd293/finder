@@ -1,4 +1,5 @@
 import { GiphyFetch } from '@giphy/js-fetch-api';
+import type { IGif } from '@giphy/js-types';
 import { Carousel, SearchContextManager } from '@giphy/react-components';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import { useEffect, useRef, useState } from 'react';
@@ -26,6 +27,17 @@ const InputChat = ({}: Props) => {
   const btnGifRef = useRef<HTMLButtonElement>(null);
   const searchGifRef = useRef<HTMLTextAreaElement>(null);
 
+  const ack = useRef(0);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    SocketIO.getInstance(accessToken).on('isSendMessageSuccess', data => {
+      updateMessage({ ...data.message, status: 'sent' }, data.uuid);
+    });
+  }, [accessToken]);
+
+  const btnSubmitRef = useRef<HTMLButtonElement>(null);
+
   const emojiRef = useClickOutside(
     () => setShow('none'),
     [btnEmojiRef.current as HTMLElement],
@@ -38,7 +50,50 @@ const InputChat = ({}: Props) => {
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setMessage(prev => prev + emojiData.emoji);
-    console.log(message + emojiData.emoji);
+  };
+
+  const onSend = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!message || !accessToken || !conversation) return;
+
+    console.log('text', message);
+
+    const data = {
+      conversion_id: conversation._id,
+      receiver: conversation.user!._id,
+      text: message,
+      uuid: ack.current.toString(),
+      createdAt: new Date().toISOString(),
+      type: MessageType.Text,
+      sender: user?._id,
+      status: 'sending',
+    };
+
+    ack.current += 1;
+    setMessage('');
+    addMessage(data);
+    SocketIO.getInstance(accessToken).emit('sendMessage', data);
+  };
+
+  const onGifSend = (gif: IGif) => {
+    setShow('none');
+
+    if (!accessToken || !conversation) return;
+    const data = {
+      conversion_id: conversation._id,
+      receiver: conversation.user!._id,
+      uuid: ack.current.toString(),
+      createdAt: new Date().toISOString(),
+      urlMessageImage: gif.images.preview_webp.url,
+      type: MessageType.Image,
+      sender: user?._id,
+      status: 'sending',
+    };
+
+    ack.current += 1;
+    setMessage('');
+    addMessage(data);
+    SocketIO.getInstance(accessToken).emit('sendMessage', data);
   };
 
   const gf = new GiphyFetch('wa13x8D1dErL2IgFZ13xyVVT6cxr5ZF1');
@@ -66,7 +121,7 @@ const InputChat = ({}: Props) => {
                 fetchGifs={fetchGifs}
                 key={searchGif}
                 noLink
-                onGifClick={gif => console.log(gif)}
+                onGifClick={onGifSend}
                 hideAttribution
               />
             </div>
@@ -92,6 +147,7 @@ const InputChat = ({}: Props) => {
           maxRows={6}
           value={message}
           onChange={e => setMessage(e.target.value)}
+          onEnter={() => btnSubmitRef.current?.click()}
         />
 
         <textarea
@@ -132,8 +188,13 @@ const InputChat = ({}: Props) => {
             </div>
           )}
         </div>
-        <Button label='Send' disabled={!message.trim()} />
-      </div>
+        <Button
+          ref={btnSubmitRef}
+          type='submit'
+          label='Send'
+          disabled={!message.trim()}
+        />
+      </form>
     </SearchContextManager>
   );
 };

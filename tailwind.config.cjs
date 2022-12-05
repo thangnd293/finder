@@ -95,7 +95,8 @@ const colors = {
   'overlay-default': 'rgba(0, 0, 0, 0.56)',
   'background-icon-button-overlay': 'rgba(17, 20, 24, 0.8)',
   'background-tapping': 'rgba(0, 0, 0, 0.24)',
-
+  'border-go-down': 'rgba(0, 0, 0, 0.04)',
+  'background-loading': '#fa6f6880',
   current: 'currentColor',
   transparent: 'transparent',
 };
@@ -119,6 +120,7 @@ const boxShadow = {
   md: 'rgba(101, 110, 123, 0.12) 0px 2px 6px 0px',
   lg: 'rgba(0, 0, 0, 0.08) 0px 0px 8px 0px',
   avatar: '0 2px 5px 0 rgba(17, 20, 24, 0.16)',
+  'go-down': '0 2px 4px rgba(0, 0, 0, 0.1),0 8px 20px rgba(0, 0, 0, 0.1)',
 };
 
 const borderRadius = {
