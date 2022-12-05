@@ -1,22 +1,28 @@
+import { useControlPanelContext } from '@/layouts/ControlPanel';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
-interface Props {}
+import { PATH } from '@/common/constants/route';
 
-const Messages = ({}: Props) => {
+import { MessageType } from '@/api-graphql';
+
+const Messages = () => {
+  const { usersMessage } = useControlPanelContext();
   return (
     <>
-      {Array.from({ length: 10 }).map((_, i) => (
+      {usersMessage.map(userMessage => (
         <Contact
-          key={i}
-          to={''}
-          name={'Nguyen Dac Thang'}
-          active={i === 1}
-          avatar={
-            'https://images-ssl.gotinder.com/622f2a5ef776af0100009e70/172x216_75_bfabc6b9-5918-4429-a300-6be4416e132a.webp'
+          key={userMessage._id}
+          to={`${PATH.APP.MESSAGES.CHAT.replace(':chatId', userMessage._id)}`}
+          name={userMessage.user.username!}
+          active={true}
+          avatar={userMessage.user.images![0]!}
+          lastMessage={
+            userMessage.lastMessage?.type === MessageType.Text
+              ? userMessage.lastMessage!.text!
+              : 'Hình ảnh'
           }
-          lastMessage={'Hello world!'}
         />
       ))}
     </>

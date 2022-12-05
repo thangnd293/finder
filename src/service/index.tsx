@@ -9,7 +9,7 @@ import { ENDPOINT } from '@/common/constants/endpoint';
 import { apiProvider } from '@/api-graphql';
 
 const httpLink = createUploadLink({
-  uri: ENDPOINT,
+  uri: `${ENDPOINT}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {

@@ -1,1 +1,1 @@
-export const ENDPOINT = 'https://finder-gold.vercel.app/graphql';
+export const ENDPOINT = 'http://localhost:2000';

@@ -2,27 +2,36 @@ import { Socket, io } from 'socket.io-client';
 
 import { ENDPOINT } from '@/common/constants/endpoint';
 
+import { ConversationResult, Message } from '@/api-graphql';
+
 interface ServerToClientEvents {
-  //   noArg: () => void;
-  //   basicEmit: (a: number, b: string, c: Buffer) => void;
-  //   withAck: (d: string, callback: (e: number) => void) => void;
+  listUserMatched_tabMatched: (data: ConversationResult) => void;
+  listUserMatched_tabMessage: (data: ConversationResult) => void;
+  receiverMessage: (data: Message) => void;
+  isSendMessageSuccess: (data: { uuid: string; message: Message }) => void;
 }
 
 interface ClientToServerEvents {
-  //   hello: () => void;
+  verifyFirstConnection: () => void;
+  getAllUserMatched_tabMessage: () => void;
+  getAllUserMatched_tabMatched: () => void;
+  sendMessage: (data: any) => void;
 }
 
 class SocketIO {
   private static instance: Socket<ServerToClientEvents, ClientToServerEvents>;
   private constructor(token: string) {
     SocketIO.instance = io(ENDPOINT, {
-      auth: {
+      query: {
         token: token,
       },
     });
 
     SocketIO.instance.on('connect', () => {
       console.log(`${SocketIO.instance.id} connected`);
+      SocketIO.instance.emit('verifyFirstConnection');
+      SocketIO.instance.emit('getAllUserMatched_tabMessage');
+      SocketIO.instance.emit('getAllUserMatched_tabMatched');
     });
 
     SocketIO.instance.on('disconnect', () => {

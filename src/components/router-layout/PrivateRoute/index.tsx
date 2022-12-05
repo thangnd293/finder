@@ -1,3 +1,6 @@
+import SocketIO from '@/socket';
+import { useEffect } from 'react';
+
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
 
@@ -12,7 +15,13 @@ const PrivateRoute = ({ children }: Props) => {
   const [accessToken] = useAuthStore(s => [s.accessToken]);
   const [user] = useUserStore(s => [s.user]);
 
-  console.log({ user });
+  useEffect(() => {
+    if (!accessToken) return;
+    SocketIO.getInstance(accessToken).connect();
+    return () => {
+      SocketIO.getInstance(accessToken).disconnect();
+    };
+  }, [accessToken]);
 
   if (!isTokenExpired(accessToken)) {
     return <Navigate to='/auth/login' replace />;

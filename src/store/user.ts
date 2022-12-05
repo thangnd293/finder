@@ -1,4 +1,4 @@
-import { getUserCurrentFragment } from '@/service/user';
+import { getUserFragment } from '@/service/user';
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -19,9 +19,7 @@ export const useUserStore = create<UserStore & UserAction>()(
   persist(
     set => ({
       getUser: async () => {
-        const user = await apiCaller
-          .getCurrentUser(getUserCurrentFragment)
-          .$fetch();
+        const user = await apiCaller.getCurrentUser(getUserFragment).$fetch();
 
         set({ user });
         return true;

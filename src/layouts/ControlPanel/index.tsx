@@ -1,5 +1,9 @@
 import { apiCaller } from '@/service/index';
-import { getUsersMatchedFragment } from '@/service/user';
+import {
+  getUsersMatchedFragment,
+  getUsersMessageFragment,
+} from '@/service/user';
+import SocketIO from '@/socket';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   useContext,
@@ -11,6 +15,7 @@ import {
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { useAuthStore } from '../../store/auth';
 import MainNavBar from './MainNavBar';
 import GenderPanel from './panels/GenderPanel/index';
 import HomePanel from './panels/HomePanel';
@@ -18,7 +23,7 @@ import ProfilePanel from './panels/ProfilePanel';
 
 import { PATH } from '@/common/constants/route';
 
-import { User } from '@/api-graphql';
+import { Conversation } from '@/api-graphql';
 
 interface Props {
   className?: string;
@@ -32,7 +37,9 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
       return initPanel(currentPath, true);
     });
 
-    const [usersMatched, setUsersMatched] = useState<User[]>([]);
+    const { accessToken } = useAuthStore();
+    const [usersMatched, setUsersMatched] = useState<Conversation[]>([]);
+    const [usersMessage, setUsersMessage] = useState<Conversation[]>([]);
 
     useEffect(() => {
       const fetchUsersMatched = async () => {
@@ -42,23 +49,49 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
             isMessaged: false,
           })
           .$fetch();
-        console.log(data);
 
-        const users = data.results?.map(item => item.user) ?? [];
-
-        setUsersMatched(users);
+        setUsersMatched(data.results!);
       };
 
       fetchUsersMatched();
     }, []);
+
+    useEffect(() => {
+      const fetchUsersMessage = async () => {
+        const data = await apiCaller
+          .getAllUserMatched(getUsersMessageFragment)
+          .$args({
+            isMessaged: true,
+          })
+          .$fetch();
+
+        setUsersMessage(data.results!);
+        console.log(data);
+      };
+
+      fetchUsersMessage();
+    }, []);
+
+    useEffect(() => {
+      if (!accessToken) return;
+
+      SocketIO.getInstance(accessToken).on(
+        'listUserMatched_tabMatched',
+        data => {
+          if (!data.results) return;
+          setUsersMatched(data.results);
+        },
+      );
+    }, [accessToken]);
 
     const value = useMemo(() => {
       return {
         currentPanel,
         setCurrentPanel,
         usersMatched,
+        usersMessage,
       };
-    }, [currentPanel, setCurrentPanel, usersMatched]);
+    }, [currentPanel, setCurrentPanel, usersMatched, usersMessage]);
 
     useLayoutEffect(() => {
       if (currentPanel.isFirstRender) {
@@ -167,7 +200,8 @@ function initPanel(path: string, isFirstRender = false) {
 }
 
 interface IControlPanelContext {
-  usersMatched: User[];
+  usersMatched: Conversation[];
+  usersMessage: Conversation[];
   currentPanel: {
     panel: ControlPanelType;
     prev: ControlPanelType;
@@ -185,6 +219,7 @@ const ControlPanelContext = React.createContext<IControlPanelContext>({
   currentPanel: initPanel(PATH.APP.HOME, true),
   setCurrentPanel: () => {},
   usersMatched: [],
+  usersMessage: [],
 });
 
 export const useControlPanelContext = () => useContext(ControlPanelContext);

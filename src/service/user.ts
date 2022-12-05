@@ -1,6 +1,6 @@
 import { ConversationResult, GenFields, User, UserResult } from '@/api-graphql';
 
-export const getUserCurrentFragment = [
+export const getUserFragment = [
   '_id',
   'username',
   'aboutMe',
@@ -69,6 +69,21 @@ export const getUsersMatchedFragment: GenFields<ConversationResult> = [
   'totalCount',
   {
     results: [
+      '_id',
+      {
+        user: ['_id', 'username', 'images'],
+      },
+    ],
+  },
+];
+
+export const getUsersMessageFragment: GenFields<ConversationResult> = [
+  'totalCount',
+  {
+    results: [
+      {
+        lastMessage: ['_id', 'createdAt', 'text', 'type', 'urlMessageImage'],
+      },
       '_id',
       {
         user: ['_id', 'username', 'images'],
