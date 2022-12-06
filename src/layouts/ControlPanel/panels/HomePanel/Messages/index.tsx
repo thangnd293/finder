@@ -1,24 +1,43 @@
-import { Link } from 'react-router-dom';
+import { useControlPanelContext } from '@/layouts/ControlPanel';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
-interface Props {}
+import { useUserStore } from '@/store/user';
 
-const Messages = ({}: Props) => {
+import LeftArrowIcon from '@/assets/svgs/LeftArrowIcon';
+
+import { PATH } from '@/common/constants/route';
+
+import { MessageType } from '@/api-graphql';
+
+const Messages = () => {
+  const { usersMessage } = useControlPanelContext();
+  const { user } = useUserStore();
+  const { chatId } = useParams();
+  console.log(user?._id);
+
   return (
     <>
-      {Array.from({ length: 10 }).map((_, i) => (
-        <Contact
-          key={i}
-          to={''}
-          name={'Nguyen Dac Thang'}
-          active={i === 1}
-          avatar={
-            'https://images-ssl.gotinder.com/622f2a5ef776af0100009e70/172x216_75_bfabc6b9-5918-4429-a300-6be4416e132a.webp'
-          }
-          lastMessage={'Hello world!'}
-        />
-      ))}
+      {usersMessage.map(userMessage => {
+        console.log(userMessage);
+
+        return (
+          <Contact
+            key={userMessage._id}
+            to={`${PATH.APP.MESSAGES.CHAT.replace(':chatId', userMessage._id)}`}
+            name={userMessage.user!.username!}
+            active={chatId === userMessage._id}
+            avatar={userMessage.user!.images![0]!}
+            lastMessage={
+              userMessage.lastMessage?.type === MessageType.Text
+                ? userMessage.lastMessage!.text!
+                : 'Hình ảnh'
+            }
+            isMeSentLatest={userMessage.lastMessage?.sender === user?._id}
+          />
+        );
+      })}
     </>
   );
 };
@@ -26,9 +45,9 @@ const Messages = ({}: Props) => {
 export default Messages;
 
 const ContactContainer = styled.div<{ active?: boolean }>`
-  ${tw`w-full flex items-center space-x-[24px] px-[24px] py-1.2 bg-gray-20 border-0 border-r-4 border-solid border-transparent hover:shadow-[0 0 5px 0 #0000001f] hover:border-primary`}
+  ${tw`w-full flex items-center space-x-[24px] px-[24px] py-1.2 bg-white border-0 border-r-4 border-solid border-transparent hover:shadow-[0 0 5px 0 #0000001f] hover:border-primary`}
   ${({ active }) =>
-    active && tw`border-primary bg-white shadow-[0 0 5px 0 #0000001f]`}
+    active && tw`border-primary bg-gray-20 shadow-[0 0 5px 0 #0000001f]`}
 `;
 
 interface ContactProps {
@@ -37,9 +56,19 @@ interface ContactProps {
   avatar: string;
   lastMessage: string;
   active?: boolean;
+  isMeSentLatest?: boolean;
 }
 
-const Contact = ({ to, name, avatar, lastMessage, active }: ContactProps) => {
+const Contact = ({
+  to,
+  name,
+  avatar,
+  lastMessage,
+  active,
+  isMeSentLatest,
+}: ContactProps) => {
+  console.log(isMeSentLatest);
+
   return (
     <Link to={to}>
       <ContactContainer active={active}>
@@ -51,11 +80,21 @@ const Contact = ({ to, name, avatar, lastMessage, active }: ContactProps) => {
             draggable={false}
           />
         </div>
+
         <div className='flex-1 overflow-hidden'>
           <p className='text-base text-18 font-semibold whitespace-nowrap text-ellipsis overflow-hidden'>
             {name}
           </p>
           <p className='text-text-secondary text-16 whitespace-nowrap text-ellipsis overflow-hidden'>
+            {isMeSentLatest && (
+              <>
+                <LeftArrowIcon
+                  width={12}
+                  height={12}
+                  className='inline-block mb-0.4'
+                />{' '}
+              </>
+            )}
             {lastMessage}
           </p>
         </div>

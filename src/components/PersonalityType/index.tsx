@@ -8,7 +8,6 @@ interface Props {
   tag: Tag;
   isActive?: boolean;
   onClick?: (hobbit: Tag) => void;
-  key?: number;
 }
 
 const PersonalityTypeContainer = styled.div<{
@@ -20,13 +19,7 @@ const PersonalityTypeContainer = styled.div<{
   ${({ active }) => active && tw`border-primary text-primary`}
 `;
 
-const PersonalityType = ({
-  icon,
-  tag,
-  isActive = false,
-  onClick,
-  key,
-}: Props) => {
+const PersonalityType = ({ icon, tag, isActive = false, onClick }: Props) => {
   const hasIcon = !!icon;
   const handleClick = () => {
     onClick?.(tag);

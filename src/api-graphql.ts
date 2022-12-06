@@ -88,8 +88,6 @@ const guessFragmentType = (fragment: string | DocumentNode) => {
 };
 
 import {
-  DocumentNode,
-  gql,
   useMutation,
   useLazyQuery,
   useSubscription,
@@ -100,7 +98,7 @@ import {
 } from '@apollo/client';
 
 import { OperationDefinitionNode } from 'graphql';
-import { ApolloClient, execute, } from '@apollo/client/core';
+import { ApolloClient, execute, DocumentNode, gql } from '@apollo/client/core';
 
 export interface Address {
   city: Maybe<string>;
@@ -133,10 +131,10 @@ export interface Conversation {
   createdAt: string;
   isDeleted: boolean;
   lastMessage: Maybe<Message>;
-  members: User[];
+  members: Maybe<User[]>;
   messagePin: Maybe<Message>;
   updatedAt: string;
-  user: User;
+  user: Maybe<User>;
 }
 
 export interface ConversationResult {
@@ -256,14 +254,22 @@ export interface Message {
   urlMessageImage: Maybe<string>;
 }
 
+export interface MessageInput {
+  conversion_id: string;
+  receiver: string;
+  text?: string;
+  type: MessageType;
+  uuid?: string;
+}
+
 export interface MessageResult {
   results: Maybe<Message[]>;
   totalCount: Maybe<number>;
 }
 
 export enum MessageType {
-  Image = 'IMAGE',
-  Text = 'TEXT',
+  Image = 'Image',
+  Text = 'Text',
 }
 export interface MySetting {
   controlWhoSeesYou: ControlWhoSeesYou;
@@ -497,6 +503,10 @@ export interface ConfirmDeleteAccountArgs {
 
 export interface CreateConversationArgs {
   input: CreateConversationInput;
+}
+
+export interface CreateMessageArgs {
+  input: MessageInput;
 }
 
 export interface CreateTagArgs {
@@ -1090,6 +1100,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       } ${isFragment ? fragment : ''}
       `;
 
+      return abortableQuery(queryTemplate, true, false);
+    },
+    createMessage(): QueryWithArgs<boolean, CreateMessageArgs> {
+      const queryTemplate = gql`
+        mutation createMessage($input: MessageInput!) {
+          createMessage(input: $input)
+        }
+      `;
       return abortableQuery(queryTemplate, true, false);
     },
     createTag(): QueryWithArgs<boolean, CreateTagArgs> {
@@ -1721,6 +1739,20 @@ export const useCreateConversation = (
     { createConversation: Conversation },
     CreateConversationArgs
   >(mutation, options);
+};
+
+export const useCreateMessage = (
+  options?: MutationHookOptions<{ createMessage: boolean }, CreateMessageArgs>,
+) => {
+  const mutation = gql`
+    mutation createMessage($input: MessageInput!) {
+      createMessage(input: $input)
+    }
+  `;
+  return useMutation<{ createMessage: boolean }, CreateMessageArgs>(
+    mutation,
+    options,
+  );
 };
 
 export const useCreateTag = (

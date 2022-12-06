@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
 import { ButtonStyled } from './styles';
 
@@ -14,46 +14,52 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
   size?: Size;
   width?: Width;
-  onClick?: () => void;
   loading?: boolean;
+  onClick?: () => void;
 }
 
-const Button = ({
-  icon,
-  label,
-  variant = 'solid',
-  size = 'medium',
-  width,
-  disabled,
-  loading,
-  className,
-  onClick,
-  ...props
-}: Props) => {
-  const hasIcon = !!icon;
+const Button = React.forwardRef<HTMLButtonElement, Props>(
+  (
+    {
+      icon,
+      label,
+      variant = 'solid',
+      size = 'medium',
+      width,
+      disabled,
+      loading,
+      className,
+      onClick,
+      ...props
+    },
+    ref,
+  ) => {
+    const hasIcon = !!icon;
 
-  const handleClick = () => {
-    if (disabled) return;
-    onClick?.();
-  };
+    const handleClick = () => {
+      if (disabled) return;
+      onClick?.();
+    };
 
-  return (
-    <ButtonStyled
-      className={className}
-      variant={variant}
-      size={size}
-      hasIcon={hasIcon}
-      disabled={disabled || loading}
-      width={typeof width === 'string' ? width : undefined}
-      onClick={handleClick}
-      style={{
-        width: typeof width === 'number' ? `${width}px` : undefined,
-      }}
-      {...props}
-    >
-      {icon} <span>{label}</span> {loading && <LoadingIcon height='20px' />}
-    </ButtonStyled>
-  );
-};
+    return (
+      <ButtonStyled
+        ref={ref}
+        className={className}
+        variant={variant}
+        size={size}
+        hasIcon={hasIcon}
+        disabled={disabled || loading}
+        width={typeof width === 'string' ? width : undefined}
+        onClick={handleClick}
+        style={{
+          width: typeof width === 'number' ? `${width}px` : undefined,
+        }}
+        {...props}
+      >
+        {icon} <span>{label}</span> {loading && <LoadingIcon height='20px' />}
+      </ButtonStyled>
+    );
+  },
+);
 
 export default Button;

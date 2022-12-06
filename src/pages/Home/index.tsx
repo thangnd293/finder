@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 
-import SocketIO from '../../socket/index';
 import HomeMobile from './HomeMobile';
 
 import { useUserStore } from '@/store/user';
@@ -44,12 +43,15 @@ const Home = ({}: Props) => {
   });
 
   useEffect(() => {
-    SocketIO.getInstance('refreshToken');
     const fetch = async () => {
       await getData();
     };
     fetch();
   }, []);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -91,6 +93,10 @@ const Home = ({}: Props) => {
 
     return apiCaller.getAllUser(getAllUserFragment).$args(args).$fetch();
   }
+
+  useEffect(() => {
+    console.log('userList', userList);
+  }, [userList]);
 
   async function getData() {
     setIsLoading(true);

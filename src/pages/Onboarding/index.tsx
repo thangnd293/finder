@@ -1,5 +1,5 @@
 import { apiCaller } from '@/service/index';
-import { getUserCurrentFragment } from '@/service/user';
+import { getUserFragment } from '@/service/user';
 import { Formik } from 'formik';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { useEffect, useMemo } from 'react';
@@ -187,9 +187,7 @@ const Onboarding = ({}: Props) => {
         success: 'Lưu dữ liệu thành công ^^',
       });
 
-      const user = await apiCaller
-        .getCurrentUser(getUserCurrentFragment)
-        .$fetch();
+      const user = await apiCaller.getCurrentUser(getUserFragment).$fetch();
 
       useUserStore.getState().setUser(user);
       navigate('/app');

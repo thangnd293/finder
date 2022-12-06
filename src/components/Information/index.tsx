@@ -2,12 +2,14 @@ import { Fragment, ReactNode } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
+import PersonalityType from '../PersonalityType';
+
 import GenderIcon from '@/assets/svgs/GenderIcon';
 import JobIcon from '@/assets/svgs/JobIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
 import SchoolIcon from '@/assets/svgs/SchoolIcon';
 
-import { User } from '@/api-graphql';
+import { TagType, User } from '@/api-graphql';
 
 const SectionWrapper = styled.div`
   ${tw`px-1.6 py-1 space-y-0.5`}
@@ -23,6 +25,9 @@ interface Props {
 }
 
 const Information = ({ user, onReport }: Props) => {
+  const tagPassions =
+    user.tags?.filter(tag => tag.type === TagType.Passions) || [];
+
   return (
     <Fragment>
       <SectionWrapper>
@@ -68,16 +73,16 @@ const Information = ({ user, onReport }: Props) => {
         </div>
       </SectionWrapper>
       <Divider />
-      <SectionWrapper>
-        <p className='text-18 font-medium'>Sở thích</p>
-        <div className='flex flex-wrap gap-0.4 py-1.2'>
-          {/* <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} /> */}
-        </div>
-      </SectionWrapper>
+      {tagPassions.length > 0 && (
+        <SectionWrapper>
+          <p className='text-18 font-medium'>Sở thích</p>
+          <div className='flex flex-wrap gap-0.4 py-1.2'>
+            {tagPassions.map(tag => (
+              <PersonalityType key={tag._id} tag={tag} />
+            ))}
+          </div>
+        </SectionWrapper>
+      )}
       {onReport && (
         <>
           <Divider />

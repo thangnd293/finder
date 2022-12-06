@@ -7,18 +7,15 @@ import emptyAnimate from '@/assets/lotties/empty.json';
 
 import { PATH } from '@/common/constants/route';
 
-interface Props {}
-
-const Matches = ({}: Props) => {
+const Matches = () => {
   const { usersMatched } = useControlPanelContext();
-
   return usersMatched.length > 0 ? (
     <div className='w-full grid grid-cols-2 lg:grid-cols-3 px-0.8 py-0.4'>
-      {usersMatched.map(user => (
+      {usersMatched.map(conversation => (
         <Card
-          key={user._id}
-          to={`${PATH.APP.MESSAGES.CHAT.replace(':chatId', user._id)}`}
-          user={user}
+          key={conversation._id}
+          to={`${PATH.APP.MESSAGES.CHAT.replace(':chatId', conversation._id)}`}
+          user={conversation.user}
         />
       ))}
     </div>

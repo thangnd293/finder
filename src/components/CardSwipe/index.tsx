@@ -160,7 +160,7 @@ const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
                 backgroundImage:
                   'linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(255, 255, 255, 0) 100%)',
               }}
-            ></div>
+            />
             <div
               className='w-full h-fit p-1.6 absolute bottom-[100px] text-white cursor-pointer'
               onClick={handleShowInfo}

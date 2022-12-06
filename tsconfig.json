@@ -20,6 +20,13 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "types", "**/*.ts", "**/*.tsx", "windi.config.ts"],
+  "include": [
+    "src",
+    "types",
+    "**/*.ts",
+    "**/*.tsx",
+    "@types",
+    "windi.config.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
