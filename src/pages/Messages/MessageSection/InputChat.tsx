@@ -1,8 +1,14 @@
+import SocketIO from '@/socket';
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import type { IGif } from '@giphy/js-types';
 import { Carousel, SearchContextManager } from '@giphy/react-components';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-import { useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
+
+import { useMessagesContext } from '..';
+
+import { useAuthStore } from '@/store/auth';
+import { useUserStore } from '@/store/user';
 
 import EmojiIcon from '@/assets/svgs/EmojiIcon';
 import GifIcon from '@/assets/svgs/GifIcon';
@@ -11,13 +17,16 @@ import Textarea from '@/components/Textarea';
 
 import useClickOutside from '@/hooks/useClickOutside';
 
+import { MessageType } from '@/api-graphql';
+
 const GIF_PER_PAGE = 10;
 
 type Popup = 'none' | 'emoji' | 'gif';
 
-interface Props {}
-
-const InputChat = ({}: Props) => {
+const InputChat = () => {
+  const { accessToken } = useAuthStore();
+  const { user } = useUserStore();
+  const { conversation, addMessage, updateMessage } = useMessagesContext();
   const [show, setShow] = useState<Popup>('none');
 
   const [message, setMessage] = useState('');
@@ -55,8 +64,6 @@ const InputChat = ({}: Props) => {
   const onSend = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!message || !accessToken || !conversation) return;
-
-    console.log('text', message);
 
     const data = {
       conversion_id: conversation._id,
@@ -108,7 +115,10 @@ const InputChat = ({}: Props) => {
       apiKey={'wa13x8D1dErL2IgFZ13xyVVT6cxr5ZF1'}
       shouldDefaultToTrending
     >
-      <div className='flex items-center w-full p-1.6 border-0 border-y border-solid border-gray-20 relative'>
+      <form
+        className='flex items-center w-full p-1.6 border-0 border-y border-solid border-gray-20 relative'
+        onSubmit={onSend}
+      >
         <div className='h-4'>
           {show === 'gif' && (
             <div

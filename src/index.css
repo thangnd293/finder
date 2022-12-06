@@ -1,4 +1,4 @@
-@import url('http://fonts.cdnfonts.com/css/proxima-nova-2');
+@import url('https://fonts.cdnfonts.com/css/proxima-nova-2');
 
 @tailwind base;
 @tailwind components;
@@ -11,4 +11,21 @@ body {
 
 button {
   border: none;
+}
+
+@keyframes beacon__circleExpand {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+
+  95% {
+    opacity: 0.1;
+    transform: scale(3.75);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
 }

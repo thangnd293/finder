@@ -5,6 +5,8 @@ export const PATH = {
     PROFILE: {
       SELF: '/app/profile',
       EDIT: '/app/profile/edit',
+      EDIT_INTERESTS: '/app/profile/edit/interests',
+      EDIT_GENDER: '/app/profile/edit/gender',
     },
     SETTING: {
       SELF: '/app/settings',
@@ -12,7 +14,6 @@ export const PATH = {
       GENDER: '/app/settings/gender',
       LANGUAGES: '/app/settings/global/languages',
       TEST_1: '/app/settings/test-1',
-      TEST_2: '/app/settings/test-2',
     },
     EXPLORE: {
       SELF: '/app/explore',
@@ -28,4 +29,5 @@ export const PATH = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
   },
-};
+  'VERIFY-EMAIL': '/verify-success',
+} as const;

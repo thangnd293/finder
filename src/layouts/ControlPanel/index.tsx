@@ -1,13 +1,29 @@
+import { apiCaller } from '@/service/index';
+import {
+  getUsersMatchedFragment,
+  getUsersMessageFragment,
+} from '@/service/user';
+import SocketIO from '@/socket';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useContext, useLayoutEffect, useMemo, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { useAuthStore } from '../../store/auth';
 import MainNavBar from './MainNavBar';
+import GenderPanel from './panels/GenderPanel/index';
 import HomePanel from './panels/HomePanel';
 import ProfilePanel from './panels/ProfilePanel';
 
 import { PATH } from '@/common/constants/route';
+
+import { Conversation } from '@/api-graphql';
 
 interface Props {
   className?: string;
@@ -21,12 +37,68 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
       return initPanel(currentPath, true);
     });
 
+    const { accessToken } = useAuthStore();
+    const [usersMatched, setUsersMatched] = useState<Conversation[]>([]);
+    const [usersMessage, setUsersMessage] = useState<Conversation[]>([]);
+
+    useEffect(() => {
+      const fetchUsersMatched = async () => {
+        const data = await apiCaller
+          .getAllUserMatched(getUsersMatchedFragment)
+          .$args({
+            isMessaged: false,
+          })
+          .$fetch();
+
+        setUsersMatched(data.results!);
+      };
+
+      fetchUsersMatched();
+    }, []);
+
+    useEffect(() => {
+      const fetchUsersMessage = async () => {
+        const data = await apiCaller
+          .getAllUserMatched(getUsersMessageFragment)
+          .$args({
+            isMessaged: true,
+          })
+          .$fetch();
+
+        setUsersMessage(data.results!);
+      };
+
+      fetchUsersMessage();
+    }, []);
+
+    useEffect(() => {
+      if (!accessToken) return;
+
+      SocketIO.getInstance(accessToken).on(
+        'listUserMatched_tabMatched',
+        data => {
+          if (!data.results) return;
+          setUsersMatched(data.results);
+        },
+      );
+
+      SocketIO.getInstance(accessToken).on(
+        'listUserMatched_tabMessage',
+        data => {
+          if (!data.results) return;
+          setUsersMessage(data.results);
+        },
+      );
+    }, [accessToken]);
+
     const value = useMemo(() => {
       return {
         currentPanel,
         setCurrentPanel,
+        usersMatched,
+        usersMessage,
       };
-    }, [currentPanel, setCurrentPanel]);
+    }, [currentPanel, setCurrentPanel, usersMatched, usersMessage]);
 
     useLayoutEffect(() => {
       if (currentPanel.isFirstRender) {
@@ -51,7 +123,7 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
             <MainNavBar />
           </nav>
 
-          <nav className='flex-1 overflow-hidden relative'>
+          <nav className='flex-1 overflow-hidden relative border-0 border-r border-solid border-gray-20 bg-gray-10'>
             <Panels
               activeTab={currentPanel.panel}
               isFirstRender={currentPanel.isFirstRender}
@@ -73,8 +145,11 @@ export enum ControlPanelType {
   Recs = 'recs',
   Settings = 'settings',
   SettingsTest1 = 'settings/test-1',
-  SettingsTest2 = 'settings/test-2',
+  Gender = 'settings/gender',
   Profile = 'profile',
+  ProfileEdit = 'profile/edit',
+  ProfileEditInterests = 'profile/edit/interests',
+  ProfileEditGender = 'profile/edit/gender',
 }
 
 export const controlPanels: Record<
@@ -97,20 +172,32 @@ export const controlPanels: Record<
     path: PATH.APP.SETTING.TEST_1,
     prev: ControlPanelType.Profile,
   },
-  [ControlPanelType.SettingsTest2]: {
-    path: PATH.APP.SETTING.TEST_2,
+  [ControlPanelType.Gender]: {
+    path: PATH.APP.SETTING.GENDER,
+    prev: ControlPanelType.Profile,
+  },
+  [ControlPanelType.ProfileEdit]: {
+    path: PATH.APP.PROFILE.EDIT,
+    prev: ControlPanelType.Profile,
+  },
+  [ControlPanelType.ProfileEditInterests]: {
+    path: PATH.APP.PROFILE.EDIT_INTERESTS,
+    prev: ControlPanelType.Profile,
+  },
+  [ControlPanelType.ProfileEditGender]: {
+    path: PATH.APP.PROFILE.EDIT_GENDER,
     prev: ControlPanelType.Profile,
   },
 };
 
-function initPanel(path: string, isFirstRender: boolean = false) {
+function initPanel(path: string, isFirstRender = false) {
   let panel = ControlPanelType.Recs;
 
   if (Object.values(ControlPanelType).includes(path as ControlPanelType)) {
     panel = path as ControlPanelType;
   }
 
-  let prev = controlPanels[panel].prev;
+  const prev = controlPanels[panel].prev;
 
   return {
     panel,
@@ -120,6 +207,8 @@ function initPanel(path: string, isFirstRender: boolean = false) {
 }
 
 interface IControlPanelContext {
+  usersMatched: Conversation[];
+  usersMessage: Conversation[];
   currentPanel: {
     panel: ControlPanelType;
     prev: ControlPanelType;
@@ -136,6 +225,8 @@ interface IControlPanelContext {
 const ControlPanelContext = React.createContext<IControlPanelContext>({
   currentPanel: initPanel(PATH.APP.HOME, true),
   setCurrentPanel: () => {},
+  usersMatched: [],
+  usersMessage: [],
 });
 
 export const useControlPanelContext = () => useContext(ControlPanelContext);
@@ -164,7 +255,10 @@ function Panels({ activeTab, isFirstRender }: TabsProps) {
 
       <AnimatePresence>
         {(activeTab === ControlPanelType.Profile ||
-          activeTab === ControlPanelType.Settings) && (
+          activeTab === ControlPanelType.Settings ||
+          activeTab === ControlPanelType.ProfileEdit ||
+          activeTab === ControlPanelType.ProfileEditInterests ||
+          activeTab === ControlPanelType.ProfileEditGender) && (
           <motion.div
             initial={{ opacity: 0, x: '-100%' }}
             animate={{ opacity: 1, x: 0 }}
@@ -173,7 +267,7 @@ function Panels({ activeTab, isFirstRender }: TabsProps) {
               ease: 'linear',
               duration: isFirstRender ? 0 : 0.3,
             }}
-            className='w-full h-full bg-white absolute z-20'
+            className='w-full h-full absolute z-20'
           >
             <ProfilePanel />
           </motion.div>
@@ -204,7 +298,7 @@ function SettingsTabs({ activeTab, isFirstRender }: TabsProps) {
       </AnimatePresence>
 
       <AnimatePresence>
-        {activeTab === ControlPanelType.SettingsTest2 && (
+        {activeTab === ControlPanelType.Gender && (
           <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
@@ -213,9 +307,9 @@ function SettingsTabs({ activeTab, isFirstRender }: TabsProps) {
               ease: 'linear',
               duration: isFirstRender ? 0 : 0.3,
             }}
-            className='w-full h-full bg-gradient-end absolute z-20'
+            className='w-full h-full absolute z-20'
           >
-            Setting 2
+            <GenderPanel />
           </motion.div>
         )}
       </AnimatePresence>

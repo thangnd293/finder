@@ -1,37 +1,56 @@
 import { Fragment } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { PATH } from './common/constants/route';
-import PrivateRoute from './components/PrivateRoute';
+import PrivateRoute from './components/router-layout/PrivateRoute';
 import DefaultLayout from './layouts/DefaultLayout/index';
 import Home from './pages/Home';
 import Onboarding from './pages/Onboarding';
-import { allTopPrivateRoutes, allTopPublicRoutes } from './routes';
+import appRoute from './routes/appRoute/index';
+import authRoute from './routes/authRoute/index';
 import IRoute from './typings/route';
 
+import AuthRoute from '@/components/router-layout/AuthRoute';
+
+import { useUpdatePosition } from '@/hooks/usePosition';
+
 function App() {
+  useUpdatePosition();
   return (
-    <Router>
+    <>
       <Routes>
         <Route path='/' element={<DefaultLayout />}>
-          <Route index element={<Home />} />
+          <Route
+            index
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
         </Route>
-        {renderRoutes(allTopPublicRoutes)}
-        {renderRoutes(allTopPrivateRoutes)}
+        {renderRoutes([authRoute], AuthRoute)}
+        {renderRoutes([appRoute], PrivateRoute)}
         <Route path={PATH.APP.ONBOARDING.SELF} element={<Onboarding />} />
         <Route path='/*' element={<div>404</div>} />
       </Routes>
-    </Router>
+
+      <ToastContainer autoClose={2000} limit={5} />
+    </>
   );
 }
 
 export default App;
 
-function renderRoutes(routes: IRoute[]) {
+function renderRoutes(
+  routes: IRoute[],
+  Protect: React.ComponentType<any> = Fragment,
+) {
   return routes.map((route, index) => {
-    const { Component, Layout, children, path, isIndex, isPrivate } = route;
+    const { Component, Layout, children, path, isIndex } = route;
     const Element = Layout ? Layout : Component;
-    const Wrapper = isPrivate ? PrivateRoute : Fragment;
 
     if (children) {
       return (
@@ -39,25 +58,43 @@ function renderRoutes(routes: IRoute[]) {
           key={index}
           path={path}
           element={
-            <Wrapper>
+            <Protect>
               <Element />
-            </Wrapper>
+            </Protect>
           }
         >
-          {renderRoutes(children)}
+          {renderRoutes(children, Protect)}
         </Route>
       );
     }
 
-    return (
+    return isIndex ? (
+      <Fragment key={index}>
+        <Route
+          index={isIndex}
+          element={
+            <Protect>
+              <Element />
+            </Protect>
+          }
+        />
+        <Route
+          path={path}
+          element={
+            <Protect>
+              <Element />
+            </Protect>
+          }
+        />
+      </Fragment>
+    ) : (
       <Route
-        index={isIndex}
         key={index}
         path={path}
         element={
-          <Wrapper>
+          <Protect>
             <Element />
-          </Wrapper>
+          </Protect>
         }
       />
     );

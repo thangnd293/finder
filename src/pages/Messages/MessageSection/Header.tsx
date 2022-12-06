@@ -1,10 +1,15 @@
 import { Fragment } from 'react';
 
 import { useMessagesContext } from '..';
+import { useNavigate } from '../../../hooks/useNavigate';
 
 import CloseIcon from '@/assets/svgs/CloseIcon';
 
+import { PATH } from '@/common/constants/route';
+
 const Header = () => {
+  const navigate = useNavigate();
+
   const { conversation } = useMessagesContext();
   if (!conversation) return <Fragment />;
   return (
@@ -24,7 +29,10 @@ const Header = () => {
         You matched with {conversation.user?.username} on{' '}
         {new Date(conversation.createdAt).toLocaleDateString()}
       </p>
-      <button className='border-[3px] border-solid border-current rounded-full p-0.3 text-gray-60 duration-200 hover:-rotate-90'>
+      <button
+        className='border-[3px] border-solid border-current rounded-full p-0.3 text-gray-60 duration-200 hover:-rotate-90'
+        onClick={() => navigate(PATH.APP.HOME)}
+      >
         <CloseIcon />
       </button>
     </div>

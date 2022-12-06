@@ -1,10 +1,16 @@
+import { apiCaller } from '@/service/index';
+import { getUserFragment } from '@/service/user';
 import { Formik } from 'formik';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { useEffect, useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { v4 as uuid } from 'uuid';
 import * as Yup from 'yup';
 
 import HobbiesDialog from './Dialogs/HobbiesDialog';
-import Header from './Header';
+
+import { useUserStore } from '@/store/user';
 
 import EmailIcon from '@/assets/svgs/EmailIcon';
 import UserIcon from '@/assets/svgs/UserIcon';
@@ -15,44 +21,54 @@ import Input from '@/components/Input';
 import PersonalityType from '@/components/PersonalityType';
 import RadioGroup from '@/components/RadioGroup';
 import Space from '@/components/Space';
+import { UploadImageGroup } from '@/components/UploadImageGroup';
+import { Navigate } from '@/components/react-router-dom/Navigate';
+
+import { useNavigate } from '@/hooks/useNavigate';
+
+import { dataURLtoFile } from '@/common/utils/dataURLtoFile';
+
+import { GenderEnum, LookingFor, Tag, useLoadingStore } from '@/api-graphql';
+
+type Gender = GenderEnum | 'DEFAULT';
 
 interface FormData {
-  name: string;
-  birthDay: string;
-  gender: string;
+  username: string;
+  birthDays: string;
+  gender: Gender;
   showGender: boolean;
-  findGender: string;
+  findGender: LookingFor;
   email: string;
-  // hobbies: string[];
-  // images: string[];
+  tags: Tag[];
+  images: string[];
 }
 
-const GENDER = [
+const GENDER: Array<{ id: GenderEnum | 'DEFAULT'; label: string }> = [
   {
-    id: '1',
+    id: GenderEnum.Male,
     label: 'Nam',
   },
   {
-    id: '2',
+    id: GenderEnum.Female,
     label: 'Nữ',
   },
   {
-    id: '3',
+    id: 'DEFAULT',
     label: 'Khác',
   },
 ];
 
-const FIND_GENDER = [
+const FIND_GENDER: Array<{ id: LookingFor; label: string }> = [
   {
-    id: '1',
+    id: LookingFor.Men,
     label: 'Nam',
   },
   {
-    id: '2',
+    id: LookingFor.Women,
     label: 'Nữ',
   },
   {
-    id: '3',
+    id: LookingFor.All,
     label: 'Mọi người',
   },
 ];
@@ -60,27 +76,48 @@ const FIND_GENDER = [
 interface Props {}
 
 const Onboarding = ({}: Props) => {
-  const [hobbies, setHobbies] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const query = useMemo(() => new URLSearchParams(location.search), [location]);
+  const user = useUserStore(s => s.user);
 
-  const onHobbiesChange = (values: string[]) => {
-    setHobbies(values);
-  };
+  const loading = useLoadingStore(s =>
+    [
+      s.uploadFileLoading,
+      s.getCurrentUserLoading,
+      s.changeSettingLoading,
+      s.updateProfileLoading,
+    ].find(value => value),
+  );
+
+  if (user && !user.isFirstLogin) {
+    return <Navigate to='/app' replace />;
+  }
+
+  useEffect(() => {
+    try {
+      const token = query.get('token');
+      if (!token) return;
+      const jwt = jwtDecode<JwtPayload>(token);
+      console.log(jwt);
+    } catch (error) {}
+  }, [query]);
 
   const initialValues: FormData = {
-    name: '',
-    birthDay: '',
-    gender: '',
+    username: 'Phạm Minh Phát',
+    birthDays: '2001-04-28',
+    gender: GenderEnum.Male,
     showGender: true,
-    findGender: '',
-    email: '',
-    // hobbies: [],
-    // images: [],
+    findGender: LookingFor.Women,
+    email: user?.email || '',
+    tags: [],
+    images: [],
   };
 
   const validationSchema = Yup.object().shape<{ [key in keyof FormData]: any }>(
     {
-      name: Yup.string().required('Tên phải chứa từ 1 đến 22 ký tự.'),
-      birthDay: Yup.string().required('Vui lòng nhập ngày hợp lệ.'),
+      username: Yup.string().required('Tên phải chứa từ 1 đến 22 ký tự.'),
+      birthDays: Yup.string().required('Vui lòng nhập ngày hợp lệ.'),
       gender: Yup.string().required('Vui lòng chọn giới tính của bạn.'),
       showGender: Yup.boolean(),
       findGender: Yup.string().required(
@@ -89,18 +126,76 @@ const Onboarding = ({}: Props) => {
       email: Yup.string()
         .email('Vui lòng nhập email hợp lệ.')
         .required('Vui lòng nhập email hợp lệ.'),
-      // hobbies: Yup.array().required('Hobbies are required'),
-      // images: Yup.array().required('Images are required'),
+      images: Yup.array().min(1, 'Hãy chọn ít nhất 1 ảnh'),
+      tags: Yup.array().min(1, 'Hãy ít nhất 3 sở thích của bạn'),
     },
   );
 
-  const handleSubmit = (values: FormData) => {
-    console.log(values);
+  const handleSubmit = async ({
+    birthDays,
+    email,
+    findGender,
+    gender,
+    showGender,
+    username,
+    images,
+    tags,
+  }: FormData) => {
+    try {
+      const awaitArray = images?.map(value => {
+        if (!value.includes('data:')) return value;
+        const file = dataURLtoFile(value, uuid());
+
+        return apiCaller
+          .uploadFile()
+          .$args({
+            file,
+          })
+          .$fetch();
+      });
+      if (!awaitArray) return;
+
+      const imagesCdn = Promise.all(awaitArray);
+      toast.promise(imagesCdn, {
+        pending: 'Đang upload image...',
+        error: 'Upload thất bại',
+        success: 'Upload image thành công ^^',
+      });
+
+      const updateData = apiCaller
+        .updateProfile()
+        .$args({
+          input: {
+            birthDays,
+            username,
+            tags: tags?.map(value => value._id),
+            gender: gender as any,
+            images: await imagesCdn,
+            isFirstLogin: false,
+          },
+        })
+        .$fetch();
+
+      const updateSetting = apiCaller
+        .changeSetting()
+        .$args({ input: { discovery: { lookingFor: findGender } } })
+        .$fetch();
+
+      await toast.promise(Promise.all([updateData, updateSetting]), {
+        pending: 'Đang lưu dữ liệu...',
+        error: 'Lưu dữ liệu thất bại',
+        success: 'Lưu dữ liệu thành công ^^',
+      });
+
+      const user = await apiCaller.getCurrentUser(getUserFragment).$fetch();
+
+      useUserStore.getState().setUser(user);
+      navigate('/app');
+    } catch (error) {}
   };
 
   return (
     <>
-      <Header />
       <div className='w-full max-w-[900px] mx-auto'>
         <h1 className='py-[36px] text-center text-32 font-bold uppercase'>
           Tạo tài khoản
@@ -110,44 +205,59 @@ const Onboarding = ({}: Props) => {
           onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
-          {props => (
-            <form onSubmit={props.handleSubmit}>
+          {({ handleSubmit, values, getFieldMeta }) => (
+            <form onSubmit={handleSubmit}>
               <div className='grid grid-cols-2 gap-6.5'>
                 <div>
                   <Input
-                    name={'name'}
-                    label={'Tên'}
-                    placeholder={'Tên'}
+                    name='username'
+                    label='Tên'
+                    placeholder='Tên'
                     icon={<UserIcon />}
-                    width={'full'}
+                    width='full'
                   />
                   <Space h={28} />
-                  <DayInput name='birthDay' label={'Sinh nhật'} />
+                  <DayInput name='birthDays' label='Sinh nhật' />
                   <Space h={28} />
                   <RadioGroup
-                    name={'gender'}
-                    label={'Giới tính'}
+                    name='gender'
+                    label='Giới tính'
                     options={GENDER}
                   />
                   <Space h={12} />
                   <CheckBox
-                    name={'showGender'}
-                    title={'Hiển thị giới tính trên hồ sơ của tôi'}
+                    name='showGender'
+                    title='Hiển thị giới tính trên hồ sơ của tôi'
                   />
                   <Space h={28} />
                   <RadioGroup
-                    name={'findGender'}
-                    label={'Hiển thị cho tôi'}
+                    name='findGender'
+                    label='Hiển thị cho tôi'
                     options={FIND_GENDER}
                   />
                   <Space h={28} />
                   <Input
-                    name={'email'}
-                    label={'Địa chỉ Email'}
-                    placeholder={'Địa chỉ Email'}
+                    name='email'
+                    label='Địa chỉ Email'
+                    placeholder='Địa chỉ Email'
                     icon={<EmailIcon />}
-                    width={'full'}
+                    width='full'
+                    disabled
                   />
+                </div>
+                <div>
+                  <p className='block mb-1 text-16 font-semibold'>Ảnh hồ sơ</p>
+                  <UploadImageGroup
+                    name='images'
+                    itemClassName='h-[176px] w-[130px] gap-x-1 gap-y-2'
+                    length={6}
+                  />
+                  {getFieldMeta('images').touched &&
+                    getFieldMeta('images').error && (
+                      <p className='my-0.4 text-text-error text-12'>
+                        {getFieldMeta('images').error}
+                      </p>
+                    )}
                 </div>
               </div>
               <Space h={25} />
@@ -156,16 +266,22 @@ const Onboarding = ({}: Props) => {
                 <h2 className='text-20 font-bold px-7'>Tùy chọn</h2>
                 <hr className='w-20 border-gray-20' />
               </div>
-              <HobbiesDialog values={hobbies} onChangeValue={onHobbiesChange} />
+              <HobbiesDialog name='tags' />
               <Space h={20} />
               <div className='flex wrap gap-0.4'>
-                {hobbies.map((hobbit, index) => (
-                  <PersonalityType key={index} text={hobbit} />
+                {values.tags?.map((hobbit, index) => (
+                  <PersonalityType key={index} tag={hobbit} />
                 ))}
               </div>
+              {getFieldMeta('tags').touched && getFieldMeta('tags').error && (
+                <p className='my-0.4 text-text-error text-12'>
+                  {getFieldMeta('tags').error}
+                </p>
+              )}
               <Space h={40} />
               <div className='w-fit mx-auto'>
                 <Button
+                  loading={loading}
                   className='uppercase'
                   type='submit'
                   label={'Tiếp tục'}

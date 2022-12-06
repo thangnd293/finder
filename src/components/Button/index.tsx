@@ -2,6 +2,8 @@ import React, { ButtonHTMLAttributes } from 'react';
 
 import { ButtonStyled } from './styles';
 
+import LoadingIcon from '@/assets/svgs/LoadingIcon';
+
 export type Variant = 'solid' | 'outline' | 'ghost' | 'link';
 export type Size = 'small' | 'medium' | 'large';
 export type Width = number | 'auto' | 'full';

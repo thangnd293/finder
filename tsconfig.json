@@ -17,15 +17,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/assets/*": ["src/assets/*"],
-      "@/common/*": ["src/common/*"],
-      "@/hooks/*": ["src/hooks/*"],
-      "@/languages/*": ["src/languages/*"],
-      "@/layouts/*": ["src/layouts/*"],
-      "@/pages/*": ["src/pages/*"],
-      "@/typings/*": ["src/typings/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": [

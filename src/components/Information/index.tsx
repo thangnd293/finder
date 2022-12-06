@@ -4,11 +4,12 @@ import tw from 'twin.macro';
 
 import PersonalityType from '../PersonalityType';
 
-import astrologicalSign from '@/assets/images/astrological_sign.png';
 import GenderIcon from '@/assets/svgs/GenderIcon';
 import JobIcon from '@/assets/svgs/JobIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
 import SchoolIcon from '@/assets/svgs/SchoolIcon';
+
+import { TagType, User } from '@/api-graphql';
 
 const SectionWrapper = styled.div`
   ${tw`px-1.6 py-1 space-y-0.5`}
@@ -19,58 +20,69 @@ const Divider = styled.hr`
 `;
 
 interface Props {
+  user: User;
   onReport?: () => void;
 }
 
-const Information = ({ onReport }: Props) => {
+const Information = ({ user, onReport }: Props) => {
+  const tagPassions =
+    user.tags?.filter(tag => tag.type === TagType.Passions) || [];
+
   return (
     <Fragment>
       <SectionWrapper>
         <p className='space-x-0.8'>
-          <span className='font-bold text-32'>Dac Thang</span>
-          <span className='font-light text-26'>22</span>
+          <span className='font-bold text-32'>{user.username}</span>
+          <span className='font-light text-26'>{user.age}</span>
         </p>
-        <TextWithIcon
-          icon={<JobIcon height={24} />}
-          text={'Web developer tại Nexon'}
-        />
-        <TextWithIcon
-          icon={<SchoolIcon height={24} />}
-          text={'Trường Đại Học Sư Phạm Kỹ Thuật Tp. Hồ Chi Minh'}
-        />
-        <TextWithIcon
-          icon={<LocationIcon height={22} />}
-          text={'Sống tại Hồ Chí Minh'}
-        />
-        <TextWithIcon icon={<GenderIcon height={22} />} text={'Nam'} />
+        {user.company && user.jobTitle && (
+          <TextWithIcon
+            icon={<JobIcon height={24} />}
+            text={`${user.company} tại ${user.jobTitle}`}
+          />
+        )}
+        {user.school && (
+          <TextWithIcon
+            icon={<SchoolIcon height={24} />}
+            text={`${user.school}`}
+          />
+        )}
+        {user.liveAt && (
+          <TextWithIcon
+            icon={<LocationIcon height={22} />}
+            text={`Sống tại ${user.liveAt}`}
+          />
+        )}
+        {user.gender && (
+          <TextWithIcon icon={<GenderIcon height={22} />} text={user.gender} />
+        )}
       </SectionWrapper>
       <Divider />
       <SectionWrapper>
-        <p className='text-18 text-text-secondary leading-normal'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores,
-          omnis! Necessitatibus molestias ipsam beatae facilis expedita nobis
-          illo est possimus, vitae tempore aperiam. Minima officia voluptas
-          suscipit. Dolore, impedit soluta!
-        </p>
+        {user.aboutMe && (
+          <p className='text-18 text-text-secondary leading-normal'>
+            {user.aboutMe}
+          </p>
+        )}
         <div className='flex flex-wrap gap-0.4 py-1.2'>
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
+          {/* <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
+          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} /> */}
         </div>
       </SectionWrapper>
       <Divider />
-      <SectionWrapper>
-        <p className='text-18 font-medium'>Sở thích</p>
-        <div className='flex flex-wrap gap-0.4 py-1.2'>
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} text={'Thien Binh'} />
-        </div>
-      </SectionWrapper>
+      {tagPassions.length > 0 && (
+        <SectionWrapper>
+          <p className='text-18 font-medium'>Sở thích</p>
+          <div className='flex flex-wrap gap-0.4 py-1.2'>
+            {tagPassions.map(tag => (
+              <PersonalityType key={tag._id} tag={tag} />
+            ))}
+          </div>
+        </SectionWrapper>
+      )}
       {onReport && (
         <>
           <Divider />
@@ -78,7 +90,7 @@ const Information = ({ onReport }: Props) => {
             onClick={onReport}
             className='w-full border-none py-2 text-14 text-center text-text-secondary font-semibold uppercase opacity-60 duration-300 hover:opacity-100'
           >
-            Bao cao {'Dac Thang'}
+            Báo cáo {user.username}
           </button>
           <Divider />
         </>

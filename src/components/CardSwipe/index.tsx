@@ -1,32 +1,44 @@
-import { useCallback, useEffect } from 'react';
+import { apiCaller } from '@/service';
+import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
 
-import { ICardSwipe } from '../CardController';
 import Carousel from '../Carousel';
 import Information from '../Information';
+import ReportDialog from '../ReportDialog';
 import { flipLeft, flipRight } from './utils';
 
+import DownArrowColorIcon from '@/assets/svgs/DownArrowColorIcon';
 import HomeIcon from '@/assets/svgs/HomeIcon';
 import InfoIcon from '@/assets/svgs/InfoIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
 
 import useCardSwipe from '@/hooks/useCardSwipe';
 
+import { User } from '@/api-graphql';
+
 interface Props {
-  card: ICardSwipe;
+  user: User;
   onLike: () => void;
   onNope: () => void;
   onBack: () => void;
   onShowInfo: any;
 }
 
-const Card = ({
-  card: { id, url },
-  onNope,
-  onLike,
-  onBack,
-  onShowInfo,
-}: Props) => {
+const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const {
+    _id: id,
+    username,
+    age,
+    images,
+    lastActive,
+    liveAt,
+    calcDistance,
+  } = user;
+  const isRecentActive =
+    lastActive &&
+    Date.now() - new Date(lastActive).getTime() < 1000 * 60 * 60 * 24 * 1;
+
   const {
     ref,
     swipeToRight,
@@ -35,23 +47,34 @@ const Card = ({
     setDisable,
     isDrag,
     status,
-  } = useCardSwipe(onLike, onNope);
+  } = useCardSwipe(
+    async () => {
+      onLike();
+      await apiCaller.likeUser().$args({ user_id: id }).$fetch();
+    },
+    async () => {
+      onNope();
+      await apiCaller.skipUser().$args({ user_id: id }).$fetch();
+    },
+  );
 
   const [showInfo, setShowInfo] = React.useState(false);
 
-  const handleLike = useCallback(() => {
+  const handleLike = useCallback(async () => {
     swipeToRight();
     onLike();
     setShowInfo(false);
     setDisable(true);
-  }, [onLike, swipeToRight]);
+    await apiCaller.likeUser().$args({ user_id: id }).$fetch();
+  }, [onLike, swipeToRight, id]);
 
-  const handleNope = useCallback(() => {
+  const handleNope = useCallback(async () => {
     swipeToLeft();
     onNope();
     setShowInfo(false);
     setDisable(true);
-  }, [onNope, swipeToLeft]);
+    await apiCaller.skipUser().$args({ user_id: id }).$fetch().then().catch();
+  }, [onNope, swipeToLeft, id]);
 
   const handleBack = useCallback(() => {
     swipeBack();
@@ -73,6 +96,10 @@ const Card = ({
   useEffect(() => {
     onShowInfo(showInfo);
   }, [showInfo]);
+
+  const onReport = () => {
+    setShowReportDialog(true);
+  };
 
   const handleShowInfo = () => {
     if (status !== 'idle') return;
@@ -98,66 +125,89 @@ const Card = ({
   }, [flipRight, status]);
 
   return (
-    <div
-      className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-1 rounded-8 bg-black overflow-hidden scroll-hidden'
-      ref={ref}
-      style={{
-        paddingBottom: showInfo ? '0px' : '101px',
-      }}
-    >
-      <Carousel
+    <>
+      <div
+        className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
+        ref={ref}
         style={{
-          height: showInfo ? '60%' : '100%',
+          paddingBottom: showInfo ? '0px' : '101px',
         }}
-        isDrag={isDrag && !showInfo}
-        flipLeft={!showInfo ? handleFlipLeft : undefined}
-        flipRight={!showInfo ? handleFlipRight : undefined}
-      />
-      {!showInfo ? (
-        <>
-          <div
-            className='w-full h-1/3 absolute bottom-[100px]'
-            style={{
-              backgroundImage:
-                'linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(255, 255, 255, 0) 100%)',
-            }}
-          ></div>
-          <div
-            className='w-full h-fit p-1.6 absolute z-10 bottom-[100px] text-white cursor-pointer'
-            onClick={handleShowInfo}
-          >
-            <p className='text-32 font-bold'>
-              Nguyen Dac Thang <span className='text-26 font-normal'>22</span>
-            </p>
-            <div className='flex items-center'>
-              <div className='flex-1'>
-                <p className='space-x-0.4'>
-                  <span className='inline-block w-0.8 h-0.8 rounded-full bg-indicator-green'></span>
-                  <span className='text-14'>Recently Active</span>
-                </p>
-                <p className='flex items-center gap-0.5'>
-                  <HomeIcon />
-                  <span className='text-18'>Lives in Ho Chi Minh</span>
-                </p>
-                <p className='flex items-center gap-0.5'>
-                  <LocationIcon />
-                  <span className='text-18'>10 kilometers away</span>
-                </p>
-              </div>
-              <button className='hover:scale-125 duration-300 cursor-pointer'>
-                <InfoIcon />
-              </button>
-            </div>
+      >
+        <Carousel
+          images={images!}
+          style={{
+            height: showInfo ? '60%' : '100%',
+          }}
+          isDrag={isDrag && !showInfo}
+          flipLeft={!showInfo ? handleFlipLeft : undefined}
+          flipRight={!showInfo ? handleFlipRight : undefined}
+        />
+        {showInfo ? (
+          <div className='relative w-full bg-white rounded-b-8 pb-10'>
+            <button
+              className='absolute -top-3 right-1.2'
+              onClick={handleHiddenInfo}
+            >
+              <DownArrowColorIcon width={52} height={52} />
+            </button>
+            <Information user={user} onReport={onReport} />
           </div>
-        </>
-      ) : (
-        <div className='relative w-full bg-white rounded-b-8 pb-10'>
-          <button onClick={handleHiddenInfo}>unlock</button>
-          <Information />
-        </div>
+        ) : (
+          <>
+            <div
+              className='w-full h-1/3 absolute bottom-[100px]'
+              style={{
+                backgroundImage:
+                  'linear-gradient(to top, rgb(0, 0, 0) 0%, rgba(255, 255, 255, 0) 100%)',
+              }}
+            />
+            <div
+              className='w-full h-fit p-1.6 absolute bottom-[100px] text-white cursor-pointer'
+              onClick={handleShowInfo}
+            >
+              <p className='text-32 font-bold'>
+                {username} <span className='text-26 font-normal'>{age}</span>
+              </p>
+              <div className='flex items-center'>
+                <div className='flex-1'>
+                  {isRecentActive && (
+                    <p className='space-x-0.4'>
+                      <span className='inline-block w-0.8 h-0.8 rounded-full bg-indicator-green'></span>
+                      <span className='text-14'>Có hoạt động gần đây</span>
+                    </p>
+                  )}
+                  {liveAt && (
+                    <p className='flex items-center gap-0.5'>
+                      <HomeIcon />
+                      <span className='text-18'>Sống tại {liveAt}</span>
+                    </p>
+                  )}
+                  {calcDistance !== null && (
+                    <p className='flex items-center gap-0.5'>
+                      <LocationIcon />
+                      <span className='text-18'>
+                        Cách xa {Math.round(calcDistance / 1000)} km
+                      </span>
+                    </p>
+                  )}
+                </div>
+                <button className='hover:scale-125 duration-300 cursor-pointer'>
+                  <InfoIcon />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      {showReportDialog && (
+        <ReportDialog
+          visible={showReportDialog}
+          target={user}
+          onClose={() => setShowReportDialog(false)}
+        />
       )}
-    </div>
+    </>
   );
 };
 
-export default React.memo(Card);
+export default React.memo(CardSwipe);
