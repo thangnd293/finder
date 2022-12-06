@@ -9,7 +9,6 @@
   "singleQuote": true,
   "jsxSingleQuote": true,
   "printWidth": 80,
-  "proseWrap": "always",
   "quoteProps": "as-needed",
   "tabWidth": 2,
   "trailingComma": "all",
@@ -19,13 +18,13 @@
     "@/routes",
     "@/typings",
     "@/pages",
-    "@/redux",
+    "@/store",
     "@/assets|@/component",
     "@/hooks",
     "@/services",
-    "@/common"
+    "@/common",
+    "@/api-graphql"
   ],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
-  "organizeImportsSkipDestructiveCodeActions": true
+  "importOrderSortSpecifiers": true
 }

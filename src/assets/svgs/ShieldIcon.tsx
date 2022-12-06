@@ -1,8 +1,15 @@
+import * as React from 'react';
+
 import IconProps from '@/typings/icon';
 
 const ShieldIcon = (props: IconProps) => (
-  <svg aria-hidden='true' width={24} height={24} fill='currentColor' {...props}>
-    <path d='M5.768 5.052c-1.593 0-2.529-.61-2.529-.61S.71 14.723 12.091 22c11.38-7.277 8.851-17.558 8.851-17.558s-.935.61-2.529.61c-1.593 0-3.793-.61-6.322-3.052-2.53 2.442-4.755 3.052-6.323 3.052z' />
+  <svg aria-hidden='true' viewBox='0 0 24 24' width={26} height={26} {...props}>
+    <path
+      clipRule='evenodd'
+      d='M3.698 3.663c-1.84 0-2.921-.733-2.921-.733S-2.144 15.268 11 24C24.144 15.268 21.224 2.93 21.224 2.93s-1.081.733-2.922.733C16.462 3.663 13.921 2.93 11 0 8.079 2.93 5.509 3.663 3.698 3.663z'
+      fill='currentColor'
+      fillRule='evenodd'
+    />
   </svg>
 );
 

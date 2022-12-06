@@ -1,7 +1,7 @@
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import { Carousel, SearchContextManager } from '@giphy/react-components';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import EmojiIcon from '@/assets/svgs/EmojiIcon';
 import GifIcon from '@/assets/svgs/GifIcon';
@@ -38,7 +38,6 @@ const InputChat = ({}: Props) => {
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setMessage(prev => prev + emojiData.emoji);
-    console.log(message + emojiData.emoji);
   };
 
   const gf = new GiphyFetch('wa13x8D1dErL2IgFZ13xyVVT6cxr5ZF1');

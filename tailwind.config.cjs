@@ -95,7 +95,7 @@ const colors = {
   'overlay-default': 'rgba(0, 0, 0, 0.56)',
   'background-icon-button-overlay': 'rgba(17, 20, 24, 0.8)',
   'background-tapping': 'rgba(0, 0, 0, 0.24)',
-
+  'background-loading': '#fa6f6880',
   current: 'currentColor',
   transparent: 'transparent',
 };
@@ -105,8 +105,11 @@ const fontSize = {
   12: '12px',
   14: '14px',
   16: '16px',
+  17: '17px',
   18: '18px',
+  19: '19px',
   20: '20px',
+  24: '24px',
   26: '26px',
   32: '32px',
 };
@@ -126,7 +129,7 @@ const borderRadius = {
   2: '2px',
   4: '4px',
   8: '8px',
-  test: '16px',
+  16: '16px',
   full: '9999px',
 };
 

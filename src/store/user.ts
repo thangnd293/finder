@@ -1,0 +1,39 @@
+import { getUserCurrentFragment } from '@/service/user';
+import create from 'zustand';
+import { persist } from 'zustand/middleware';
+
+import { apiCaller } from '../service/index';
+
+import { User } from '@/api-graphql';
+
+interface UserStore {
+  user?: User;
+}
+
+interface UserAction {
+  setUser: (user?: User) => void;
+  getUser: () => Promise<boolean>;
+}
+
+export const useUserStore = create<UserStore & UserAction>()(
+  persist(
+    set => ({
+      getUser: async () => {
+        const user = await apiCaller
+          .getCurrentUser(getUserCurrentFragment)
+          .$fetch();
+
+        set({ user });
+        return true;
+      },
+
+      setUser: user => set({ user }),
+    }),
+    {
+      name: 'user',
+      partialize: s => ({
+        user: s.user,
+      }),
+    },
+  ),
+);

@@ -1,2 +1,2 @@
-export default interface IconProps
-  extends React.ComponentPropsWithoutRef<'svg'> {}
+type IconProps = React.ComponentPropsWithoutRef<'svg'>;
+export default IconProps;
