@@ -76,7 +76,6 @@ const ProfileEdit = () => {
     loadHobbies();
   }, []);
 
-  console.log(user);
   const zodiac = user?.tags?.find(tag => tag.type === TagType.Zodiac);
   const education = user?.tags?.find(tag => tag.type === TagType.Education);
   const smoke = user?.tags?.find(tag => tag.type === TagType.Smoke_question);
