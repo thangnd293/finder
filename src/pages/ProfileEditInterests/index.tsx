@@ -1,25 +1,79 @@
-// import { HOBBIES } from '@/common/constants/data';
-import { useEffect } from 'react';
+import { apiCaller } from '@/service';
+import { getUserFragment } from '@/service/user';
+import { useEffect, useState } from 'react';
+
+import { useUserStore } from '@/store/user';
 
 import Card from '@/components/Card';
 import PersonalityType from '@/components/PersonalityType';
 
-import { useGetAllTag } from '@/api-graphql';
+import { useNavigate } from '@/hooks/useNavigate';
 
-interface Props {}
+import { PATH } from '@/common/constants/route';
 
-const ProfileEditInterests = ({}: Props) => {
-  const [loadHobbies, { data }] = useGetAllTag([{ results: ['_id', 'name'] }]);
+import { Tag, TagType, useGetAllTag } from '@/api-graphql';
 
-  const hobbies = data?.getAllTag.results || [];
+const ProfileEditInterests = () => {
+  const [loadHobbies, { data }] = useGetAllTag([
+    { results: ['_id', 'name', 'type'] },
+  ]);
+
+  const { user, setUser } = useUserStore();
+
+  const userHobbies =
+    user?.tags?.filter(tag => tag.type === TagType.Passions) || [];
+  const otherTags =
+    user?.tags
+      ?.filter(tag => tag.type !== TagType.Passions)
+      .map(tag => tag._id) || [];
+
+  const [currentChooses, setCurrentChooses] = useState(userHobbies);
+
+  const navigate = useNavigate();
+
+  const hobbies =
+    data?.getAllTag.results?.filter(tag => tag.type === TagType.Passions) || [];
 
   useEffect(() => {
     loadHobbies();
   }, []);
 
   const handleDone = () => {
-    console.log('done');
+    apiCaller
+      .updateProfile()
+      .$args({
+        input: {
+          tags: [...otherTags, ...currentChooses.map(hobbit => hobbit._id)],
+        },
+      })
+      .$fetch()
+      .then(() => {
+        apiCaller
+          .getCurrentUser(getUserFragment)
+          .$fetch()
+          .then(data => {
+            setUser(data);
+          });
+      });
+
+    navigate(PATH.APP.PROFILE.EDIT);
   };
+
+  const existsHobbit = (hobbitId: string) => {
+    return currentChooses.some(hobbit => hobbit._id === hobbitId);
+  };
+
+  const onHobbitClick = (hobbit: Tag) => {
+    if (existsHobbit(hobbit._id)) {
+      const newHobbies = currentChooses.filter(h => h._id !== hobbit._id);
+      setCurrentChooses(newHobbies);
+    } else {
+      if (currentChooses.length >= 5) return;
+      const newHobbies = [...currentChooses, hobbit];
+      setCurrentChooses(newHobbies);
+    }
+  };
+
   return (
     <div className='w-full h-full flex items-center justify-center'>
       <Card
@@ -32,7 +86,7 @@ const ProfileEditInterests = ({}: Props) => {
         </p>
         <div className='flex items-center justify-between p-1.2 text-12 text-text-secondary font-semibold uppercase'>
           <span>Sở Thích</span>
-          <span>(5/5)</span>
+          <span>({currentChooses.length}/5)</span>
         </div>
         <div className='flex justify-center flex-wrap gap-0.8 py-1.6 px-1.2 bg-white'>
           {/* TODO */}
@@ -40,8 +94,10 @@ const ProfileEditInterests = ({}: Props) => {
             <PersonalityType
               key={index}
               tag={hobbit}
-              // isActive={existsHobbit(hobbit)}
-              // onClick={onHobbitClick}
+              isActive={existsHobbit(hobbit._id)}
+              onClick={() => {
+                onHobbitClick(hobbit);
+              }}
             />
           ))}
         </div>

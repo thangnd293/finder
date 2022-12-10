@@ -2,6 +2,7 @@ export const PATH = {
   APP: {
     SELF: '/app',
     HOME: '/app/recs',
+    MATCHES: '/app/matches',
     PROFILE: {
       SELF: '/app/profile',
       EDIT: '/app/profile/edit',

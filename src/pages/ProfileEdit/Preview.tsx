@@ -1,18 +1,20 @@
+import { useFormikContext } from 'formik';
 import React from 'react';
+
+import { IInformationData } from '.';
 
 import { useUserStore } from '@/store/user';
 
+import DownArrowColorIcon from '@/assets/svgs/DownArrowColorIcon';
 import HomeIcon from '@/assets/svgs/HomeIcon';
 import InfoIcon from '@/assets/svgs/InfoIcon';
-import LocationIcon from '@/assets/svgs/LocationIcon';
 import Carousel from '@/components/Carousel';
 import Information from '@/components/Information';
 
-interface Props {}
-
-const Preview = ({}: Props) => {
+const Preview = () => {
   const [showInfo, setShowInfo] = React.useState(false);
   const { user } = useUserStore();
+  const { values } = useFormikContext<IInformationData>();
 
   const handleShowInfo = () => {
     setShowInfo(true);
@@ -24,14 +26,14 @@ const Preview = ({}: Props) => {
 
   return (
     <div
-      className=' w-full h-full absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
+      className='w-full h-[calc(100%-47px)] absolute overflow-x-hidden overflow-y-auto z-10 rounded-8 bg-black overflow-hidden scroll-hidden'
       style={{
         paddingBottom: showInfo ? '0px' : '101px',
       }}
     >
       {user?.images && (
         <Carousel
-          images={user.images}
+          images={values.images}
           style={{
             height: showInfo ? '60%' : '100%',
           }}
@@ -42,8 +44,13 @@ const Preview = ({}: Props) => {
       )}
       {showInfo && user ? (
         <div className='relative w-full bg-white rounded-b-8 pb-10'>
-          <button onClick={handleHiddenInfo}>unlock</button>
-          <Information user={user} />
+          <button
+            className='absolute -top-3 right-1.2'
+            onClick={handleHiddenInfo}
+          >
+            <DownArrowColorIcon width={52} height={52} />
+          </button>
+          <Information user={user} previewData={values} />
         </div>
       ) : (
         <>
@@ -55,7 +62,7 @@ const Preview = ({}: Props) => {
             }}
           ></div>
           <div
-            className='w-full h-fit p-1.6 absolute bottom-[100px] text-white cursor-pointer'
+            className='w-full h-fit p-1.6 absolute bottom-1 text-white cursor-pointer'
             onClick={handleShowInfo}
           >
             <p className='text-32 font-bold'>
@@ -64,17 +71,9 @@ const Preview = ({}: Props) => {
             </p>
             <div className='flex items-center'>
               <div className='flex-1'>
-                <p className='space-x-0.4'>
-                  <span className='inline-block w-0.8 h-0.8 rounded-full bg-indicator-green'></span>
-                  <span className='text-14'>Recently Active</span>
-                </p>
                 <p className='flex items-center gap-0.5'>
                   <HomeIcon />
                   <span className='text-18'>Lives in Ho Chi Minh</span>
-                </p>
-                <p className='flex items-center gap-0.5'>
-                  <LocationIcon />
-                  <span className='text-18'>10 kilometers away</span>
                 </p>
               </div>
               <button className='hover:scale-125 duration-300 cursor-pointer'>

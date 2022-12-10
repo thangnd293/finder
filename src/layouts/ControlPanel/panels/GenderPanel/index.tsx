@@ -1,15 +1,56 @@
-import { useState } from 'react';
+import { apiCaller } from '@/service';
+import { getUserFragment } from '@/service/user';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+
+import { useUserStore } from '@/store/user';
 
 import GenderPicker, { Gender } from '@/components/GenderPicker';
 
-interface Props {}
+import { PATH } from '@/common/constants/route';
 
-const GenderPanel = ({}: Props) => {
-  const [gender, setGender] = useState<Gender>(Gender.Both);
+import { LookingFor } from '@/api-graphql';
+
+const GenderPanel = () => {
+  const location = useLocation();
+  const { user, setUser } = useUserStore();
+  const [gender, setGender] = useState<Gender>(
+    (user?.mySetting?.discovery.lookingFor as unknown as Gender) || Gender.All,
+  );
 
   const onGenderChange = (value: Gender) => {
     setGender(value);
   };
+
+  useEffect(() => {
+    return () => {
+      if (
+        location.pathname !== PATH.APP.SETTING.GENDER &&
+        user?.mySetting?.discovery.lookingFor !==
+          (gender as unknown as LookingFor)
+      ) {
+        const updateLookingFor = async () => {
+          await apiCaller
+            .changeSetting()
+            .$args({
+              input: {
+                discovery: {
+                  ...user?.mySetting?.discovery,
+                  lookingFor: gender as unknown as LookingFor,
+                },
+              },
+            })
+            .$fetch();
+
+          const userUpdated = await apiCaller
+            .getCurrentUser(getUserFragment)
+            .$fetch();
+          setUser(userUpdated);
+        };
+        updateLookingFor();
+      }
+    };
+  }, [location, gender]);
 
   return (
     <div className='mt-2.5'>
@@ -22,7 +63,7 @@ const GenderPanel = ({}: Props) => {
 export default GenderPanel;
 
 const TEXT: Record<Gender, string> = {
-  [Gender.Male]: 'Bạn sẽ chỉ thấy nam giới trong mục tìm kiếm.',
-  [Gender.Female]: 'Bạn sẽ chỉ thấy nữ giới trong mục tìm kiếm.',
-  [Gender.Both]: 'Bạn sẽ thấy tất cả mọi người trong mục tìm kiếm.',
+  [Gender.Men]: 'Bạn sẽ chỉ thấy nam giới trong mục tìm kiếm.',
+  [Gender.Women]: 'Bạn sẽ chỉ thấy nữ giới trong mục tìm kiếm.',
+  [Gender.All]: 'Bạn sẽ thấy tất cả mọi người trong mục tìm kiếm.',
 };
