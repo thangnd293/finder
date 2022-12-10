@@ -87,7 +87,11 @@ const CardController = ({ className }: Props) => {
       </CardControllerWrapper>
     </Card>
   ) : (
-    <div className={`flex flex-col items-center ${className ? className : ''}`}>
+    <div
+      className={`w-full h-full flex flex-col items-center justify-center ${
+        className ? className : ''
+      }`}
+    >
       <Loading image={user?.images?.[0]} />
       <Space h={100} />
       <p className='w-35 text-center text-16 text-text-secondary'>

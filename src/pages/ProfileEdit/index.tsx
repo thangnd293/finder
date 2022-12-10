@@ -1,23 +1,25 @@
-import { Formik, FormikHelpers, FormikValues } from 'formik';
+import { apiCaller } from '@/service/index';
+import { getUserFragment } from '@/service/user';
+import { Formik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'twin.macro';
-import { useOnClickOutside } from 'usehooks-ts';
 
 import Edit from './Edit';
 import Preview from './Preview';
-import ProfileEditMobile from './ProfileEditMobile';
 
 import { useUserStore } from '@/store/user';
 
-import Button from '@/components/Button';
 import Card from '@/components/Card';
-import PersonalityType from '@/components/PersonalityType';
-import Space from '@/components/Space';
 
+// import PersonalityType from '@/components/PersonalityType';
 import useMediaQuery from '@/hooks/useMediaQuery';
 
 import { RESPONSIVE } from '@/common/constants/responsive';
+import { PATH } from '@/common/constants/route';
+
+import { TagType, useGetAllTag } from '@/api-graphql';
 
 enum Tab {
   Edit = 'EDIT',
@@ -31,11 +33,11 @@ const Tabs: Record<Tab, React.ComponentType<any>> = {
 
 export enum LifeStyle {
   Zodiac = 'zodiac',
-  Smoke = 'smoke',
   PersonalityType = 'personalityType',
   Diet = 'diet',
-  Education = 'education',
   Pets = 'pets',
+  Education = 'education',
+  Smoke = 'smoke',
 }
 
 export interface IInformationData {
@@ -46,24 +48,43 @@ export interface IInformationData {
   liveAt: string;
   school: string;
   gender: string;
+  interests?: string[];
+  zodiac?: string;
+  smoke?: string;
+  personalityType?: string;
+  diet?: string;
+  education?: string;
+  pets?: string;
 }
 
-interface Props {}
+const ProfileEdit = () => {
+  const navigate = useNavigate();
 
-const ProfileEdit = ({}: Props) => {
+  const [loadHobbies, { data }] = useGetAllTag([
+    { results: ['_id', 'name', 'type'] },
+  ]);
+  const allTags = data?.getAllTag.results || [];
   const [tabActive, setTabActive] = useState(Tab.Edit);
-
-  const [lifeStyleTabActive, setLifeStyleTabActive] =
-    useState<LifeStyle | null>(null);
 
   const isMobile = useMediaQuery({
     mediaQuery: `(max-width: ${RESPONSIVE.md}px)`,
   });
 
-  const lifeStyleRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(lifeStyleRef, () => setLifeStyleTabActive(null));
+  const { user, setUser } = useUserStore();
 
-  const { user } = useUserStore();
+  useEffect(() => {
+    loadHobbies();
+  }, []);
+
+  console.log(user);
+  const zodiac = user?.tags?.find(tag => tag.type === TagType.Zodiac);
+  const education = user?.tags?.find(tag => tag.type === TagType.Education);
+  const smoke = user?.tags?.find(tag => tag.type === TagType.Smoke_question);
+  const personalityType = user?.tags?.find(
+    tag => tag.type === TagType.Personality_type,
+  );
+  const diet = user?.tags?.find(tag => tag.type === TagType.Dietary_preference);
+  const pets = user?.tags?.find(tag => tag.type === TagType.Pets);
 
   const initialValues: IInformationData = {
     images: user?.images || [],
@@ -73,22 +94,88 @@ const ProfileEdit = ({}: Props) => {
     liveAt: user?.liveAt || '',
     school: user?.school || '',
     gender: user!.gender!,
+    interests:
+      user?.tags
+        ?.filter(tag => tag.type === TagType.Passions)
+        .map(t => t.name!) || [],
+    zodiac: zodiac && `${zodiac._id};${zodiac.name}`,
+    education: education && `${education._id};${education.name}`,
+    smoke: smoke && `${smoke._id};${smoke.name}`,
+    personalityType:
+      personalityType && `${personalityType._id};${personalityType.name}`,
+    diet: diet && `${diet._id};${diet.name}`,
+    pets: pets && `${pets._id};${pets.name}`,
   };
 
-  const onLifeStyleActive = (value: LifeStyle | null) => {
-    setLifeStyleTabActive(value);
+  const onSave = async (values: IInformationData) => {
+    const tags: string[] =
+      user?.tags
+        ?.filter(tag => tag.type === TagType.Passions)
+        .map(t => t._id!) || [];
+    values.zodiac && tags.push(values.zodiac.split(';')[0]);
+    values.education && tags.push(values.education.split(';')[0]);
+    values.smoke && tags.push(values.smoke.split(';')[0]);
+    values.personalityType && tags.push(values.personalityType.split(';')[0]);
+    values.diet && tags.push(values.diet.split(';')[0]);
+    values.pets && tags.push(values.pets.split(';')[0]);
+
+    const input = {
+      images: values.images,
+      aboutMe: values.aboutMe,
+      jobTitle: values.jobTitle,
+      company: values.company,
+      liveAt: values.liveAt,
+      school: values.school,
+      tags,
+    };
+
+    await apiCaller
+      .updateProfile()
+      .$args({
+        input: {
+          ...input,
+        },
+      })
+      .$fetch();
+    const userUpdated = await apiCaller
+      .getCurrentUser(getUserFragment)
+      .$fetch();
+    setUser(userUpdated);
+  };
+
+  const onDone = () => {
+    const btnSave = document.getElementById(
+      'btn-save-edit',
+    ) as HTMLButtonElement;
+
+    if (!btnSave) return;
+
+    btnSave.click();
+    navigate(PATH.APP.PROFILE.SELF);
   };
 
   const TabElement = Tabs[tabActive];
-  const props =
-    tabActive === Tab.Edit
-      ? { lifeStylesData: fakeData.lifeStyle, onLifeStyleActive }
-      : {};
+  const props = tabActive === Tab.Edit ? { allTags, onSave } : {};
 
-  if (isMobile) return <ProfileEditMobile />;
   return (
-    <div className='w-full h-full flex items-center justify-center'>
+    <div
+      className={`w-full h-full ${
+        isMobile ? 'fixed top-0 left-0' : 'flex items-center justify-center'
+      }`}
+    >
       <Card className='flex flex-col bg-gray-10 pb-1 relative'>
+        {isMobile && (
+          <div className='h-[48px] flex items-center justify-center relative bg-white border border-solid border-gray-20'>
+            <h1 className='text-18 font-semibold'>Edit info</h1>
+            <button
+              className='px-1.2 absolute right-0 text-primary-a11y'
+              onClick={onDone}
+            >
+              Done
+            </button>
+          </div>
+        )}
+
         <div className='rounded-t-8 bg-white'>
           <ButtonStyled
             active={tabActive === Tab.Edit}
@@ -105,67 +192,18 @@ const ProfileEdit = ({}: Props) => {
         </div>
         <Formik
           initialValues={initialValues}
-          onSubmit={function (
-            values: FormikValues,
-            formikHelpers: FormikHelpers<FormikValues>,
-          ): void | Promise<any> {
-            throw new Error('Function not implemented.');
-          }}
+          onSubmit={onSave}
           enableReinitialize
         >
-          {({ values }) => (
-            <form className='flex-1 overflow-auto scroll-hidden'>
+          {({ values, handleSubmit }) => (
+            <form
+              className='flex-1 overflow-auto scroll-hidden'
+              onSubmit={handleSubmit}
+            >
               <TabElement {...props} data={values} />
             </form>
           )}
         </Formik>
-        <div className='w-fit mx-auto'>
-          <Button className='inline-block' label='Lưu' />
-        </div>
-        {lifeStyleTabActive && (
-          <div className='absolute bottom-0 left-0 w-full h-full bg-overlay-default'>
-            <div
-              ref={lifeStyleRef}
-              className='absolute bottom-0 w-full h-3/4 mt-auto bg-white rounded-t-16'
-            >
-              <div className='flex items-center h-[48px] border-0 border-b border-solid border-gray-20 overflow-x-auto scroll-hidden'>
-                {lifeStyles.map(tab => (
-                  <LifeStyleHeader
-                    key={tab.tab}
-                    {...tab}
-                    isActive={lifeStyleTabActive === tab.tab}
-                    onClick={() => onLifeStyleActive(tab.tab)}
-                  />
-                ))}
-              </div>
-              <div className='px-1.6 py-[28px]'>
-                <h2 className='text-20 font-semibold text-center'>
-                  {LIFE_STYLE[lifeStyleTabActive].label}
-                </h2>
-                <div className='flex flex-wrap gap-0.8 mt-2'>
-                  {LIFE_STYLE[lifeStyleTabActive].options.map(
-                    (option, index) => (
-                      <PersonalityType
-                        key={index}
-                        tag={option}
-                        isActive={
-                          option === fakeData.lifeStyle[lifeStyleTabActive]
-                        }
-                      />
-                    ),
-                  )}
-                </div>
-              </div>
-              <div className='absolute bottom-0 w-full px-1.2 py-1.6'>
-                <button className='w-full text-center text-19 font-bold py-1.2'>
-                  Bỏ qua
-                </button>
-                <Space h={20} />
-                <Button className='!text-19' width={'full'} label='Xong' />
-              </div>
-            </div>
-          </div>
-        )}
       </Card>
     </div>
   );
@@ -181,7 +219,7 @@ interface LifeStyleHeaderProps {
   onClick: () => void;
 }
 
-const LifeStyleHeader = ({
+export const LifeStyleHeader = ({
   tab,
   icon,
   label,
@@ -223,45 +261,6 @@ const ButtonStyled = styled.button<{ active?: boolean }>`
   ${({ active }) => active && tw`text-primary-a11y`}
 `;
 
-export const fakeData = {
-  images: [
-    {
-      id: '1',
-      src: 'https://images-ssl.gotinder.com/63197e7abb27b00100c8d6ba/640x800_1d363f5f-d87d-448f-95ff-797c646111ad.jpg',
-    },
-    {
-      id: '2',
-      src: 'https://images-ssl.gotinder.com/63197e7abb27b00100c8d6ba/640x800_b42fdd39-4674-4c94-a7d8-8dead8eefd6c.jpg',
-    },
-    {
-      id: '3',
-      src: 'https://images-ssl.gotinder.com/63197e7abb27b00100c8d6ba/640x800_eb407488-088e-4a9d-9605-e3cc8477ed91.jpg',
-    },
-  ],
-  introduction: 'Hello world!',
-  hobbies: [
-    'Thế Hệ 9x',
-    'Harry Potter',
-    'SoundCloud',
-    'Spa',
-    'Chăm sóc bản thân',
-  ],
-  lifeStyle: {
-    zodiac: 'Bạch Dương',
-    personalityType: 'INTJ',
-    smoke: 'Không',
-    drink: 'Không',
-    diet: 'Không',
-    pets: 'Không',
-    education: 'Đại học',
-  },
-  jobTitle: 'Nhân viên',
-  company: 'Công ty TNHH ABC',
-  school: 'Đại học ABC',
-  livingIn: 'Hà Nội',
-  gender: 'Nam',
-};
-
 export const lifeStyles = [
   {
     tab: LifeStyle.Zodiac,
@@ -294,87 +293,3 @@ export const lifeStyles = [
     icon: '/images/smoking.png',
   },
 ];
-
-const LIFE_STYLE: Record<
-  LifeStyle,
-  {
-    label: string;
-    options: string[];
-  }
-> = {
-  [LifeStyle.Zodiac]: {
-    label: 'Cung hoàng đạo của bạn là gì?',
-    options: [
-      'Ma Kết',
-      'Bảo Bình',
-      'Song Ngư',
-      'Bạch Dương',
-      'Kim Ngưu',
-      'Song Tử',
-      'Cự Giải',
-      'Sư Tử',
-      'Xử Nữ',
-      'Thiên Bình',
-      'Bọ Cạp',
-      'Nhân Mã',
-    ],
-  },
-  [LifeStyle.PersonalityType]: {
-    label: 'Kiểu tính cách của bạn là gì?',
-    options: [
-      'INTJ',
-      'INTP',
-      'ENTJ',
-      'ENTP',
-      'INFJ',
-      'INFP',
-      'ENFJ',
-      'ENFP',
-      'ISTJ',
-      'ISFJ',
-      'ESTJ',
-      'ESFJ',
-      'ISTP',
-      'ISFP',
-      'ESTP',
-      'ESFP',
-    ],
-  },
-  [LifeStyle.Diet]: {
-    label: 'Bạn có theo chế độ ăn uống nào không?',
-    options: [
-      'Ăn thuần chay',
-      'Ăn chay',
-      'Chỉ ăn hải sản và rau củ',
-      'Kosher',
-      'Halal',
-      'Ăn chay bán phần',
-      'Chỉ ăn thịt',
-      'Không ăn kiêng',
-    ],
-  },
-  [LifeStyle.Pets]: {
-    label: 'Bạn có thú cưng không?',
-    options: [
-      'Chó',
-      'Mèo',
-      'Bò sát',
-      'Động vật lưỡng cư',
-      'Cá',
-      'Không nuôi thú cưng',
-      'Tất cả các loại thú cưng',
-    ],
-  },
-  [LifeStyle.Education]: {
-    label: 'Trình độ học vấn của bạn?',
-    options: ['Cử nhân', 'Trung học phổ thông', 'Tiến sĩ', 'Thạc sĩ'],
-  },
-  [LifeStyle.Smoke]: {
-    label: 'Bạn có hút thuốc không?',
-    options: [
-      'Hút thuốc với bạn bè',
-      'Không hút thuốc',
-      'Hút thuốc thường xuyên',
-    ],
-  },
-};

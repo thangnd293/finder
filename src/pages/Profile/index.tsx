@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
 
-import ProfileMobile from './ProfileMobile';
-
 import { useUserStore } from '@/store/user';
 
 import Button from '@/components/Button';
@@ -9,21 +7,10 @@ import Card from '@/components/Card';
 import Carousel from '@/components/Carousel';
 import Information from '@/components/Information';
 
-import useMediaQuery from '@/hooks/useMediaQuery';
-
-import { RESPONSIVE } from '@/common/constants/responsive';
 import { PATH } from '@/common/constants/route';
 
-interface Props {}
-
-const Profile = ({}: Props) => {
-  const isMobile = useMediaQuery({
-    mediaQuery: `(max-width: ${RESPONSIVE.md}px)`,
-  });
-
+const Profile = () => {
   const { user } = useUserStore();
-
-  if (isMobile) return <ProfileMobile />;
 
   return (
     <div className='flex items-center justify-center w-full h-full'>
@@ -46,10 +33,7 @@ const Profile = ({}: Props) => {
             }}
           >
             <Link to={PATH.APP.PROFILE.EDIT}>
-              <Button
-                className='-translate-y-2'
-                label={'Edit Info ( 70% complete )'}
-              />
+              <Button className='-translate-y-2' label={'Edit Info'} />
             </Link>
           </div>
         </div>

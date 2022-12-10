@@ -12,7 +12,7 @@ const Card = React.forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={ref}
-        className={`w-full h-full max-h-[667px] max-w-[375px] shadow-lg rounded-8 ${className}`}
+        className={`w-full h-full md:max-h-[667px] md:max-w-[375px] shadow-lg rounded-8 ${className}`}
         {...props}
       >
         {title && (

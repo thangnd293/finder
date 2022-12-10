@@ -7,6 +7,7 @@ interface SettingFieldLinkProps {
   label: string;
   value?: string;
   className?: string;
+  onClick?: () => void;
 }
 
 const SettingFieldLink = ({
@@ -14,13 +15,19 @@ const SettingFieldLink = ({
   label,
   value,
   className,
+  onClick,
 }: SettingFieldLinkProps) => {
+  const handleClick = () => {
+    onClick?.();
+  };
+
   return (
     <Link
       to={to}
       className={`group flex items-center justify-between gap-2 px-1.6 h-[52px] border-0 border-y border-solid border-gray-20 not-last:border-b-0 font-light bg-white ${
         className ? className : ''
       }`}
+      onClick={handleClick}
     >
       <span className='text-16'>{label}</span>
       <span className='inline-flex items-center gap-0.8 text-text-secondary group-hover:text-primary'>

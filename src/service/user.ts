@@ -41,6 +41,9 @@ export const getUserFragment = [
   {
     matched: ['_id', 'images', 'username'],
   },
+  {
+    tags: ['_id', 'name', 'type'],
+  },
 ] as GenFields<User>;
 
 export const getAllUserFragment: GenFields<UserResult> = [

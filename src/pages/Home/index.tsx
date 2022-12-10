@@ -10,25 +10,17 @@ import {
   useState,
 } from 'react';
 
-import HomeMobile from './HomeMobile';
-
 import { useUserStore } from '@/store/user';
 
 import CardBox from '@/components/CardController';
 import Loading from '@/components/Loading';
-
-import useMediaQuery from '@/hooks/useMediaQuery';
-
-import { RESPONSIVE } from '@/common/constants/responsive';
 
 import { GetAllUserArgs, User, UserResult } from '@/api-graphql';
 
 const NUMBER_OF_CARDS = 3;
 const SIZE_PER_PAGE = 10;
 
-interface Props {}
-
-const Home = ({}: Props) => {
+const Home = () => {
   const [user] = useUserStore(s => [s.user]);
 
   const [data, setData] = useState<UserResult | null>(null);
@@ -37,10 +29,6 @@ const Home = ({}: Props) => {
   const isFirstLoad = useRef(true);
   const [prevUser, setPrevUser] = useState<User | null>(null);
   const [currUser, setCurrUser] = useState<User | null>(null);
-
-  const isMobile = useMediaQuery({
-    mediaQuery: `(max-width: ${RESPONSIVE.md}px)`,
-  });
 
   useEffect(() => {
     const fetch = async () => {
@@ -180,7 +168,6 @@ const Home = ({}: Props) => {
     [userList, currUser, prevUser, onLike, onNope],
   );
 
-  if (isMobile) return <HomeMobile />;
   return (
     <HomeContext.Provider value={value}>
       <div

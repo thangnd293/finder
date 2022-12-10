@@ -1,20 +1,30 @@
+import React from 'react';
+
 import CheckIcon from '@/assets/svgs/CheckIcon';
 
 export enum Gender {
-  Male = 'MALE',
-  Female = 'FEMALE',
-  Both = 'BOTH',
+  Men = 'MEN',
+  Women = 'WOMEN',
+  All = 'ALL',
 }
 
 interface GenderPickerProps {
   value: Gender;
+  notIncludeBoth?: boolean;
   onChange: (value: Gender) => void;
 }
 
-const GenderPicker = ({ value, onChange }: GenderPickerProps) => {
+const GenderPicker = ({
+  value,
+  notIncludeBoth,
+  onChange,
+}: GenderPickerProps) => {
+  const genders = notIncludeBoth
+    ? GENDERS.filter(item => item.gender !== Gender.All)
+    : GENDERS;
   return (
     <>
-      {GENDERS.map(item => (
+      {genders.map(item => (
         <GenderItem
           key={item.gender}
           label={item.label}
@@ -51,15 +61,15 @@ const GENDERS: {
   label: string;
 }[] = [
   {
-    gender: Gender.Male,
+    gender: Gender.Men,
     label: 'Nam',
   },
   {
-    gender: Gender.Female,
+    gender: Gender.Women,
     label: 'Nữ',
   },
   {
-    gender: Gender.Both,
+    gender: Gender.All,
     label: 'Mọi người',
   },
 ];

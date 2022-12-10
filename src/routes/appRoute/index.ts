@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 import IRoute from '@/typings/route';
 
 import Home from '@/pages/Home';
+import Matches from '@/pages/Matches';
 import Messages from '@/pages/Messages';
 import Profile from '@/pages/Profile';
 import ProfileEdit from '@/pages/ProfileEdit';
@@ -66,6 +67,12 @@ const appChildRoute: IRoute[] = [
     name: 'Nhắn tin',
     path: PATH.APP.MESSAGES.CHAT,
     Component: Messages,
+    isPrivate: true,
+  },
+  {
+    name: 'Tương hợp',
+    path: PATH.APP.MATCHES,
+    Component: Matches,
     isPrivate: true,
   },
 ];

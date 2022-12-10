@@ -4,6 +4,8 @@ import tw from 'twin.macro';
 
 import PersonalityType from '../PersonalityType';
 
+import { IInformationData } from '@/pages/ProfileEdit';
+
 import GenderIcon from '@/assets/svgs/GenderIcon';
 import JobIcon from '@/assets/svgs/JobIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
@@ -19,14 +21,23 @@ const Divider = styled.hr`
   ${tw`border-gray-15`}
 `;
 
-interface Props {
+type Props = {
   user: User;
+  previewData?: IInformationData;
   onReport?: () => void;
-}
+};
 
-const Information = ({ user, onReport }: Props) => {
+const Information = ({ user, previewData, onReport }: Props) => {
   const tagPassions =
     user.tags?.filter(tag => tag.type === TagType.Passions) || [];
+  const otherTags =
+    user.tags?.filter(tag => tag.type !== TagType.Passions) || [];
+  const aboutMe = previewData?.aboutMe || user.aboutMe;
+  const company = previewData?.company || user.company;
+  const jobTitle = previewData?.jobTitle || user.jobTitle;
+  const school = previewData?.school || user.school;
+  const liveAt = previewData?.liveAt || user.liveAt;
+  const gender = previewData?.gender || user.gender;
 
   return (
     <Fragment>
@@ -35,43 +46,42 @@ const Information = ({ user, onReport }: Props) => {
           <span className='font-bold text-32'>{user.username}</span>
           <span className='font-light text-26'>{user.age}</span>
         </p>
-        {user.company && user.jobTitle && (
+        {company && jobTitle && (
           <TextWithIcon
             icon={<JobIcon height={24} />}
-            text={`${user.company} tại ${user.jobTitle}`}
+            text={`${company} tại ${jobTitle}`}
           />
         )}
-        {user.school && (
-          <TextWithIcon
-            icon={<SchoolIcon height={24} />}
-            text={`${user.school}`}
-          />
+        {school && (
+          <TextWithIcon icon={<SchoolIcon height={24} />} text={`${school}`} />
         )}
-        {user.liveAt && (
+        {liveAt && (
           <TextWithIcon
             icon={<LocationIcon height={22} />}
-            text={`Sống tại ${user.liveAt}`}
+            text={`Sống tại ${liveAt}`}
           />
         )}
-        {user.gender && (
-          <TextWithIcon icon={<GenderIcon height={22} />} text={user.gender} />
+        {gender && (
+          <TextWithIcon icon={<GenderIcon height={22} />} text={gender} />
         )}
       </SectionWrapper>
       <Divider />
-      <SectionWrapper>
-        {user.aboutMe && (
-          <p className='text-18 text-text-secondary leading-normal'>
-            {user.aboutMe}
-          </p>
-        )}
-        <div className='flex flex-wrap gap-0.4 py-1.2'>
-          {/* <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} />
-          <PersonalityType icon={astrologicalSign} tag={'Thien Binh'} /> */}
-        </div>
-      </SectionWrapper>
+      {(aboutMe || otherTags.length > 0) && (
+        <SectionWrapper>
+          {aboutMe && (
+            <p className='text-18 text-text-secondary leading-normal'>
+              {aboutMe}
+            </p>
+          )}
+          {
+            <div className='flex flex-wrap gap-0.4 py-1.2'>
+              {otherTags.map(tag => (
+                <PersonalityType key={tag._id} tag={tag} />
+              ))}
+            </div>
+          }
+        </SectionWrapper>
+      )}
       <Divider />
       {tagPassions.length > 0 && (
         <SectionWrapper>
