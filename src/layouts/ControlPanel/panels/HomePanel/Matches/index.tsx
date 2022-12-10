@@ -15,7 +15,7 @@ const Matches = () => {
         <Card
           key={conversation._id}
           to={`${PATH.APP.MESSAGES.CHAT.replace(':chatId', conversation._id)}`}
-          user={conversation.user}
+          user={conversation.user!}
         />
       ))}
     </div>

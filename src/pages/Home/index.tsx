@@ -38,10 +38,6 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
     const fetch = async () => {
       if (
         data &&
@@ -81,10 +77,6 @@ const Home = () => {
 
     return apiCaller.getAllUser(getAllUserFragment).$args(args).$fetch();
   }
-
-  useEffect(() => {
-    console.log('userList', userList);
-  }, [userList]);
 
   async function getData() {
     setIsLoading(true);

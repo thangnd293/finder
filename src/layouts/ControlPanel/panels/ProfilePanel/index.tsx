@@ -2,6 +2,8 @@ import { apiCaller } from '@/service/index';
 import { getUserFragment } from '@/service/user';
 import { ChangeEvent, useState } from 'react';
 
+import DeleteAccountDialog from './DeleteAccountDialog';
+
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
 
@@ -31,8 +33,10 @@ const gender = {
 
 const ProfilePanel = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
   const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [showConfirmDeleteAccount, setShowConfirmDeleteAccount] =
+    useState(false);
 
   const { user, setUser } = useUserStore();
   const { address } = user!;
@@ -90,11 +94,12 @@ const ProfilePanel = () => {
     setIsLoading(false);
   };
 
-  const onDelete = async () => {
-    setIsDeleting(true);
+  const onRequestDelete = async () => {
+    setIsRequesting(true);
     await apiCaller.deleteAccount().$fetch();
-    useAuthStore.getState().logout();
-    setIsDeleting(false);
+    setIsRequesting(false);
+    setShowConfirmDeleteAccount(true);
+    setShowDeleteAccount(false);
   };
 
   return (
@@ -167,9 +172,14 @@ const ProfilePanel = () => {
         <DialogConfirm
           title='Bạn có chắc chắn muốn xoá tài khoản?'
           visible={showDeleteAccount}
-          isLoading={isDeleting}
+          isLoading={isRequesting}
           onClose={() => setShowDeleteAccount(false)}
-          onConfirm={onDelete}
+          onConfirm={onRequestDelete}
+        />
+      )}
+      {showConfirmDeleteAccount && (
+        <DeleteAccountDialog
+          onClose={() => setShowConfirmDeleteAccount(false)}
         />
       )}
     </>
