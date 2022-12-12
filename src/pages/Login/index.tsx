@@ -1,7 +1,9 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { LoginGoogle } from './LoginGoogle';
+import { GoogleLogin } from './GoogleLogin';
+
+import { FacebookLogin } from '@/pages/Login/FacebookLogin';
 
 import { useAuthStore } from '@/store/auth';
 
@@ -93,7 +95,8 @@ const Login = ({}: Props) => {
         <hr className='w-10 border-gray-20' />
         <span>Hoặc</span>
         <hr className='w-10 border-gray-20' />
-        <LoginGoogle />
+        <GoogleLogin />
+        <FacebookLogin />
       </div>
     </div>
   );

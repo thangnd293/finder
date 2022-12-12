@@ -3,7 +3,7 @@ import { IResolveParams, LoginSocialGoogle } from 'reactjs-social-login';
 
 const REDIRECT_URI =
   'https://plenty-planets-beam-42-118-51-2.loca.lt/account/login';
-export const LoginGoogle = () => {
+export const GoogleLogin = () => {
   return (
     <LoginSocialGoogle
       client_id={
