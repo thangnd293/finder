@@ -40,6 +40,7 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
   const [reason, setReason] = useState('');
   const [detail, setDetail] = useState('');
   const [isDisabledBtn, setIsDisabledBtn] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const startStep = _target ? EStep.Reason : EStep.PickUser;
   const [currentStep, setCurrentStep] = useState(startStep);
@@ -66,7 +67,7 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
 
   const onReport = async () => {
     if (!_target || !reason || !detail) return;
-
+    setIsLoading(true);
     await apiCaller
       .reportUser()
       .$args({
@@ -75,6 +76,7 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
         reportDetail: detail,
       })
       .$fetch();
+    setIsLoading(false);
 
     onClose();
   };
@@ -167,6 +169,7 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
           )}
           <div className='w-full px-1.6 py-3'>
             <Button
+              loading={isLoading}
               className='uppercase'
               disabled={isDisabledBtn}
               width={'full'}

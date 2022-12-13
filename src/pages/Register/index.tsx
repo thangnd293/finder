@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import { handleError } from '../../common/utils/handleError';
@@ -19,11 +19,8 @@ interface IFormData {
   confirmPassword: string;
 }
 
-interface Props {}
-
-const Register = ({}: Props) => {
+const Register = () => {
   const signUpLoading = useLoadingStore(s => s.signUpLoading);
-  const [isVisible, setIsVisible] = useState(false);
 
   const initialValues: IFormData = {
     email: '',
@@ -93,18 +90,19 @@ const Register = ({}: Props) => {
                 type='password'
                 placeholder='VD: m@tkh@u123'
               />
-
+              <div className='flex justify-end'>
+                <Link to='/auth/login'>
+                  <p className='font-bold text-gray-50'>
+                    Đã có tài khoản? Đăng nhập ngay
+                  </p>
+                </Link>
+              </div>
               <div className='w-fit mx-auto'>
                 <Button loading={signUpLoading} label='Đăng kí' />
               </div>
             </form>
           )}
         </Formik>
-        <div className='mt-2 flex flex-col items-center justify-center gap-1'>
-          <hr className='w-10 border-gray-20' />
-          <span>Hoặc</span>
-          <hr className='w-10 border-gray-20' />
-        </div>
       </div>
       <OtpModal />
     </>

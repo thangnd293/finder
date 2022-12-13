@@ -24,9 +24,7 @@ interface IFormData {
   password: string;
 }
 
-interface Props {}
-
-const Login = ({}: Props) => {
+const Login = () => {
   const navigate = useNavigate();
   const signInLoading = useLoadingStore(s => s.signInLoading);
   const initialValues: IFormData = {

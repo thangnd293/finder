@@ -26,7 +26,7 @@ const Header = () => {
         }}
       />
       <p className='flex-1 px-1.6 text-18 text-text-secondary cursor-default'>
-        You matched with {conversation.user?.username} on{' '}
+        Bạn đã kết nối với {conversation.user?.username} vào{' '}
         {new Date(conversation.createdAt).toLocaleDateString()}
       </p>
       <button

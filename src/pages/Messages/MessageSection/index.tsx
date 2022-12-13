@@ -51,8 +51,8 @@ const MessageSection = () => {
           <Messages />
         ) : (
           <div className='w-full h-full flex flex-col items-center justify-center'>
-            <p>You Matched with {conversation.user?.username}</p>
-            <p>{conversation.createdAt.toString()}</p>
+            <p>Bạn đã kết nối với {conversation.user?.username}</p>
+            <p>{new Date(conversation.createdAt).toLocaleDateString()}</p>
             <div
               className='w-21 h-21 rounded-full bg-center bg-cover'
               style={{
