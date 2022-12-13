@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Container from '../Container';
 
 import CheckIcon from '@/assets/svgs/CheckIcon';
+import LoadingIcon from '@/assets/svgs/LoadingIcon';
 
 import { User } from '@/api-graphql';
 
@@ -15,15 +16,19 @@ interface Props {
 
 const PickUser = ({ target, onChoose }: Props) => {
   const [userMatched, setUserMatched] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserMatched = async () => {
+      setIsLoading(true);
       const data = await apiCaller
         .getAllUserMatched(getUsersMatchedFragment)
         .$args({})
         .$fetch();
+      setIsLoading(false);
+
       const users = data.results?.map(item => item.user);
-      setUserMatched(users || []);
+      setUserMatched((users as User[]) || []);
     };
 
     fetchUserMatched();
@@ -36,15 +41,19 @@ const PickUser = ({ target, onChoose }: Props) => {
         gần đây của bạn.
       </p>
       <div className='w-full flex flex-col'>
-        {userMatched?.map(u => (
-          <UserItem
-            key={u._id}
-            avatar={u.images?.[0]}
-            name={u.username!}
-            isActive={target?._id === u._id}
-            onClick={() => onChoose(u)}
-          />
-        ))}
+        {isLoading ? (
+          <LoadingIcon className='shrink-0 w-3 !h-3 mx-auto' />
+        ) : (
+          userMatched?.map(u => (
+            <UserItem
+              key={u._id}
+              avatar={u.images?.[0]}
+              name={u.username!}
+              isActive={target?._id === u._id}
+              onClick={() => onChoose(u)}
+            />
+          ))
+        )}
       </div>
     </Container>
   );
