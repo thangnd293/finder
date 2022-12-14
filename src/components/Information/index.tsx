@@ -11,7 +11,7 @@ import JobIcon from '@/assets/svgs/JobIcon';
 import LocationIcon from '@/assets/svgs/LocationIcon';
 import SchoolIcon from '@/assets/svgs/SchoolIcon';
 
-import { TagType, User } from '@/api-graphql';
+import { GenderEnum, TagType, User } from '@/api-graphql';
 
 const SectionWrapper = styled.div`
   ${tw`px-1.6 py-1 space-y-0.5`}
@@ -62,7 +62,10 @@ const Information = ({ user, previewData, onReport }: Props) => {
           />
         )}
         {gender && (
-          <TextWithIcon icon={<GenderIcon height={22} />} text={gender} />
+          <TextWithIcon
+            icon={<GenderIcon height={22} />}
+            text={gender === GenderEnum.Female ? 'Nữ' : 'Nam'}
+          />
         )}
       </SectionWrapper>
       <Divider />

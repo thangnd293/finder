@@ -33,9 +33,10 @@ interface Props {
   target?: User;
   visible: boolean;
   onClose: () => void;
+  onReportDone?: () => void;
 }
 
-const ReportDialog = ({ target, visible, onClose }: Props) => {
+const ReportDialog = ({ target, visible, onClose, onReportDone }: Props) => {
   const [_target, setTarget] = useState<User | undefined>(target);
   const [reason, setReason] = useState('');
   const [detail, setDetail] = useState('');
@@ -77,8 +78,8 @@ const ReportDialog = ({ target, visible, onClose }: Props) => {
       })
       .$fetch();
     setIsLoading(false);
-
     onClose();
+    onReportDone?.();
   };
 
   const onNext = () => {

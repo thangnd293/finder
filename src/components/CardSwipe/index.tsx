@@ -204,6 +204,7 @@ const CardSwipe = ({ user, onNope, onLike, onBack, onShowInfo }: Props) => {
           visible={showReportDialog}
           target={user}
           onClose={() => setShowReportDialog(false)}
+          onReportDone={handleNope}
         />
       )}
     </>
