@@ -1,10 +1,8 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { GoogleLogin } from './GoogleLogin';
-
-import { FacebookLogin } from '@/pages/Login/FacebookLogin';
-
+// import { GoogleLogin } from './GoogleLogin';
+// import { FacebookLogin } from '@/pages/Login/FacebookLogin';
 import { useAuthStore } from '@/store/auth';
 
 import Button from '@/components/Button';
@@ -93,8 +91,8 @@ const Login = () => {
         <hr className='w-10 border-gray-20' />
         <span>Hoặc</span>
         <hr className='w-10 border-gray-20' />
-        <GoogleLogin />
-        <FacebookLogin />
+        {/* <GoogleLogin />
+        <FacebookLogin /> */}
       </div>
     </div>
   );
