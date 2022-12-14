@@ -73,9 +73,7 @@ const FIND_GENDER: Array<{ id: LookingFor; label: string }> = [
   },
 ];
 
-interface Props {}
-
-const Onboarding = ({}: Props) => {
+const Onboarding = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const query = useMemo(() => new URLSearchParams(location.search), [location]);
@@ -104,8 +102,8 @@ const Onboarding = ({}: Props) => {
   }, [query]);
 
   const initialValues: FormData = {
-    username: 'Phạm Minh Phát',
-    birthDays: '2001-04-28',
+    username: '',
+    birthDays: '',
     gender: GenderEnum.Male,
     showGender: true,
     findGender: LookingFor.Women,
@@ -127,16 +125,14 @@ const Onboarding = ({}: Props) => {
         .email('Vui lòng nhập email hợp lệ.')
         .required('Vui lòng nhập email hợp lệ.'),
       images: Yup.array().min(1, 'Hãy chọn ít nhất 1 ảnh'),
-      tags: Yup.array().min(1, 'Hãy ít nhất 3 sở thích của bạn'),
+      tags: Yup.array().min(3, 'Hãy ít nhất 3 sở thích của bạn'),
     },
   );
 
   const handleSubmit = async ({
     birthDays,
-    email,
     findGender,
     gender,
-    showGender,
     username,
     images,
     tags,
