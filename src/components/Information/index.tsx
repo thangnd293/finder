@@ -49,7 +49,7 @@ const Information = ({ user, previewData, onReport }: Props) => {
         {company && jobTitle && (
           <TextWithIcon
             icon={<JobIcon height={24} />}
-            text={`${company} tại ${jobTitle}`}
+            text={`${jobTitle} tại ${company}`}
           />
         )}
         {school && (
@@ -100,6 +100,7 @@ const Information = ({ user, previewData, onReport }: Props) => {
         <>
           <Divider />
           <button
+            type='button'
             onClick={onReport}
             className='w-full border-none py-2 text-14 text-center text-text-secondary font-semibold uppercase opacity-60 duration-300 hover:opacity-100'
           >
