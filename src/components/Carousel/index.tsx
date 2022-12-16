@@ -1,5 +1,6 @@
 import { CSSProperties, useRef, useState } from 'react';
 
+import Image from '../Image';
 import Pagination from './Pagination';
 import { ButtonNext, ButtonPrev } from './styles';
 
@@ -85,19 +86,14 @@ const Carousel = ({ images, isDrag, flipLeft, flipRight, style }: Props) => {
       >
         {images?.map((item, index) => (
           <div key={index} className='min-w-full w-full h-full'>
-            <img
-              className='w-full h-full object-cover object-center'
-              src={item}
-              alt=''
-              draggable={false}
-            />
+            <Image key={index} src={item} alt='' />
           </div>
         ))}
       </div>
-      <ButtonPrev onClick={handlePrev}>
+      <ButtonPrev type='button' onClick={handlePrev}>
         {currentPage !== FIRST_PAGE && <ArrowLeftIcon />}
       </ButtonPrev>
-      <ButtonNext onClick={handleNext}>
+      <ButtonNext type='button' onClick={handleNext}>
         {currentPage !== LAST_PAGE && <ArrowLeftIcon />}
       </ButtonNext>
     </div>
