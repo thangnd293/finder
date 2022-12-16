@@ -3,6 +3,7 @@ import { getUserFragment } from '@/service/user';
 import { Formik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
@@ -128,18 +129,24 @@ const ProfileEdit = () => {
       tags,
     };
 
-    await apiCaller
-      .updateProfile()
-      .$args({
-        input: {
-          ...input,
-        },
-      })
-      .$fetch();
-    const userUpdated = await apiCaller
-      .getCurrentUser(getUserFragment)
-      .$fetch();
-    setUser(userUpdated);
+    try {
+      await apiCaller
+        .updateProfile()
+        .$args({
+          input: {
+            ...input,
+          },
+        })
+        .$fetch();
+
+      const userUpdated = await apiCaller
+        .getCurrentUser(getUserFragment)
+        .$fetch();
+      setUser(userUpdated);
+      toast.success('Cập nhật thông tin thành công');
+    } catch (error) {
+      toast.error('Cập nhật thông tin thất bại. Vui lòng thử lại sau!');
+    }
   };
 
   const onDone = () => {

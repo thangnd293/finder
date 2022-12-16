@@ -45,6 +45,7 @@ const Preview = () => {
       {showInfo && user ? (
         <div className='relative w-full bg-white rounded-b-8 pb-10'>
           <button
+            type='button'
             className='absolute -top-3 right-1.2'
             onClick={handleHiddenInfo}
           >

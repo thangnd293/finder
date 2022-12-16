@@ -24,6 +24,7 @@ interface Props {
   allTags: Tag[];
 }
 const Edit = ({ allTags, onSave }: Props) => {
+  const [isSaving, setIsSaving] = useState(false);
   const [lifeStyleTabActive, setLifeStyleTabActive] =
     useState<LifeStyle | null>(null);
 
@@ -182,10 +183,15 @@ const Edit = ({ allTags, onSave }: Props) => {
       </div>
       <div className='hidden md:flex absolute bottom-0 left-0 w-full justify-center bg-gray-10'>
         <Button
+          loading={isSaving}
           id='btn-save-edit'
           className='inline-block '
           label='Lưu'
-          onClick={() => onSave(values)}
+          onClick={async () => {
+            setIsSaving(true);
+            await onSave(values);
+            setIsSaving(false);
+          }}
         />
       </div>
       {lifeStyleTabActive && (
