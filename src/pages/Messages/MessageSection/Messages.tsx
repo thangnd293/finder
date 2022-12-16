@@ -78,7 +78,11 @@ const Message = ({
         />
       )}
 
-      <MessageWrapper className='group' align={align} type={message.type}>
+      <MessageWrapper
+        className='group'
+        align={align}
+        type={message.type as any}
+      >
         {message.type === MessageType.Text && (
           <TextMessageStyled align={align} isFirst={isFirst}>
             {message.text}
@@ -110,7 +114,7 @@ const Message = ({
           ))}
 
         <Timestamp align={align}>
-          {new Date(message.createdAt).toTime()}
+          {new Date(message.createdAt!).toTime()}
         </Timestamp>
       </MessageWrapper>
     </MessageContainer>

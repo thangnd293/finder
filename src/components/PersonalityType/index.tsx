@@ -35,7 +35,7 @@ const PersonalityType = ({ icon, tag, isActive = false, onClick }: Props) => {
         <img
           className='w-1.6 h-1.6 object-cover object-center aspect-square'
           src={icon}
-          alt={tag.name || tag._id}
+          alt={tag.name || tag._id || ''}
         />
       )}
       <p className='text-14'>{tag.name}</p>

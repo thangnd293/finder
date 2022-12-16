@@ -59,8 +59,8 @@ const Messages = () => {
       setMessages(
         data.results?.map(message => ({
           ...message,
-          sender: message.sender._id,
-          receiver: message.receiver._id,
+          sender: message.sender!._id,
+          receiver: message.receiver!._id,
           status: 'sent',
         })) ?? [],
       );

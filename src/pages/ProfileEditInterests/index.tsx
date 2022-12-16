@@ -43,7 +43,10 @@ const ProfileEditInterests = () => {
       .updateProfile()
       .$args({
         input: {
-          tags: [...otherTags, ...currentChooses.map(hobbit => hobbit._id)],
+          tags: [
+            ...otherTags,
+            ...currentChooses.map(hobbit => hobbit._id),
+          ] as any,
         },
       })
       .$fetch()
@@ -64,7 +67,7 @@ const ProfileEditInterests = () => {
   };
 
   const onHobbitClick = (hobbit: Tag) => {
-    if (existsHobbit(hobbit._id)) {
+    if (existsHobbit(hobbit._id!)) {
       const newHobbies = currentChooses.filter(h => h._id !== hobbit._id);
       setCurrentChooses(newHobbies);
     } else {
@@ -94,7 +97,7 @@ const ProfileEditInterests = () => {
             <PersonalityType
               key={index}
               tag={hobbit}
-              isActive={existsHobbit(hobbit._id)}
+              isActive={existsHobbit(hobbit._id!)}
               onClick={() => {
                 onHobbitClick(hobbit);
               }}

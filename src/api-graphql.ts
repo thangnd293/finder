@@ -89,18 +89,12 @@ const guessFragmentType = (fragment: string | DocumentNode) => {
 
 import {
   DocumentNode,
-  gql,
-  useMutation,
-  useLazyQuery,
-  useSubscription,
-  QueryHookOptions,
-  MutationHookOptions,
-  SubscriptionHookOptions,
-  MutationTuple,
+  gql, MutationHookOptions, QueryHookOptions, useLazyQuery, useMutation
 } from '@apollo/client';
 
+import { ApolloClient, execute } from '@apollo/client/core';
 import { OperationDefinitionNode } from 'graphql';
-import { ApolloClient, execute} from '@apollo/client/core';
+import create from 'zustand';
 
 export interface Address {
   city: Maybe<string>;
@@ -312,7 +306,9 @@ export interface Reports {
 
 export interface ResetPasswordInput {
   code: string;
+  confirmPassword: string;
   email: string;
+  password: string;
 }
 
 export enum SortOption {
@@ -627,7 +623,6 @@ export type ExecutableQueryWithArgs<T, A> = QueryWithArgs<T, A>;
 export interface ExecutableQueryWithOptionalArgs<T, A>
   extends QueryWithOptionalArgs<T, A>,
     Executable<T> {}
-import create from 'zustand';
 export const useLoadingStore = create<
   {
     [K in keyof ReturnType<typeof apiProvider> as K extends `${string}`
