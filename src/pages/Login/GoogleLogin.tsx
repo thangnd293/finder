@@ -6,7 +6,7 @@ import { setSession } from '@/store/auth';
 
 import { handleError } from '@/common/utils/handleError';
 
-const REDIRECT_URI = 'http://127.0.0.1:5174/';
+const REDIRECT_URI = 'https://finder-khaki.vercel.app/';
 export const GoogleLogin = () => {
   return (
     <LoginSocialGoogle
@@ -17,7 +17,7 @@ export const GoogleLogin = () => {
       scope='openid profile email'
       discoveryDocs='claims_supported'
       access_type='offline'
-      onResolve={async ({ provider, data }: IResolveParams) => {
+      onResolve={async ({ data }: IResolveParams) => {
         try {
           if (!data?.access_token) return;
           const { accessToken, refreshToken } = await apiCaller
