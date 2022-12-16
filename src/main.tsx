@@ -20,6 +20,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         </Router>
       </I18nextProvider>
     </ApolloProvider>
-    ,
   </React.StrictMode>,
 );
