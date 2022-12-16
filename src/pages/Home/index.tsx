@@ -21,7 +21,7 @@ const NUMBER_OF_CARDS = 3;
 const SIZE_PER_PAGE = 10;
 
 const Home = () => {
-  const [user] = useUserStore(s => [s.user]);
+  const user = useUserStore(s => s.user);
 
   const [data, setData] = useState<UserResult | null>(null);
   const [userList, setUserList] = useState<User[]>([]);

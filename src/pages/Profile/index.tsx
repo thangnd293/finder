@@ -10,7 +10,7 @@ import Information from '@/components/Information';
 import { PATH } from '@/common/constants/route';
 
 const Profile = () => {
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
 
   return (
     <div className='flex items-center justify-center w-full h-full'>

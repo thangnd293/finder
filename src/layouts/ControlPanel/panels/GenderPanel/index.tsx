@@ -3,7 +3,7 @@ import { getUserFragment } from '@/service/user';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { useUserStore } from '@/store/user';
+import { setUser, useUserStore } from '@/store/user';
 
 import GenderPicker, { Gender } from '@/components/GenderPicker';
 
@@ -13,7 +13,7 @@ import { LookingFor } from '@/api-graphql';
 
 const GenderPanel = () => {
   const location = useLocation();
-  const { user, setUser } = useUserStore();
+  const user = useUserStore(s => s.user);
   const [gender, setGender] = useState<Gender>(
     (user?.mySetting?.discovery.lookingFor as unknown as Gender) || Gender.All,
   );

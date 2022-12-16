@@ -1,9 +1,9 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-// import { GoogleLogin } from './GoogleLogin';
-// import { FacebookLogin } from '@/pages/Login/FacebookLogin';
-import { useAuthStore } from '@/store/auth';
+import { GoogleLogin } from '@/pages/Login/GoogleLogin';
+
+import { signIn } from '@/store/auth';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -39,7 +39,7 @@ const Login = () => {
 
   const onSubmit = async (values: IFormData) => {
     try {
-      const response = await useAuthStore.getState().signIn({ input: values });
+      const response = await signIn({ input: values });
 
       if (response) {
         navigate(PATH.APP.HOME);
@@ -75,7 +75,10 @@ const Login = () => {
               name='password'
               placeholder='VD: m@tkh@u123'
             />
-            <div className='flex justify-end'>
+            <div className='flex justify-between'>
+              <Link to='/auth/forgot'>
+                <p className='font-bold text-gray-50'>Quên mật khẩu ?</p>
+              </Link>
               <Link to='/auth/register'>
                 <p className='font-bold text-gray-50'>Tạo tài khoản mới</p>
               </Link>
@@ -91,8 +94,9 @@ const Login = () => {
         <hr className='w-10 border-gray-20' />
         <span>Hoặc</span>
         <hr className='w-10 border-gray-20' />
-        {/* <GoogleLogin />
-        <FacebookLogin /> */}
+        <div className='flex flex-col gap-1'>
+          <GoogleLogin />
+        </div>
       </div>
     </div>
   );

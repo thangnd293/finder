@@ -88,6 +88,8 @@ const guessFragmentType = (fragment: string | DocumentNode) => {
 };
 
 import {
+  DocumentNode,
+  gql,
   useMutation,
   useLazyQuery,
   useSubscription,
@@ -98,7 +100,7 @@ import {
 } from '@apollo/client';
 
 import { OperationDefinitionNode } from 'graphql';
-import { ApolloClient, execute, DocumentNode, gql } from '@apollo/client/core';
+import { ApolloClient, execute} from '@apollo/client/core';
 
 export interface Address {
   city: Maybe<string>;
@@ -240,17 +242,17 @@ export interface MatchRequest {
 }
 
 export interface Message {
-  _id: string;
-  conversion_id: Conversation;
-  createdAt: string;
-  cursor: number;
-  isDeleted: boolean;
-  keyword: string;
-  receiver: User;
-  sender: User;
+  _id: Maybe<string>;
+  conversion_id: Maybe<Conversation>;
+  createdAt: Maybe<string>;
+  cursor: Maybe<number>;
+  isDeleted: Maybe<boolean>;
+  keyword: Maybe<string>;
+  receiver: Maybe<User>;
+  sender: Maybe<User>;
   text: Maybe<string>;
-  type: MessageType;
-  updatedAt: string;
+  type: Maybe<string>;
+  updatedAt: Maybe<string>;
   urlMessageImage: Maybe<string>;
 }
 
@@ -268,8 +270,8 @@ export interface MessageResult {
 }
 
 export enum MessageType {
-  Image = 'Image',
-  Text = 'Text',
+  Image = 'IMAGE',
+  Text = 'TEXT',
 }
 export interface MySetting {
   controlWhoSeesYou: ControlWhoSeesYou;
@@ -310,9 +312,7 @@ export interface Reports {
 
 export interface ResetPasswordInput {
   code: string;
-  confirmPassword: string;
   email: string;
-  password: string;
 }
 
 export enum SortOption {
@@ -326,7 +326,7 @@ export enum StatusActive {
 }
 
 export interface Tag {
-  _id: string;
+  _id: Maybe<string>;
   createdAt: string;
   description: Maybe<string>;
   isDeleted: boolean;
@@ -353,6 +353,13 @@ export enum TagType {
   Smoke_question = 'SMOKE_QUESTION',
   Zodiac = 'ZODIAC',
 }
+export interface UpdateTagInput {
+  description?: string;
+  name?: string;
+  parentType?: TagType;
+  type?: TagType;
+}
+
 export interface UpdateUserInput {
   aboutMe?: string;
   birthDays?: string;
@@ -382,6 +389,7 @@ export interface User {
   gender: Maybe<GenderEnum>;
   geoLocation: Maybe<GeoLocation>;
   images: Maybe<string[]>;
+  isBlocked: boolean;
   isDeleted: boolean;
   isFirstLogin: boolean;
   jobTitle: Maybe<string>;
@@ -510,7 +518,7 @@ export interface CreateMessageArgs {
 }
 
 export interface CreateTagArgs {
-  createTagInput: CreateTagInput;
+  input: CreateTagInput;
 }
 
 export interface DeclineBlockUserArgs {
@@ -519,6 +527,10 @@ export interface DeclineBlockUserArgs {
 
 export interface DeleteFileArgs {
   fileUrl: string;
+}
+
+export interface DeleteTagArgs {
+  tag_id: string;
 }
 
 export interface LikeUserArgs {
@@ -570,6 +582,11 @@ export interface UpdateLocationArgs {
 
 export interface UpdateProfileArgs {
   input: UpdateUserInput;
+}
+
+export interface UpdateTagArgs {
+  input: UpdateTagInput;
+  tag_id: string;
 }
 
 export interface UploadFileArgs {
@@ -1112,8 +1129,8 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
     },
     createTag(): QueryWithArgs<boolean, CreateTagArgs> {
       const queryTemplate = gql`
-        mutation createTag($createTagInput: CreateTagInput!) {
-          createTag(createTagInput: $createTagInput)
+        mutation createTag($input: CreateTagInput!) {
+          createTag(input: $input)
         }
       `;
       return abortableQuery(queryTemplate, true, false);
@@ -1130,6 +1147,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       const queryTemplate = gql`
         mutation deleteFile($fileUrl: String!) {
           deleteFile(fileUrl: $fileUrl)
+        }
+      `;
+      return abortableQuery(queryTemplate, true, false);
+    },
+    deleteTag(): QueryWithArgs<boolean, DeleteTagArgs> {
+      const queryTemplate = gql`
+        mutation deleteTag($tag_id: ObjectID!) {
+          deleteTag(tag_id: $tag_id)
         }
       `;
       return abortableQuery(queryTemplate, true, false);
@@ -1258,6 +1283,14 @@ export const apiProvider = (apolloClient: ApolloClient<any>) => {
       const queryTemplate = gql`
         mutation updateProfile($input: UpdateUserInput!) {
           updateProfile(input: $input)
+        }
+      `;
+      return abortableQuery(queryTemplate, true, false);
+    },
+    updateTag(): QueryWithArgs<boolean, UpdateTagArgs> {
+      const queryTemplate = gql`
+        mutation updateTag($input: UpdateTagInput!, $tag_id: ObjectID!) {
+          updateTag(input: $input, tag_id: $tag_id)
         }
       `;
       return abortableQuery(queryTemplate, true, false);
@@ -1759,8 +1792,8 @@ export const useCreateTag = (
   options?: MutationHookOptions<{ createTag: boolean }, CreateTagArgs>,
 ) => {
   const mutation = gql`
-    mutation createTag($createTagInput: CreateTagInput!) {
-      createTag(createTagInput: $createTagInput)
+    mutation createTag($input: CreateTagInput!) {
+      createTag(input: $input)
     }
   `;
   return useMutation<{ createTag: boolean }, CreateTagArgs>(mutation, options);
@@ -1795,6 +1828,17 @@ export const useDeleteFile = (
     mutation,
     options,
   );
+};
+
+export const useDeleteTag = (
+  options?: MutationHookOptions<{ deleteTag: boolean }, DeleteTagArgs>,
+) => {
+  const mutation = gql`
+    mutation deleteTag($tag_id: ObjectID!) {
+      deleteTag(tag_id: $tag_id)
+    }
+  `;
+  return useMutation<{ deleteTag: boolean }, DeleteTagArgs>(mutation, options);
 };
 
 export const useLikeUser = (
@@ -1971,6 +2015,17 @@ export const useUpdateProfile = (
     mutation,
     options,
   );
+};
+
+export const useUpdateTag = (
+  options?: MutationHookOptions<{ updateTag: boolean }, UpdateTagArgs>,
+) => {
+  const mutation = gql`
+    mutation updateTag($input: UpdateTagInput!, $tag_id: ObjectID!) {
+      updateTag(input: $input, tag_id: $tag_id)
+    }
+  `;
+  return useMutation<{ updateTag: boolean }, UpdateTagArgs>(mutation, options);
 };
 
 export const useUploadFile = (

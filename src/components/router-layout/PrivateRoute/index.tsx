@@ -1,5 +1,6 @@
 import SocketIO from '@/socket';
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth';
 import { useUserStore } from '@/store/user';
@@ -12,8 +13,9 @@ interface Props {
   children: React.ReactNode;
 }
 const PrivateRoute = ({ children }: Props) => {
-  const [accessToken] = useAuthStore(s => [s.accessToken]);
-  const [user] = useUserStore(s => [s.user]);
+  const location = useLocation();
+  const accessToken = useAuthStore(s => s.accessToken);
+  const user = useUserStore(s => s.user);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -28,7 +30,9 @@ const PrivateRoute = ({ children }: Props) => {
   }
 
   if (user && user.isFirstLogin) {
-    return <Navigate to='/app/onboarding' replace />;
+    if (location.pathname !== '/app/onboarding') {
+      return <Navigate to='/app/onboarding' replace />;
+    }
   }
 
   return <>{children}</>;

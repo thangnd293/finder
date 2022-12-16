@@ -1,8 +1,12 @@
+import { apiCaller } from '@/service';
 import { GoogleLoginButton } from 'react-social-login-buttons';
 import { IResolveParams, LoginSocialGoogle } from 'reactjs-social-login';
 
-const REDIRECT_URI =
-  'https://plenty-planets-beam-42-118-51-2.loca.lt/account/login';
+import { setSession } from '@/store/auth';
+
+import { handleError } from '@/common/utils/handleError';
+
+const REDIRECT_URI = 'http://127.0.0.1:5174/';
 export const GoogleLogin = () => {
   return (
     <LoginSocialGoogle
@@ -13,11 +17,21 @@ export const GoogleLogin = () => {
       scope='openid profile email'
       discoveryDocs='claims_supported'
       access_type='offline'
-      onResolve={({ provider, data }: IResolveParams) => {
-        console.log({ provider, data });
+      onResolve={async ({ provider, data }: IResolveParams) => {
+        try {
+          if (!data?.access_token) return;
+          const { accessToken, refreshToken } = await apiCaller
+            .verifyTokenGoogle(['accessToken', 'refreshToken'])
+            .$args({ token: data.access_token })
+            .$fetch();
+
+          setSession({ accessToken, refreshToken });
+        } catch (error) {
+          handleError(error);
+        }
       }}
       onReject={err => {
-        console.log(err);
+        handleError(err);
       }}
     >
       <GoogleLoginButton />

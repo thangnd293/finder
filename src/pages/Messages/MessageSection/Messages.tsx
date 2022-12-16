@@ -19,7 +19,7 @@ import { Message as IMessage, MessageType } from '@/api-graphql';
 
 const Messages = () => {
   const { messages } = useMessagesContext();
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
 
   useEffect(() => {
     const messageBox = document.getElementById('message-box');

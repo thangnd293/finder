@@ -33,7 +33,14 @@ function App() {
         </Route>
         {renderRoutes([authRoute], AuthRoute)}
         {renderRoutes([appRoute], PrivateRoute)}
-        <Route path={PATH.APP.ONBOARDING.SELF} element={<Onboarding />} />
+        <Route
+          path={PATH.APP.ONBOARDING.SELF}
+          element={
+            <PrivateRoute>
+              <Onboarding />
+            </PrivateRoute>
+          }
+        />
         <Route path='/*' element={<div>404</div>} />
       </Routes>
 

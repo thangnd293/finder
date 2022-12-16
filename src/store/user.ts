@@ -35,3 +35,5 @@ export const useUserStore = create<UserStore & UserAction>()(
     },
   ),
 );
+
+export const { getUser, setUser } = useUserStore.getState();

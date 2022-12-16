@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 
 import { apiCaller } from '../service/index';
 
-import { useUserStore } from '@/store/user';
+import { getUser, setUser } from '@/store/user';
 
 import { SignInArgs } from '@/api-graphql';
 
@@ -16,28 +16,35 @@ interface UserStore {
 interface UserAction {
   signIn: (args: SignInArgs) => Promise<boolean>;
   logout: () => void;
+  setSession: (data: {
+    accessToken: string;
+    refreshToken: string;
+  }) => Promise<boolean>;
 }
 
 export const useAuthStore = create<UserStore & UserAction>()(
   persist(
     (set, get) => ({
+      setSession: async ({ accessToken, refreshToken }) => {
+        set({ accessToken, refreshToken });
+
+        await getUser();
+        return true;
+      },
       signIn: async args => {
         const { accessToken, refreshToken } = await apiCaller
           .signIn(['accessToken', 'refreshToken'])
           .$args(args)
           .$fetch();
 
-        set({ accessToken, refreshToken });
-
-        await useUserStore.getState().getUser();
-        return true;
+        return get().setSession({ accessToken, refreshToken });
       },
       logout: () => {
         set({
           accessToken: undefined,
           refreshToken: undefined,
         });
-        useUserStore.getState().setUser(undefined);
+        setUser(undefined);
 
         location.reload();
       },
@@ -56,3 +63,5 @@ export const useAuthStore = create<UserStore & UserAction>()(
     },
   ),
 );
+
+export const { logout, setSession, signIn } = useAuthStore.getState();

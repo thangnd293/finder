@@ -11,7 +11,7 @@ import { isTokenExpired } from '@/common/utils/isTokenExpired';
 import { logColor } from '@/common/utils/logColor';
 
 export const useUpdatePosition = () => {
-  const [accessToken] = useAuthStore(s => [s.accessToken]);
+  const accessToken = useAuthStore(s => s.accessToken);
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
     useGeolocated({

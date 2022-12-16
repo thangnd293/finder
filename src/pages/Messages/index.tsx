@@ -26,7 +26,7 @@ import { Conversation } from '@/api-graphql';
 
 type IMessage = any;
 const Messages = () => {
-  const { accessToken } = useAuthStore();
+  const accessToken = useAuthStore(s => s.accessToken);
   const [messages, setMessages] = useState<any[]>([]);
   const [conversation, setConversation] = useState<Conversation | undefined>();
   const { chatId } = useParams();

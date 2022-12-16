@@ -37,7 +37,7 @@ const ControlPanel = React.forwardRef<HTMLElement, Props>(
       return initPanel(currentPath, true);
     });
 
-    const { accessToken } = useAuthStore();
+    const accessToken = useAuthStore(s => s.accessToken);
     const [usersMatched, setUsersMatched] = useState<Conversation[]>([]);
     const [usersMessage, setUsersMessage] = useState<Conversation[]>([]);
 

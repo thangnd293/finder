@@ -13,7 +13,7 @@ import Information from '@/components/Information';
 
 const Preview = () => {
   const [showInfo, setShowInfo] = React.useState(false);
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
   const { values } = useFormikContext<IInformationData>();
 
   const handleShowInfo = () => {

@@ -3,14 +3,15 @@ import { getUserFragment } from '@/service/user';
 import { Formik } from 'formik';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { useEffect, useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { v4 as uuid } from 'uuid';
 import * as Yup from 'yup';
 
 import HobbiesDialog from './Dialogs/HobbiesDialog';
 
-import { useUserStore } from '@/store/user';
+import { logout } from '@/store/auth';
+import { setUser, useUserStore } from '@/store/user';
 
 import EmailIcon from '@/assets/svgs/EmailIcon';
 import UserIcon from '@/assets/svgs/UserIcon';
@@ -164,7 +165,7 @@ const Onboarding = () => {
           input: {
             birthDays,
             username,
-            tags: tags?.map(value => value._id),
+            tags: tags?.map(value => value._id!),
             gender: gender as any,
             images: await imagesCdn,
             isFirstLogin: false,
@@ -185,7 +186,7 @@ const Onboarding = () => {
 
       const user = await apiCaller.getCurrentUser(getUserFragment).$fetch();
 
-      useUserStore.getState().setUser(user);
+      setUser(user);
       navigate('/app');
     } catch (error) {}
   };
@@ -285,11 +286,16 @@ const Onboarding = () => {
               </div>
               <Space h={55} />
               <div className='text-center'>
-                <Link to={''}>
-                  <a className='text-16 text-text-secondary active:underline decoration-2 hover:text-base  font-semibold uppercase'>
+                <button>
+                  <div
+                    onClick={() => {
+                      logout();
+                    }}
+                    className='cursor-pointer text-16 text-text-secondary active:underline decoration-2 hover:text-base  font-semibold uppercase'
+                  >
                     Đã có tài khoản? Đăng nhập.
-                  </a>
-                </Link>
+                  </div>
+                </button>
               </div>
               <Space h={90} />
             </form>

@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
 
-import { useAuthStore } from '@/store/auth';
+import { logout } from '@/store/auth';
 
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -21,7 +21,6 @@ interface IDeleteAccountDialogProps {
 
 const DeleteAccountDialog = ({ onClose }: IDeleteAccountDialogProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const { logout } = useAuthStore();
   const initialValues: IFormData = {
     email: '',
     otp: '',

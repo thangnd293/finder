@@ -2,7 +2,7 @@ import { apiCaller } from '@/service';
 import { getUserFragment } from '@/service/user';
 import { useEffect, useState } from 'react';
 
-import { useUserStore } from '@/store/user';
+import { setUser, useUserStore } from '@/store/user';
 
 import Card from '@/components/Card';
 import PersonalityType from '@/components/PersonalityType';
@@ -18,7 +18,7 @@ const ProfileEditInterests = () => {
     { results: ['_id', 'name', 'type'] },
   ]);
 
-  const { user, setUser } = useUserStore();
+  const user = useUserStore(s => s.user);
 
   const userHobbies =
     user?.tags?.filter(tag => tag.type === TagType.Passions) || [];

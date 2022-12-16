@@ -2,7 +2,7 @@ import { apiCaller } from '@/service';
 import { getUserFragment } from '@/service/user';
 import { useState } from 'react';
 
-import { useUserStore } from '@/store/user';
+import { setUser, useUserStore } from '@/store/user';
 
 import Card from '@/components/Card';
 import GenderPicker, { Gender } from '@/components/GenderPicker';
@@ -15,7 +15,7 @@ import { PATH } from '@/common/constants/route';
 import { GenderEnum } from '@/api-graphql';
 
 const ProfileEditGender = () => {
-  const { user, setUser } = useUserStore();
+  const user = useUserStore(s => s.user);
   const [gender, setGender] = useState<Gender>(
     user?.gender === GenderEnum.Male ? Gender.Men : Gender.Women,
   );

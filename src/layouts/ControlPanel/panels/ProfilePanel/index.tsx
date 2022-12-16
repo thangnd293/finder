@@ -4,8 +4,8 @@ import { ChangeEvent, useState } from 'react';
 
 import DeleteAccountDialog from './DeleteAccountDialog';
 
-import { useAuthStore } from '@/store/auth';
-import { useUserStore } from '@/store/user';
+import { logout } from '@/store/auth';
+import { setUser, useUserStore } from '@/store/user';
 
 import Button from '@/components/Button';
 import DialogConfirm from '@/components/DialogConfirm';
@@ -38,7 +38,7 @@ const ProfilePanel = () => {
   const [showConfirmDeleteAccount, setShowConfirmDeleteAccount] =
     useState(false);
 
-  const { user, setUser } = useUserStore();
+  const user = useUserStore(s => s.user);
   const { address } = user!;
   const {
     discovery: {
@@ -162,7 +162,7 @@ const ProfilePanel = () => {
           Xoá tài khoản
         </button>
         <button
-          onClick={() => useAuthStore.getState().logout()}
+          onClick={() => logout()}
           className='w-full h-[52px] text-center align-middle bg-white text-16 border-0 border-y border-solid border-gray-20'
         >
           Đăng xuất

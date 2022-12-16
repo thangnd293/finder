@@ -24,8 +24,8 @@ const GIF_PER_PAGE = 10;
 type Popup = 'none' | 'emoji' | 'gif';
 
 const InputChat = () => {
-  const { accessToken } = useAuthStore();
-  const { user } = useUserStore();
+  const accessToken = useAuthStore(s => s.accessToken);
+  const user = useUserStore(s => s.user);
   const { conversation, addMessage, updateMessage } = useMessagesContext();
   const [show, setShow] = useState<Popup>('none');
 

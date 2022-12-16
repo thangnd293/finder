@@ -17,7 +17,7 @@ const MainNavBar = ({}: Props) => {
   const { currentPanel, setCurrentPanel } = useControlPanelContext();
   const [showSecurityDialog, setShowSecurityDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
   const path = controlPanels[currentPanel.prev].path;
 
   function handleToggle() {

@@ -29,6 +29,7 @@ export const PATH = {
   AUTH: {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
+    FORGOT: '/auth/forgot',
   },
   'VERIFY-EMAIL': '/verify-success',
 } as const;

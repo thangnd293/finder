@@ -9,7 +9,7 @@ import tw from 'twin.macro';
 import Edit from './Edit';
 import Preview from './Preview';
 
-import { useUserStore } from '@/store/user';
+import { setUser, useUserStore } from '@/store/user';
 
 import Card from '@/components/Card';
 
@@ -70,7 +70,7 @@ const ProfileEdit = () => {
     mediaQuery: `(max-width: ${RESPONSIVE.md}px)`,
   });
 
-  const { user, setUser } = useUserStore();
+  const user = useUserStore(s => s.user);
 
   useEffect(() => {
     loadHobbies();

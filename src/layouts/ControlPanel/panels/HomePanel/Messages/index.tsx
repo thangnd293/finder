@@ -11,7 +11,7 @@ import { MessageType } from '@/api-graphql';
 
 const Messages = () => {
   const { usersMessage } = useControlPanelContext();
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
   const { chatId } = useParams();
 
   return (

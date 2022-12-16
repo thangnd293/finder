@@ -2,6 +2,7 @@ import AuthLayout from '@/layouts/AuthLayout';
 
 import IRoute from '@/typings/route';
 
+import Forgot from '@/pages/ForgotPasword';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 
@@ -22,6 +23,11 @@ const authRoute: IRoute = {
       name: 'Register',
       path: PATH.AUTH.REGISTER,
       Component: Register,
+    },
+    {
+      name: 'Forgot Password',
+      path: PATH.AUTH.FORGOT,
+      Component: Forgot,
     },
   ],
 };

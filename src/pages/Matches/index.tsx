@@ -16,7 +16,7 @@ import { PATH } from '@/common/constants/route';
 import { Conversation, MessageType } from '@/api-graphql';
 
 const Matches = () => {
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
   const [usersMatched, setUsersMatched] = useState<Conversation[]>([]);
   const newMatched = usersMatched.filter(match => !match.lastMessage);
   const chatMatched = usersMatched.filter(match => match.lastMessage);

@@ -27,7 +27,7 @@ const Edit = ({ allTags, onSave }: Props) => {
   const [lifeStyleTabActive, setLifeStyleTabActive] =
     useState<LifeStyle | null>(null);
 
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
   const { values, setFieldValue } = useFormikContext<IInformationData>();
   const interests = values.interests?.join(', ');
 

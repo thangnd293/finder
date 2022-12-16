@@ -24,7 +24,7 @@ interface Props {
   className?: string;
 }
 const CardController = ({ className }: Props) => {
-  const { user } = useUserStore();
+  const user = useUserStore(s => s.user);
   const { userList, currUser, prevUser, onLike, onNope, onBack } =
     useHomeContext();
 
